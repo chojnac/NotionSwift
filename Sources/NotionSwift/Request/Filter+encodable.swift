@@ -7,19 +7,6 @@
 
 import Foundation
 
-struct GenericCodingKeys: CodingKey {
-    var intValue: Int?
-    var stringValue: String
-
-    init?(stringValue: String) {
-        self.stringValue = stringValue
-    }
-
-    init?(intValue: Int) {
-        return nil
-    }
-}
-
 extension FilterType: Encodable {
     public func encode(to encoder: Encoder) throws {
         switch self {

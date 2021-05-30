@@ -8,16 +8,20 @@ import os
 public enum Network {
     public typealias HTTPHeaders = [String: String]
 
+    public static let notionBaseURL = URL(string: "https://api.notion.com/")!
+
     public enum HTTPMethod: String {
         case GET, POST, PUT, PATCH
     }
 
     public enum Errors: Error {
+        case unauthorized
         case HTTPError(code: Int)
         case bodyEncodingError(Error)
         case decodingError(Error)
         case genericError(Error)
         case unsupportedResponseError
+        case requestLimitExceeded
     }
 }
 
@@ -61,7 +65,7 @@ public class DefaultNetworkClient: NetworkClient {
     }
 
     public func post<T: Encodable, R: Decodable>(_ url: URL, body: T, headers: Network.HTTPHeaders, completed: @escaping (Result<R, Network.Errors>) -> Void) {
-        var request = buildRequest(method: .GET, url: url, headers: headers)
+        var request = buildRequest(method: .POST, url: url, headers: headers)
         let requestBody: Data
 
         do {
@@ -78,7 +82,7 @@ public class DefaultNetworkClient: NetworkClient {
     }
 
     public func patch<T: Encodable, R: Decodable>(_ url: URL, body: T, headers: Network.HTTPHeaders, completed: @escaping (Result<R, Network.Errors>) -> Void) {
-        var request = buildRequest(method: .GET, url: url, headers: headers)
+        var request = buildRequest(method: .PATCH, url: url, headers: headers)
         let requestBody: Data
 
         do {
@@ -125,7 +129,11 @@ public class DefaultNetworkClient: NetworkClient {
                 // this is a basic implementation supporting only positive path
                 // TODO: Implement support for handling errors and non 200 response codes
                 if let response = response as? HTTPURLResponse {
-                    if response.statusCode != 200, response.statusCode != 220  {
+                    if response.statusCode == 401 {
+                        completeResult = .failure(.unauthorized)
+                    } else if response.statusCode == 429 {
+                        completeResult = .failure(.requestLimitExceeded)
+                    } else if response.statusCode != 200, response.statusCode != 220  {
                         completeResult = .failure(.HTTPError(code: response.statusCode))
                     }
                 }

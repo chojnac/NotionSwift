@@ -9,11 +9,15 @@ import Foundation
 
 public typealias UUIDv4 = String
 
-public struct EntityIdentifier<Marker, T: Codable> {
+public struct EntityIdentifier<Marker, T: Codable>: CustomStringConvertible {
     public let rawValue: T
 
     public init(_ rawValue: T) {
         self.rawValue = rawValue
+    }
+
+    public var description: String {
+        "ID<\(Marker.self)>:\(rawValue)"
     }
 }
 
