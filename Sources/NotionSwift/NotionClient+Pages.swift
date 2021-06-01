@@ -6,16 +6,15 @@ import Foundation
 
 // MARK: - Pages
 
-// WIP
-// extension NotionClient {
-//
-//    public func page(pageId: Page.Identifier, completed: @escaping (Result<Page, Network.Errors>) -> Void) {
-//        networkClient.get(
-//            urlBuilder.url(path: "/v1/pages", identifier: pageId),
-//            headers: headers(),
-//            completed: completed
-//        )
-//    }
+ extension NotionClient {
+
+    public func page(pageId: Page.Identifier, completed: @escaping (Result<Page, Network.Errors>) -> Void) {
+        networkClient.get(
+            urlBuilder.url(path: "/v1/pages", identifier: pageId),
+            headers: headers(),
+            completed: completed
+        )
+    }
 //
 //    public func pageCreate(request: PageCreateRequest, completed: @escaping (Result<Page, Network.Errors>) -> Void) {
 //        networkClient.post(
@@ -34,7 +33,7 @@ import Foundation
 //            completed: completed
 //        )
 //    }
-// }
+}
 //
 // #warning("TODO: PageCreateRequest")
 // public struct PageCreateRequest: Encodable {}

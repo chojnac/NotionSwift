@@ -8,7 +8,7 @@ import Foundation
 
 // WIP
 // extension NotionClient {
-//    public func search(params: Any, completed: @escaping (Result<[Any], Error>) -> Void) {
+//    public func search(params: Any, completed: @escaping (Result<[Any], Network.Errors>) -> Void) {
 //
 //    }
 // }
