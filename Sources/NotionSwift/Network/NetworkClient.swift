@@ -49,7 +49,7 @@ public protocol NetworkClient: AnyObject {
 
 public class DefaultNetworkClient: NetworkClient {
     private let encoder: JSONEncoder
-    private let decoder: JSONDecoder
+    private let decoder: JSONDecoder    
 
     public init() {
         encoder = JSONEncoder()
@@ -60,6 +60,7 @@ public class DefaultNetworkClient: NetworkClient {
     }
 
     public func get<R: Decodable>(_ url: URL, headers: Network.HTTPHeaders, completed: @escaping (Result<R, Network.Errors>) -> Void) {
+        
         let request = buildRequest(method: .GET, url: url, headers: headers)
         executeRequest(request: request, completed: completed)
     }

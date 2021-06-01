@@ -8,11 +8,19 @@ import Foundation
 
 extension NotionClient {
 
-    public func user(userId: User.Identifier, completed: (Result<User, Error>) -> Void) {
-
+    public func user(userId: User.Identifier, completed: @escaping (Result<User, Network.Errors>) -> Void) {
+        networkClient.get(
+            urlBuilder.url(path: "/v1/users/{identifier}", identifier: userId),
+            headers: headers(),
+            completed: completed
+        )
     }
 
-    public func usersList(params: Any, completed: (Result<[User], Error>) -> Void) {
-
+    public func usersList(params: BaseQueryParams, completed: @escaping (Result<ListResponse<User>, Network.Errors>) -> Void) {
+        networkClient.get(
+            urlBuilder.url(path: "/v1/users", params: params.asParams),
+            headers: headers(),
+            completed: completed
+        )
     }
 }
