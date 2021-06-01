@@ -27,6 +27,5 @@ public struct RichText {
 }
 
 extension RichText: Decodable {}
-
 extension RichText.Annotations: Decodable {}
 extension RichText.TextType: Decodable {}

@@ -7,3 +7,5 @@ import Foundation
 public struct User {
     public typealias Identifier = EntityIdentifier<User, UUIDv4>
 }
+
+extension User: Decodable {}

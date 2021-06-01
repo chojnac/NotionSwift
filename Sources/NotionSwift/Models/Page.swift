@@ -10,34 +10,9 @@ public struct Page {
     public let id: Identifier
     public let created_time: Date
     public let last_edited_time: Date
+    public let parent: PageParentType
     public let archived: Bool
-    //public let properties: [String: PageProperty]
-}
-
-public struct PageProperty {
-    public enum PropertyType {
-        case rich_text
-        case number
-        case select
-        case multi_select
-        case date
-        case formula
-        case relation
-        case rollup
-        case title
-        case people
-        case files
-        case checkbox
-        case url
-        case email
-        case phone_number
-        case created_time
-        case created_by
-        case last_edited_time
-        case last_edited_by
-    }
-    public let id: String
-    public let type: PropertyType
+    public let properties: [String: PageProperty]
 }
 
 extension Page: Decodable {
@@ -46,15 +21,10 @@ extension Page: Decodable {
         case created_time = "created_time"
         case last_edited_time = "last_edited_time"
         case archived = "archived"
+        case parent
+        case properties
     }
 }
 
-//extension PageProperty: Decodable {
-//
-//}
 
-//extension PageProperty.PropertyType: Decodable {
-//    public init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: GenericCodingKeys.self)
-//    }
-//}
+
