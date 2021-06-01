@@ -8,7 +8,6 @@ public protocol AccessKeyProvider {
     var accessKey: String? { get }
 }
 
-
 public struct StringAccessKeyProvider: AccessKeyProvider, ExpressibleByStringLiteral {
 
     public let accessKey: String?

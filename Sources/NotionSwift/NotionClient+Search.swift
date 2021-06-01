@@ -7,8 +7,8 @@ import Foundation
 // MARK: - Search
 
 // WIP
-//extension NotionClient {
+// extension NotionClient {
 //    public func search(params: Any, completed: @escaping (Result<[Any], Error>) -> Void) {
 //
 //    }
-//}
+// }

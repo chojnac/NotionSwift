@@ -58,5 +58,4 @@ extension User: Decodable {
         }
     }
 
-
 }

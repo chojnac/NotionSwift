@@ -80,7 +80,6 @@ extension DatabasePropertyFilter {
     }
 }
 
-
 extension DatabasePropertyFilter {
     public enum NumberCondition {
         case equals(Int)
@@ -106,4 +105,3 @@ extension DatabasePropertyFilter {
         case isNotEmpty
     }
 }
-

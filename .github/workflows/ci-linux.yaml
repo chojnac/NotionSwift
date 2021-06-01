@@ -1,0 +1,22 @@
+name: "ci-linux"
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - "Sources/**"
+      - "Tests/**"
+  pull_request:
+    branches: 
+      - '*'
+
+jobs:
+  ubuntu:
+    name: Linux Tests
+    runs-on: ubuntu-latest
+    container: swift:5.3
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Tests Linux
+      run: make test-swift

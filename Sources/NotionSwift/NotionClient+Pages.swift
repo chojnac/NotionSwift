@@ -7,7 +7,7 @@ import Foundation
 // MARK: - Pages
 
 // WIP
-//extension NotionClient {
+// extension NotionClient {
 //
 //    public func page(pageId: Page.Identifier, completed: @escaping (Result<Page, Network.Errors>) -> Void) {
 //        networkClient.get(
@@ -34,10 +34,10 @@ import Foundation
 //            completed: completed
 //        )
 //    }
-//}
+// }
 //
-//#warning("TODO: PageCreateRequest")
-//public struct PageCreateRequest: Encodable {}
+// #warning("TODO: PageCreateRequest")
+// public struct PageCreateRequest: Encodable {}
 //
-//#warning("TODO: PageUpdateParams")
-//public struct PageUpdateParams: Encodable {}
+// #warning("TODO: PageUpdateParams")
+// public struct PageUpdateParams: Encodable {}

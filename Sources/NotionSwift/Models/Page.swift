@@ -25,6 +25,3 @@ extension Page: Decodable {
         case properties
     }
 }
-
-
-

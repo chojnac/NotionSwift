@@ -1,0 +1,32 @@
+included:
+  - Sources
+  - Tests
+excluded:
+disabled_rules:
+  - trailing_whitespace
+  - trailing_comma
+  - nesting
+  - cyclomatic_complexity
+  - file_length
+  - todo
+  - function_parameter_count
+  - opening_brace
+  - function_body_length
+  - large_tuple
+line_length:
+  ignores_interpolated_strings: true
+  ignores_comments: true
+  warning: 120
+  error: 170
+identifier_name:
+  min_length:
+    error: 1
+    warning: 1
+inclusive_language:
+  override_allowed_terms:
+    - masterKey
+type_name:
+  min_length:
+    error: 1
+    warning: 1
+  allowed_symbols: ["_"]
