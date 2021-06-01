@@ -1,6 +1,6 @@
 # NotionSwift
 
-Unofficial Notion SDK for iOS & macOS. 
+Unofficial [Notion](https://www.notion.so) SDK for iOS & macOS. 
 
 This is an alpha version and still a work in progress.
 
@@ -35,12 +35,7 @@ This project is a work in progress so no release versions available yet.
 ### CocoaPods
 
 ```ruby
-pod 'NotionSwift' :git => 'https://github.com/chojnac/NotionSwift.git'
-```
-### Carthage
-
-```
-github "chojnac/NotionSwift.git" "main"
+pod 'NotionSwift', :git => 'https://github.com/chojnac/NotionSwift.git', :branch => 'main'
 ```
 
 ### Swift Package Manager

@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import os
 
 public enum Network {
     public typealias HTTPHeaders = [String: String]
