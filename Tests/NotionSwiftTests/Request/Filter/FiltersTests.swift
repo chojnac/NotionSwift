@@ -5,6 +5,7 @@
 import XCTest
 @testable import NotionSwift
 
+// swiftlint:disable line_length
 final class FiltersTests: XCTestCase {
 
     func test_encode_simpleProperty() throws {
@@ -17,7 +18,7 @@ final class FiltersTests: XCTestCase {
     func test_encode_simpleOrCondition() throws {
         let given: Filter = .or([
             .property(name: "title", type: .title(.contains("Hello world"))),
-            .property(name: "body", type: .rich_text(.contains("Hello world")))
+            .property(name: "body", type: .richText(.contains("Hello world")))
         ])
 
         let result = try encodeToJson(given)
@@ -28,7 +29,7 @@ final class FiltersTests: XCTestCase {
     func test_encode_simpleAndCondition() throws {
         let given: Filter = .and([
             .property(name: "title", type: .title(.contains("Hello world"))),
-            .property(name: "body", type: .rich_text(.contains("Hello world")))
+            .property(name: "body", type: .richText(.contains("Hello world")))
         ])
 
         let result = try encodeToJson(given)

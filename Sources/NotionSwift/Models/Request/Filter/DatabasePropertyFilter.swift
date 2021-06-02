@@ -1,31 +1,18 @@
 //
-//  File.swift
-//  
-//
-//  Created by Wojciech Chojnacki on 23/05/2021.
+//  Created by Wojciech Chojnacki on 02/06/2021.
 //
 
 import Foundation
-
-public enum FilterType {
-    case databaseProperty(DatabasePropertyFilter)
-    case compound(CompountFilterType)
-}
 
 public struct DatabasePropertyFilter {
     let property: String
     let filterType: PropertyType
 }
 
-public enum CompountFilterType {
-    case or([FilterType])
-    case and([FilterType])
-}
-
 extension DatabasePropertyFilter {
     public enum PropertyType {
         case title(TextCondition)
-        case rich_text(TextCondition)
+        case richText(TextCondition)
         case url(TextCondition)
         case email(TextCondition)
         case phone(TextCondition)
@@ -34,11 +21,11 @@ extension DatabasePropertyFilter {
         case select(SimpleGenericCondition<String>)
         case multiSelect(SimpleGenericCondition<String>)
         case date(DateCondition)
-        case created_time(DateCondition)
-        case last_edited_time(DateCondition)
+        case createdTime(DateCondition)
+        case lastEditedTime(DateCondition)
         case dateBy(SimpleGenericCondition<UUIDv4>)
-        case created_by(SimpleGenericCondition<UUIDv4>)
-        case last_edited_by(SimpleGenericCondition<UUIDv4>)
+        case createdBy(SimpleGenericCondition<UUIDv4>)
+        case lastEditedBy(SimpleGenericCondition<UUIDv4>)
         case files(FilesCondition)
         case relation(SimpleGenericCondition<UUIDv4>)
         case formula(FormulaCondition)

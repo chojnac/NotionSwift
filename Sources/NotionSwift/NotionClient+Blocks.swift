@@ -8,7 +8,11 @@ import Foundation
 
 extension NotionClient {
 
-    public func blockChildren(blockId: Block.Identifier, params: BaseQueryParams, completed: @escaping (Result<ListResponse<ReadBlock>, Network.Errors>) -> Void) {
+    public func blockChildren(
+        blockId: Block.Identifier,
+        params: BaseQueryParams,
+        completed: @escaping (Result<ListResponse<ReadBlock>, Network.Errors>) -> Void
+    ) {
         networkClient.get(
             urlBuilder.url(
                 path: "/v1/blocks/{identifier}/children",
@@ -20,15 +24,23 @@ extension NotionClient {
         )
     }
 
-    public func blockAppend(blockId: Block.Identifier, children: [WriteBlock], completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void) {
+    public func blockAppend(
+        blockId: Block.Identifier,
+        children: [WriteBlock],
+        completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
+    ) {
         networkClient.patch(
             urlBuilder.url(
                 path: "/v1/blocks/{identifier}/children",
                 identifier: blockId
             ),
-            body: children,
+            body: BlockAppendRequest(children: children),
             headers: headers(),
             completed: completed
         )
     }
+}
+
+private struct BlockAppendRequest: Encodable {
+    let children: [WriteBlock]
 }

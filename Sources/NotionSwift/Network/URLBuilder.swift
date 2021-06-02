@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Wojciech Chojnacki on 01/06/2021.
 //
 

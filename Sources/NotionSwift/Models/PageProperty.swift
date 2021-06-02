@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Wojciech Chojnacki on 30/05/2021.
 //
 
@@ -14,10 +11,10 @@ public struct PageProperty {
 }
 
 public enum PagePropertyType {
-    case rich_text([RichText])
+    case richText([RichText])
     case number(Int)
     case select(SelectPropertyValue)
-    case multi_select([SelectPropertyValue])
+    case multiSelect([SelectPropertyValue])
     case date(DatePropertyValue)
     case formula(FormulaPropertyValue)
     case relation([Page.Identifier])
@@ -28,11 +25,11 @@ public enum PagePropertyType {
     case checkbox(Bool)
     case url(URL?)
     case email(String)
-    case phone_number(String)
-    case created_time(Date)
-    case created_by(User)
-    case last_edited_time(Date)
-    case last_edited_by(User)
+    case phoneNumber(String)
+    case createdTime(Date)
+    case createdBy(User)
+    case lastEditedTime(Date)
+    case lastEditedBy(User)
     case unknown
 }
 
@@ -68,140 +65,163 @@ extension PagePropertyType {
     }
 }
 extension PageProperty: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case id
+    }
     public init(from decoder: Decoder) throws {
-        let idKey = GenericCodingKeys(stringValue: "id")!
-
-        let container = try decoder.container(keyedBy: GenericCodingKeys.self)
-        self.id = try container.decode(Identifier.self, forKey: idKey)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(Identifier.self, forKey: .id)
         self.type = try PagePropertyType(from: decoder)
     }
 }
 
 extension PagePropertyType: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case richText = "rich_text"
+        case number
+        case select
+        case multiSelect = "multi_select"
+        case date
+        case formula
+        case relation
+        case rollup
+        case title
+        case people
+        case files
+        case checkbox
+        case url
+        case email
+        case phoneNumber = "phone_number"
+        case createdTime = "created_time"
+        case createdBy = "created_by"
+        case lastEditedTime = "last_edited_time"
+        case lastEditedBy = "last_edited_by"
+
+        case type
+    }
     private struct PageRelation: Decodable {
         let id: Page.Identifier
     }
 
     public init(from decoder: Decoder) throws {
-        let typeKey = GenericCodingKeys(stringValue: "type")!
 
-        let container = try decoder.container(keyedBy: GenericCodingKeys.self)
-        let type = try container.decode(String.self, forKey: typeKey).lowercased()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(String.self, forKey: .type)
         switch type {
-        case "rich_text":
+        case CodingKeys.richText.stringValue:
             let value = try container.decode(
                 [RichText].self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .richText
             )
-            self = .rich_text(value)
-        case "number":
+            self = .richText(value)
+        case CodingKeys.number.stringValue:
             let value = try container.decode(
                 Int.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .number
             )
             self = .number(value)
-        case "select":
+        case CodingKeys.select.stringValue:
             let value = try container.decode(
                 PagePropertyType.SelectPropertyValue.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .select
             )
             self = .select(value)
-        case "multi_select":
+        case CodingKeys.multiSelect.stringValue:
             let value = try container.decode(
                 [PagePropertyType.SelectPropertyValue].self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .multiSelect
             )
-            self = .multi_select(value)
-        case "date":
+            self = .multiSelect(value)
+        case CodingKeys.date.stringValue:
             let value = try container.decode(
                 PagePropertyType.DatePropertyValue.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .date
             )
             self = .date(value)
-        case "formula":
+        case CodingKeys.formula.stringValue:
             let value = try container.decode(
                 PagePropertyType.FormulaPropertyValue.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .formula
             )
             self = .formula(value)
-        case "relation":
+        case CodingKeys.relation.stringValue:
             let value = try container.decode(
                 [PageRelation].self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .relation
             )
             self = .relation(value.map(\.id))
-        case "rollup":
+        case CodingKeys.rollup.stringValue:
             let value = try container.decode(
                 PagePropertyType.RollupPropertyValue.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .rollup
             )
             self = .rollup(value)
-        case "title":
+        case CodingKeys.title.stringValue:
             let value = try container.decode(
                 [RichText].self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .title
             )
             self = .title(value)
-        case "people":
+        case CodingKeys.people.stringValue:
             let value = try container.decode(
                 [User].self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .people
             )
             self = .people(value)
-        case "files":
+        case CodingKeys.files.stringValue:
             let value = try container.decode(
                 [PagePropertyType.FilesPropertyValue].self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .files
             )
             self = .files(value)
-        case "checkbox":
+        case CodingKeys.checkbox.stringValue:
             let value = try container.decode(
                 Bool.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .checkbox
             )
             self = .checkbox(value)
-        case "url":
+        case CodingKeys.url.stringValue:
             let value = try container.decode(
                 String.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .url
             )
             self = .url(URL(string: value))
-        case "email":
+        case CodingKeys.email.stringValue:
             let value = try container.decode(
                 String.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .email
             )
             self = .email(value)
-        case "phone_number":
+        case CodingKeys.phoneNumber.stringValue:
             let value = try container.decode(
                 String.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .phoneNumber
             )
-            self = .phone_number(value)
-        case "created_time":
+            self = .phoneNumber(value)
+        case CodingKeys.createdTime.stringValue:
             let value = try container.decode(
                 Date.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .createdTime
             )
-            self = .created_time(value)
-        case "created_by":
+            self = .createdTime(value)
+        case CodingKeys.createdBy.stringValue:
             let value = try container.decode(
                 User.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .createdBy
             )
-            self = .created_by(value)
-        case "last_edited_time":
+            self = .createdBy(value)
+        case CodingKeys.lastEditedTime.stringValue:
             let value = try container.decode(
                 Date.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .lastEditedTime
             )
-            self = .last_edited_time(value)
-        case "last_edited_by":
+            self = .lastEditedTime(value)
+        case CodingKeys.lastEditedBy.stringValue:
             let value = try container.decode(
                 User.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .lastEditedBy
             )
-            self = .last_edited_by(value)
+            self = .lastEditedBy(value)
         default:
             self = .unknown
         }

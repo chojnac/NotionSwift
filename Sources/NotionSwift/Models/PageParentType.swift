@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Wojciech Chojnacki on 30/05/2021.
 //
 
@@ -15,23 +12,24 @@ public enum PageParentType {
 }
 
 extension PageParentType: Decodable {
-    enum CodingKeys: CodingKey {
+    enum CodingKeys: String, CodingKey {
         case type
-        case page_id
-        case database_id
+        case pageId = "page_id"
+        case databaseId = "database_id"
+        case workspace
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(String.self, forKey: .type).lowercased()
         switch type {
-        case "database_id":
-            let value = try container.decode(String.self, forKey: .database_id)
+        case CodingKeys.databaseId.stringValue:
+            let value = try container.decode(String.self, forKey: .databaseId)
             self = .database(.init(value))
-        case "page_id":
-            let value = try container.decode(String.self, forKey: .page_id)
+        case CodingKeys.pageId.stringValue:
+            let value = try container.decode(String.self, forKey: .pageId)
             self = .page(.init(value))
-        case "workspace":
+        case CodingKeys.workspace.stringValue:
             self = .workspace
         default:
             self = .unknown

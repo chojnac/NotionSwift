@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Wojciech Chojnacki on 29/05/2021.
 //
 
@@ -14,77 +11,97 @@ public struct DatabaseProperty {
 }
 
 extension DatabaseProperty: Decodable {
-
+    enum CodingKeys: String, CodingKey {
+        case title
+        case richText = "rich_text"
+        case number
+        case select
+        case multiSelect = "multi_select"
+        case date
+        case people
+        case file
+        case checkbox
+        case url
+        case email
+        case phoneNumber = "phone_number"
+        case formula
+        case relation
+        case rollup
+        case createdTime = "created_time"
+        case createdBy = "created_by"
+        case lastEditedTime = "last_edited_time"
+        case lastEditedBy = "last_edited_by"
+        case id
+        case type
+    }
     public init(from decoder: Decoder) throws {
-        let typeKey = GenericCodingKeys(stringValue: "type")!
-        let idKey = GenericCodingKeys(stringValue: "id")!
 
-        let container = try decoder.container(keyedBy: GenericCodingKeys.self)
-        self.id = try container.decode(Identifier.self, forKey: idKey)
-        let type = try container.decode(String.self, forKey: typeKey).lowercased()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(Identifier.self, forKey: .id)
+        let type = try container.decode(String.self, forKey: .type)
         switch type {
-        case "title":
+        case CodingKeys.title.rawValue:
             self.type = .title
-        case "rich_text":
-            self.type = .rich_text
-        case "number":
+        case CodingKeys.richText.rawValue:
+            self.type = .richText
+        case CodingKeys.number.rawValue:
             let value = try container.decode(
                 DatabasePropertyType.NumberPropertyConfiguration.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .number
             )
             self.type = .number(value)
-        case "select":
+        case CodingKeys.select.rawValue:
             let value = try container.decode(
                 DatabasePropertyType.SelectPropertyConfiguration.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .select
             )
             self.type = .select(value)
-        case "multi_select":
+        case CodingKeys.multiSelect.rawValue:
             let value = try container.decode(
                 DatabasePropertyType.MultiSelectPropertyConfiguration.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .multiSelect
             )
-            self.type = .multi_select(value)
-        case "date":
+            self.type = .multiSelect(value)
+        case CodingKeys.date.rawValue:
             self.type = .date
-        case "people":
+        case CodingKeys.people.rawValue:
             self.type = .people
-        case "file":
+        case CodingKeys.file.rawValue:
             self.type = .file
-        case "checkbox":
+        case CodingKeys.checkbox.rawValue:
             self.type = .checkbox
-        case "url":
+        case CodingKeys.url.rawValue:
             self.type = .url
-        case "email":
+        case CodingKeys.email.rawValue:
             self.type = .email
-        case "phone_number":
-            self.type = .phone_number
-        case "formula":
+        case CodingKeys.phoneNumber.rawValue:
+            self.type = .phoneNumber
+        case CodingKeys.formula.rawValue:
             let value = try container.decode(
                 DatabasePropertyType.FormulaPropertyConfiguration.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .formula
             )
             self.type = .formula(value)
-        case "relation":
+        case CodingKeys.relation.rawValue:
             let value = try container.decode(
                 DatabasePropertyType.RelationPropertyConfiguration.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .relation
             )
             self.type = .relation(value)
-        case "rollup":
+        case CodingKeys.rollup.rawValue:
             let value = try container.decode(
                 DatabasePropertyType.RollupPropertyConfiguration.self,
-                forKey: GenericCodingKeys(stringValue: type)!
+                forKey: .rollup
             )
             self.type = .rollup(value)
-        case "created_time":
-            self.type = .created_time
-        case "created_by":
-            self.type = .created_by
-        case "last_edited_time":
-            self.type = .last_edited_time
-        case "last_edited_by":
-            self.type = .last_edited_by
+        case CodingKeys.createdTime.rawValue:
+            self.type = .createdTime
+        case CodingKeys.createdBy.rawValue:
+            self.type = .createdBy
+        case CodingKeys.lastEditedTime.rawValue:
+            self.type = .lastEditedTime
+        case CodingKeys.lastEditedBy.rawValue:
+            self.type = .lastEditedBy
         default:
             self.type = .unknown
         }

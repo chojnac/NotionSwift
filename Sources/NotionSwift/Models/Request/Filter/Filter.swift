@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Wojciech Chojnacki on 23/05/2021.
 //
 
@@ -32,6 +29,8 @@ public struct Filter {
         return .init(array: array)
     }
 }
+
+// MARK: - Codable
 
 extension Filter: Encodable {
     public func encode(to encoder: Encoder) throws {

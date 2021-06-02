@@ -17,8 +17,8 @@ This is an alpha version and still a work in progress.
 * Update page properties
 
 ### Blocks 
-* Retrieve block children
-* Append block children
+* Retrieve block children ✅
+* Append block children ✅
 
 ### Users
 * Retrieve a user ✅
@@ -57,6 +57,29 @@ let notion = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: 
 
 // fetch avaiable databases
 notion.databaseList {
+    print($0)
+}
+
+let pageId = Block.Identifier("{PAGE UUIDv4}")
+
+// retrieve page content
+// this endpoint returns only the first level of children, 
+// so for example nested list items won't be returned. For that, 
+// you need to make another request with block id
+notion.blockChildren(blockId: pageId, params: .init()) {
+    print($0)
+}
+
+// append paragraph with styled text to a page.
+let blocks: [WriteBlock] = [
+    .init(type: .paragraph(.init(text: [
+        .init(string: "Lorem ipsum dolor sit amet, "),
+        .init(string: "consectetur", annotations: .bold),
+        .init(string: " adipiscing elit.")
+    ])))
+]
+
+notion.blockAppend(blockId: pageId, children: blocks) {
     print($0)
 }
 ```

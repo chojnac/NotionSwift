@@ -8,8 +8,8 @@ import Foundation
 public struct Page {
     public typealias Identifier = EntityIdentifier<Page, UUIDv4>
     public let id: Identifier
-    public let created_time: Date
-    public let last_edited_time: Date
+    public let createdTime: Date
+    public let lastEditedTime: Date
     public let parent: PageParentType
     public let archived: Bool
     public let properties: [String: PageProperty]
@@ -18,9 +18,9 @@ public struct Page {
 extension Page: Decodable {
     enum CodingKeys: String, CodingKey {
         case id
-        case created_time = "created_time"
-        case last_edited_time = "last_edited_time"
-        case archived = "archived"
+        case createdTime = "created_time"
+        case lastEditedTime = "last_edited_time"
+        case archived
         case parent
         case properties
     }

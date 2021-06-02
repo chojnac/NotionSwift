@@ -1,13 +1,8 @@
 //
-//  File.swift
-//  
-//
-//  Created by Wojciech Chojnacki on 23/05/2021.
+//  Created by Wojciech Chojnacki on 02/06/2021.
 //
 
 import Foundation
-
-public typealias UUIDv4 = String
 
 public struct EntityIdentifier<Marker, T: Codable>: CustomStringConvertible {
     public let rawValue: T
@@ -20,6 +15,8 @@ public struct EntityIdentifier<Marker, T: Codable>: CustomStringConvertible {
         "ID<\(Marker.self)>:\(rawValue)"
     }
 }
+
+// MARK: - Codable
 
 extension EntityIdentifier: Codable {
     public init(from decoder: Decoder) throws {

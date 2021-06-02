@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Wojciech Chojnacki on 22/05/2021.
 //
 
@@ -12,9 +9,17 @@ public struct Database {
     public typealias PropertyName = String
     public let id: Identifier
     public let title: [RichText]
-    public let created_time: Date
-    public let last_edited_time: Date
+    public let createdTime: Date
+    public let lastEditedTime: Date
     public let properties: [PropertyName: DatabaseProperty]
 }
 
-extension Database: Decodable {}
+extension Database: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case createdTime = "created_time"
+        case lastEditedTime = "last_edited_time"
+        case properties
+    }
+}

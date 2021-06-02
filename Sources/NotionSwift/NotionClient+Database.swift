@@ -7,7 +7,10 @@ import Foundation
 // MARK: - Databases
 
 extension NotionClient {
-    public func database(databaseId: Database.Identifier, completed: @escaping (Result<Database, Network.Errors>) -> Void) {
+    public func database(
+        databaseId: Database.Identifier,
+        completed: @escaping (Result<Database, Network.Errors>) -> Void
+    ) {
         networkClient.get(
             urlBuilder.url(
                 path: "/v1/databases/{identifier}",
@@ -18,7 +21,11 @@ extension NotionClient {
         )
     }
 
-    public func databaseQuery(databaseId: Database.Identifier, params: DatabaseQueryParams = .init(), completed: @escaping (Result<ListResponse<Page>, Network.Errors>) -> Void) {
+    public func databaseQuery(
+        databaseId: Database.Identifier,
+        params: DatabaseQueryParams = .init(),
+        completed: @escaping (Result<ListResponse<Page>, Network.Errors>) -> Void
+    ) {
         networkClient.post(
             urlBuilder.url(
                 path: "/v1/databases/{identifier}/query",

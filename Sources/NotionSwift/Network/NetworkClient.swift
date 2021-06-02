@@ -58,13 +58,22 @@ public class DefaultNetworkClient: NetworkClient {
         decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
     }
 
-    public func get<R: Decodable>(_ url: URL, headers: Network.HTTPHeaders, completed: @escaping (Result<R, Network.Errors>) -> Void) {
+    public func get<R: Decodable>(
+        _ url: URL,
+        headers: Network.HTTPHeaders,
+        completed: @escaping (Result<R, Network.Errors>) -> Void
+    ) {
         
         let request = buildRequest(method: .GET, url: url, headers: headers)
         executeRequest(request: request, completed: completed)
     }
 
-    public func post<T: Encodable, R: Decodable>(_ url: URL, body: T, headers: Network.HTTPHeaders, completed: @escaping (Result<R, Network.Errors>) -> Void) {
+    public func post<T: Encodable, R: Decodable>(
+        _ url: URL,
+        body: T,
+        headers: Network.HTTPHeaders,
+        completed: @escaping (Result<R, Network.Errors>) -> Void
+    ) {
         var request = buildRequest(method: .POST, url: url, headers: headers)
         let requestBody: Data
 
@@ -74,14 +83,19 @@ public class DefaultNetworkClient: NetworkClient {
             completed(.failure(.bodyEncodingError(error)))
             return
         }
-
+        Environment.log.trace("BODY:\n " + String(data: requestBody, encoding: .utf8)!)
         request.httpBody = requestBody
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         executeRequest(request: request, completed: completed)
     }
 
-    public func patch<T: Encodable, R: Decodable>(_ url: URL, body: T, headers: Network.HTTPHeaders, completed: @escaping (Result<R, Network.Errors>) -> Void) {
+    public func patch<T: Encodable, R: Decodable>(
+        _ url: URL,
+        body: T,
+        headers: Network.HTTPHeaders,
+        completed: @escaping (Result<R, Network.Errors>) -> Void
+    ) {
         var request = buildRequest(method: .PATCH, url: url, headers: headers)
         let requestBody: Data
 
@@ -91,6 +105,8 @@ public class DefaultNetworkClient: NetworkClient {
             completed(.failure(.bodyEncodingError(error)))
             return
         }
+
+        Environment.log.trace("BODY:\n " + String(data: requestBody, encoding: .utf8)!)
 
         request.httpBody = requestBody
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -116,9 +132,8 @@ public class DefaultNetworkClient: NetworkClient {
         request: URLRequest,
         completed: @escaping (Result<T, Network.Errors>) -> Void
     ) {
-        #if DEBUG
-        print("Request: \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")")
-        #endif
+
+        Environment.log.debug("Request: \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
 
             var completeResult: Result<T, Network.Errors>?
@@ -140,9 +155,7 @@ public class DefaultNetworkClient: NetworkClient {
 
                 if completeResult == nil {
                     do {
-                        #if DEBUG
-                        print(String(data: data, encoding: .utf8) ?? "")
-                        #endif
+                        Environment.log.trace(String(data: data, encoding: .utf8) ?? "")
                         let result = try self.decoder.decode(T.self, from: data)
                         completeResult = .success(result)
                     } catch let decodingError as Swift.DecodingError {
