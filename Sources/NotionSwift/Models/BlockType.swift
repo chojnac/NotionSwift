@@ -176,4 +176,3 @@ extension BlockType.TextAndChildrenBlockValue: Codable {}
 extension BlockType.HeadingBlockValue: Codable {}
 extension BlockType.ToDoBlockValue: Codable {}
 extension BlockType.ChildBlockValue: Codable {}
-

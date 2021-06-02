@@ -98,4 +98,3 @@ public class PrintLogHandler: LoggerHandler {
         print("NotionSwift \(level.rawValue.uppercased()): \(message)")
     }
 }
-

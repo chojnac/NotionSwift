@@ -13,7 +13,7 @@ This is an alpha version and still a work in progress.
  
 ### Pages
 * Retrieve a page ✅
-* Create a page
+* Create a page ✅
 * Update page properties
 
 ### Blocks 
@@ -78,8 +78,18 @@ let blocks: [WriteBlock] = [
         .init(string: " adipiscing elit.")
     ])))
 ]
-
 notion.blockAppend(blockId: pageId, children: blocks) {
+    print($0)
+}
+
+// add a new child page
+let request = PageCreateRequest(
+    parent: .page(pageId), 
+    properties: ["title": .init(type: .title([.init(string: "Lorem ipsum \(Date())")]))],
+    children: blocks
+)
+
+notion.pageCreate(request: request) {
     print($0)
 }
 ```

@@ -3,8 +3,11 @@
 //
 
 import Foundation
+@testable import NotionSwift
 
 func encodeToJson<T: Encodable>(_ entity: T) throws -> String {
-    let data = try JSONEncoder().encode(entity)
+    let encoder = JSONEncoder()
+    encoder.dateEncodingStrategy = .formatted(DateFormatter.iso8601Full)
+    let data = try encoder.encode(entity)
     return String(data: data, encoding: .utf8)!
 }

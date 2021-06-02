@@ -11,7 +11,7 @@ public enum PageParentType {
     case unknown
 }
 
-extension PageParentType: Decodable {
+extension PageParentType: Codable {
     enum CodingKeys: String, CodingKey {
         case type
         case pageId = "page_id"
@@ -33,6 +33,22 @@ extension PageParentType: Decodable {
             self = .workspace
         default:
             self = .unknown
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .database(let value):
+            try container.encode(CodingKeys.databaseId.stringValue, forKey: .type)
+            try container.encode(value, forKey: .databaseId)
+        case .page(let value):
+            try container.encode(CodingKeys.pageId.stringValue, forKey: .type)
+            try container.encode(value, forKey: .pageId)
+        case .workspace:
+            try container.encode(CodingKeys.workspace.stringValue, forKey: .type)
+        case .unknown:
+            break
         }
     }
 }

@@ -10,6 +10,14 @@ public struct PageProperty {
     public let type: PagePropertyType
 }
 
+public struct WritePageProperty {
+    public let type: PagePropertyType
+    
+    public init(type: PagePropertyType) {
+        self.type = type
+    }
+}
+
 public enum PagePropertyType {
     case richText([RichText])
     case number(Int)
@@ -75,7 +83,13 @@ extension PageProperty: Decodable {
     }
 }
 
-extension PagePropertyType: Decodable {
+extension WritePageProperty: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        try type.encode(to: encoder)
+    }
+}
+
+extension PagePropertyType: Codable {
     enum CodingKeys: String, CodingKey {
         case richText = "rich_text"
         case number
@@ -226,74 +240,169 @@ extension PagePropertyType: Decodable {
             self = .unknown
         }
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .richText(let value):
+//            try container.encode(CodingKeys.richText.rawValue, forKey: .type)
+            try container.encode(value, forKey: .richText)
+        case .number(let value):
+//            try container.encode(CodingKeys.richText.rawValue, forKey: .type)
+            try container.encode(value, forKey: .richText)
+        case .select(let value):
+//            try container.encode(CodingKeys.select.rawValue, forKey: .type)
+            try container.encode(value, forKey: .select)
+        case .multiSelect(let value):
+//            try container.encode(CodingKeys.multiSelect.rawValue, forKey: .type)
+            try container.encode(value, forKey: .multiSelect)
+        case .date(let value):
+//            try container.encode(CodingKeys.date.rawValue, forKey: .type)
+            try container.encode(value, forKey: .date)
+        case .formula(let value):
+//            try container.encode(CodingKeys.formula.rawValue, forKey: .type)
+            try container.encode(value, forKey: .formula)
+        case .relation(let value):
+//            try container.encode(CodingKeys.relation.rawValue, forKey: .type)
+            try container.encode(value, forKey: .relation)
+        case .rollup(let value):
+//            try container.encode(CodingKeys.rollup.rawValue, forKey: .type)
+            try container.encode(value, forKey: .rollup)
+        case .title(let value):
+//            try container.encode(CodingKeys.title.rawValue, forKey: .type)
+            try container.encode(value, forKey: .title)
+        case .people(let value):
+//            try container.encode(CodingKeys.people.rawValue, forKey: .type)
+            try container.encode(value, forKey: .people)
+        case .files(let value):
+//            try container.encode(CodingKeys.files.rawValue, forKey: .type)
+            try container.encode(value, forKey: .files)
+        case .checkbox(let value):
+//            try container.encode(CodingKeys.checkbox.rawValue, forKey: .type)
+            try container.encode(value, forKey: .checkbox)
+        case .url(let value):
+//            try container.encode(CodingKeys.url.rawValue, forKey: .type)
+            try container.encode(value, forKey: .url)
+        case .email(let value):
+//            try container.encode(CodingKeys.email.rawValue, forKey: .type)
+            try container.encode(value, forKey: .email)
+        case .phoneNumber(let value):
+//            try container.encode(CodingKeys.phoneNumber.rawValue, forKey: .type)
+            try container.encode(value, forKey: .phoneNumber)
+        case .createdTime(let value):
+//            try container.encode(CodingKeys.createdTime.rawValue, forKey: .type)
+            try container.encode(value, forKey: .createdTime)
+        case .createdBy(let value):
+//            try container.encode(CodingKeys.createdBy.rawValue, forKey: .type)
+            try container.encode(value, forKey: .createdBy)
+        case .lastEditedTime(let value):
+//            try container.encode(CodingKeys.lastEditedTime.rawValue, forKey: .type)
+            try container.encode(value, forKey: .lastEditedTime)
+        case .lastEditedBy(let value):
+//            try container.encode(CodingKeys.lastEditedBy.rawValue, forKey: .type)
+            try container.encode(value, forKey: .lastEditedBy)
+        case .unknown:
+            break
+        }
+    }
 }
 
-extension PagePropertyType.SelectPropertyValue: Decodable {}
-extension PagePropertyType.DatePropertyValue: Decodable {}
-extension PagePropertyType.FilesPropertyValue: Decodable {}
-extension PagePropertyType.FormulaPropertyValue: Decodable {
-    public init(from decoder: Decoder) throws {
-        let typeKey = GenericCodingKeys(stringValue: "type")!
+extension PagePropertyType.SelectPropertyValue: Codable {}
+extension PagePropertyType.DatePropertyValue: Codable {}
+extension PagePropertyType.FilesPropertyValue: Codable {}
 
-        let container = try decoder.container(keyedBy: GenericCodingKeys.self)
-        let type = try container.decode(String.self, forKey: typeKey).lowercased()
+extension PagePropertyType.FormulaPropertyValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case string
+        case number
+        case boolean
+        case date
+        case type
+    }
+
+    public init(from decoder: Decoder) throws {
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(String.self, forKey: .type)
         switch type {
-        case "string":
-            let value = try container.decode(
-                String?.self,
-                forKey: GenericCodingKeys(stringValue: type)!
-            )
+        case CodingKeys.string.rawValue:
+            let value = try container.decode(String?.self, forKey: .string)
             self = .string(value)
-        case "number":
-            let value = try container.decode(
-                Int?.self,
-                forKey: GenericCodingKeys(stringValue: type)!
-            )
+        case CodingKeys.number.rawValue:
+            let value = try container.decode(Int?.self, forKey: .number)
             self = .number(value)
-        case "boolean":
-            let value = try container.decode(
-                Bool?.self,
-                forKey: GenericCodingKeys(stringValue: type)!
-            )
+        case CodingKeys.boolean.rawValue:
+            let value = try container.decode(Bool?.self, forKey: .boolean)
             self = .boolean(value)
-        case "date":
-            let value = try container.decode(
-                PagePropertyType.DatePropertyValue?.self,
-                forKey: GenericCodingKeys(stringValue: type)!
-            )
+        case CodingKeys.date.rawValue:
+            let value = try container.decode(PagePropertyType.DatePropertyValue?.self, forKey: .date)
             self = .date(value)
         default:
             self = .unknown
         }
     }
-}
-extension PagePropertyType.RollupPropertyValue: Decodable {
-    public init(from decoder: Decoder) throws {
-        let typeKey = GenericCodingKeys(stringValue: "type")!
 
-        let container = try decoder.container(keyedBy: GenericCodingKeys.self)
-        let type = try container.decode(String.self, forKey: typeKey).lowercased()
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .string(let value):
+            try container.encode(CodingKeys.string.rawValue, forKey: .type)
+            try container.encode(value, forKey: .string)
+        case .number(let value):
+            try container.encode(CodingKeys.number.rawValue, forKey: .type)
+            try container.encode(value, forKey: .number)
+        case .boolean(let value):
+            try container.encode(CodingKeys.boolean.rawValue, forKey: .type)
+            try container.encode(value, forKey: .boolean)
+        case .date(let value):
+            try container.encode(CodingKeys.date.rawValue, forKey: .type)
+            try container.encode(value, forKey: .date)
+        case .unknown:
+            break
+        }
+    }
+}
+extension PagePropertyType.RollupPropertyValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case array
+        case number
+        case date
+        case type
+    }
+
+    public init(from decoder: Decoder) throws {
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(String.self, forKey: .type)
         switch type {
-        case "array":
-            let value = try container.decode(
-                [PagePropertyType].self,
-                forKey: GenericCodingKeys(stringValue: type)!
-            )
+        case CodingKeys.array.rawValue:
+            let value = try container.decode([PagePropertyType].self, forKey: .array)
             self = .array(value)
-        case "number":
-            let value = try container.decode(
-                Int.self,
-                forKey: GenericCodingKeys(stringValue: type)!
-            )
+        case CodingKeys.number.rawValue:
+            let value = try container.decode(Int.self, forKey: .number)
             self = .number(value)
-        case "date":
-            let value = try container.decode(
-                PagePropertyType.DatePropertyValue.self,
-                forKey: GenericCodingKeys(stringValue: type)!
-            )
+        case CodingKeys.date.rawValue:
+            let value = try container.decode(PagePropertyType.DatePropertyValue.self, forKey: .date)
             self = .date(value)
         default:
             self = .unknown
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .array(let value):
+            try container.encode(CodingKeys.array.rawValue, forKey: .type)
+            try container.encode(value, forKey: .array)
+        case .number(let value):
+            try container.encode(CodingKeys.number.rawValue, forKey: .type)
+            try container.encode(value, forKey: .number)
+        case .date(let value):
+            try container.encode(CodingKeys.date.rawValue, forKey: .type)
+            try container.encode(value, forKey: .date)
+        case .unknown:
+            break
         }
     }
 }

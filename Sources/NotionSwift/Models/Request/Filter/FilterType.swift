@@ -9,9 +9,6 @@ public enum FilterType {
     case compound(CompountFilterType)
 }
 
-
-
-
 extension FilterType: Encodable {
     public func encode(to encoder: Encoder) throws {
         switch self {
