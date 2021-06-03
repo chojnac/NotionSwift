@@ -25,7 +25,7 @@ This is an alpha version and still a work in progress.
 * List all users ✅
 
 ### Search 
-* Search 
+* Search ✅
 
 
 ## Installation
@@ -105,6 +105,29 @@ let request = PageProperiesUpdateRequest(
 )
 
 notion.pageUpdateProperties(pageId: pageId, request: request) {
+    print($0)
+}
+
+// Search for pages & databases with a title containing text "Lorem"
+notion.search(
+    request: .init(
+        query: "Lorem"
+    )
+) {
+    print($0)
+}
+
+// search for all databases 
+notion.search(
+    request: .init(
+        filter: .database
+    )
+) {
+    print($0)
+}
+
+// get all pages & databases
+notion.search() {
     print($0)
 }
 ```

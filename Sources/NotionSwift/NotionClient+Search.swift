@@ -6,9 +6,16 @@ import Foundation
 
 // MARK: - Search
 
-// WIP
-// extension NotionClient {
-//    public func search(params: Any, completed: @escaping (Result<[Any], Network.Errors>) -> Void) {
-//
-//    }
-// }
+extension NotionClient {
+    public func search(
+        request: SearchRequest = .init(),
+        completed: @escaping (Result<SearchResponse, Network.Errors>) -> Void
+    ) {
+        networkClient.post(
+            urlBuilder.url(path: "/v1/search"),
+            body: request,
+            headers: headers(),
+            completed: completed
+        )
+    }
+}
