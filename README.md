@@ -14,7 +14,7 @@ This is an alpha version and still a work in progress.
 ### Pages
 * Retrieve a page ✅
 * Create a page ✅
-* Update page properties
+* Update page properties ✅
 
 ### Blocks 
 * Retrieve block children ✅
@@ -92,6 +92,33 @@ let request = PageCreateRequest(
 notion.pageCreate(request: request) {
     print($0)
 }
+
+// Update page property, in this example - document title
+let request = PageProperiesUpdateRequest(
+    properties: [
+        .name("title"): .init(
+            type: .title([
+                .init(string: "Updated at: \(Date())")
+            ])
+        )
+    ]
+)
+
+notion.pageUpdateProperties(pageId: pageId, request: request) {
+    print($0)
+}
+```
+
+This library has a rudimental build-in logging system to track HTTP traffic. 
+By default, logging is disabled. 
+To enable it you need to set a build-in or your custom logger handler and decide about log level (.info by default). With .track log level you can see the content of your request and response. This is useful to track mapping issues between Swift Codables and API responses.
+
+```swift
+// This code should be in the ApplicationDelegate
+
+NotionSwift.Environment.logHandler = NotionSwift.PrintLogHandler() // uses print command
+NotionSwift.Environment.logLevel = .trace // show me everything
+
 ```
 
 **Important**

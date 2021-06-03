@@ -28,12 +28,16 @@ import Foundation
         )
     }
 
-//    public func pageUpdateProperties(pageId: Page.Identifier, properties: PageUpdateParams, completed: @escaping (Result<Page, Network.Errors>) -> Void) {
-//        networkClient.patch(
-//            urlBuilder.url(path: "/v1/pages", identifier: pageId),
-//            body: properties,
-//            headers: headers(),
-//            completed: completed
-//        )
-//    }
+    public func pageUpdateProperties(
+        pageId: Page.Identifier,
+        request: PageProperiesUpdateRequest,
+        completed: @escaping (Result<Page, Network.Errors>) -> Void
+    ) {
+        networkClient.patch(
+            urlBuilder.url(path: "/v1/pages/{identifier}", identifier: pageId),
+            body: request,
+            headers: headers(),
+            completed: completed
+        )
+    }
 }

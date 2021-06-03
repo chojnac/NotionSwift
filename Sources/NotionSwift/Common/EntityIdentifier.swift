@@ -16,6 +16,14 @@ public struct EntityIdentifier<Marker, T: Codable>: CustomStringConvertible {
     }
 }
 
+extension EntityIdentifier: Equatable where T: Equatable {
+    public static func == (lhs: EntityIdentifier<Marker, T>, rhs: EntityIdentifier<Marker, T>) -> Bool {
+        lhs.rawValue == rhs.rawValue
+    }
+}
+
+extension EntityIdentifier: Hashable where T: Hashable {}
+
 // MARK: - Codable
 
 extension EntityIdentifier: Codable {

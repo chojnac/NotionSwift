@@ -42,7 +42,12 @@ public struct RichText {
     public let annotations: Annotations
     public let type: RichTextType
 
-    public init(plainText: String?, href: String? = nil, annotations: RichText.Annotations = .default, type: RichTextType) {
+    public init(
+        plainText: String?,
+        href: String? = nil,
+        annotations: RichText.Annotations = .default,
+        type: RichTextType
+    ) {
         self.plainText = plainText
         self.href = href
         self.annotations = annotations

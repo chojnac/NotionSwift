@@ -151,6 +151,10 @@ public class DefaultNetworkClient: NetworkClient {
                     } else if response.statusCode != 200, response.statusCode != 220  {
                         completeResult = .failure(.HTTPError(code: response.statusCode))
                     }
+
+                    if completeResult != nil {
+                        Environment.log.trace(String(data: data, encoding: .utf8) ?? "")
+                    }
                 }
 
                 if completeResult == nil {
