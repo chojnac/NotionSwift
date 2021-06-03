@@ -2,7 +2,12 @@
 
 Unofficial [Notion](https://www.notion.so) SDK for iOS & macOS. 
 
-This is an alpha version and still a work in progress.
+This is still work in progress version, the module interface might change.
+
+## API Documentation
+
+This library is a client SDK for the official Notion API. 
+For more details and documentation please check the [Notion Developer Portal](https://developers.notion.com/)
 
 ## Supported Endpoints
 
@@ -30,19 +35,17 @@ This is an alpha version and still a work in progress.
 
 ## Installation
 
-This project is a work in progress so no release versions available yet.
-
 ### CocoaPods
 
 ```ruby
-pod 'NotionSwift', :git => 'https://github.com/chojnac/NotionSwift.git', :branch => 'main'
+pod 'NotionSwift', :git => 'https://github.com/chojnac/NotionSwift.git'
 ```
 
 ### Swift Package Manager
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/chojnac/NotionSwift.git", .branch("main"))
+    .package(url: "https://github.com/chojnac/NotionSwift.git", .upToNextMajor("0.1.0"))
 ]
 ```
 
