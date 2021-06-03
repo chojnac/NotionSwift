@@ -13,7 +13,7 @@ import Foundation
         completed: @escaping (Result<Page, Network.Errors>) -> Void
     ) {
         networkClient.get(
-            urlBuilder.url(path: "/v1/pages", identifier: pageId),
+            urlBuilder.url(path: "/v1/pages/{identifier}", identifier: pageId),
             headers: headers(),
             completed: completed
         )

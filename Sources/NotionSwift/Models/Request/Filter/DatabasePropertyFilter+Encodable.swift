@@ -90,13 +90,13 @@ extension DatabasePropertyFilter.CheckboxCondition: Encodable {
 
 extension DatabasePropertyFilter.DateCondition: Encodable {
     public func encode(to encoder: Encoder) throws {
-        #warning("Add implementation")
+        // TODO: Add implementation
     }
 }
 
 extension DatabasePropertyFilter.FormulaCondition: Encodable {
     public func encode(to encoder: Encoder) throws {
-        #warning("Add implementation")
+        // TODO: Add implementation
     }
 }
 

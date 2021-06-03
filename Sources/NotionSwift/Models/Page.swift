@@ -26,3 +26,9 @@ extension Page: Decodable {
         case properties
     }
 }
+
+extension EntityIdentifier where Marker == Page, T == UUIDv4 {
+    public var toBlockIdentifier: Block.Identifier {
+        return Block.Identifier(self.rawValue)
+    }
+}

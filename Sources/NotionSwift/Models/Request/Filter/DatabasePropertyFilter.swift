@@ -34,7 +34,7 @@ extension DatabasePropertyFilter {
 
 extension DatabasePropertyFilter {
     public enum FormulaCondition {
-        #warning("Add implementation")
+        // TODO: Add implementation
     }
 }
 
@@ -47,7 +47,7 @@ extension DatabasePropertyFilter {
 
 extension DatabasePropertyFilter {
     public enum DateCondition {
-        #warning("Add implementation")
+        // TODO: Add implementation
     }
 }
 

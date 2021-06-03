@@ -20,7 +20,7 @@ extension NotionClient {
     }
 
     public func usersList(
-        params: BaseQueryParams,
+        params: BaseQueryParams = .init(),
         completed: @escaping (Result<ListResponse<User>, Network.Errors>) -> Void
     ) {
         networkClient.get(

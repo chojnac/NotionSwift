@@ -10,7 +10,7 @@ extension NotionClient {
 
     public func blockChildren(
         blockId: Block.Identifier,
-        params: BaseQueryParams,
+        params: BaseQueryParams = .init(),
         completed: @escaping (Result<ListResponse<ReadBlock>, Network.Errors>) -> Void
     ) {
         networkClient.get(
