@@ -49,22 +49,3 @@ extension NotionClient {
         )
     }
 }
-
-public final class DatabaseQueryParams: BaseQueryParams {
-    public let filter: String?
-    public let sorts: [SortObject]?
-
-    enum CodingKeys: String, CodingKey {
-        case filter
-        case sorts
-        case startCursor = "start_cursor"
-        case pageSize = "page_size"
-    }
-
-    public init(filter: String? = nil, sorts: [SortObject]? = nil, startCursor: String? = nil, pageSize: Int32? = nil) {
-        self.filter = filter
-        self.sorts = sorts
-        super.init(startCursor: startCursor, pageSize: pageSize)
-    }
-
-}

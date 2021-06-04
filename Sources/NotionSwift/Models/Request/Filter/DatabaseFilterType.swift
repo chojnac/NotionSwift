@@ -4,12 +4,12 @@
 
 import Foundation
 
-public enum FilterType {
+public enum DatabaseFilterType {
     case databaseProperty(DatabasePropertyFilter)
     case compound(CompountFilterType)
 }
 
-extension FilterType: Encodable {
+extension DatabaseFilterType: Encodable {
     public func encode(to encoder: Encoder) throws {
         switch self {
         case .databaseProperty(let value):

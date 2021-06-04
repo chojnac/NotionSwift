@@ -5,8 +5,8 @@
 import Foundation
 
 public struct DatabasePropertyFilter {
-    let property: String
-    let filterType: PropertyType
+    public let property: String
+    public let filterType: PropertyType
 }
 
 extension DatabasePropertyFilter {
@@ -34,7 +34,10 @@ extension DatabasePropertyFilter {
 
 extension DatabasePropertyFilter {
     public enum FormulaCondition {
-        // TODO: Add implementation
+        case text(TextCondition)
+        case checkbox(CheckboxCondition)
+        case number(NumberCondition)
+        case date(DateCondition)
     }
 }
 
@@ -47,7 +50,19 @@ extension DatabasePropertyFilter {
 
 extension DatabasePropertyFilter {
     public enum DateCondition {
-        // TODO: Add implementation
+        case equals(Date)
+        case before(Date)
+        case after(Date)
+        case onOrBefore(Date)
+        case isEmpty
+        case isNotEmpty
+        case onOrAfter(Date)
+        case pastWeek
+        case pastMonth
+        case pastYear
+        case nextWeek
+        case nextMonth
+        case nextYear
     }
 }
 

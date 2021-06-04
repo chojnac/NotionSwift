@@ -89,14 +89,77 @@ extension DatabasePropertyFilter.CheckboxCondition: Encodable {
 }
 
 extension DatabasePropertyFilter.DateCondition: Encodable {
+    enum CodingKeys: String, CodingKey {
+        case equals
+        case before
+        case after
+        case onOrBefore = "on_or_before"
+        case isEmpty = "is_empty"
+        case isNotEmpty = "is_not_empty"
+        case onOrAfter = "on_or_after"
+        case pastWeek = "past_week"
+        case pastMonth = "past_month"
+        case pastYear = "past_year"
+        case nextWeek = "next_week"
+        case nextMonth = "next_month"
+        case nextYear = "next_year"
+    }
+
+    private struct Empty: Encodable {}
+
     public func encode(to encoder: Encoder) throws {
-        // TODO: Add implementation
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .equals(let value):
+            try container.encode(value, forKey: .equals)
+        case .before(let value):
+            try container.encode(value, forKey: .before)
+        case .after(let value):
+            try container.encode(value, forKey: .after)
+        case .onOrBefore(let value):
+            try container.encode(value, forKey: .onOrBefore)
+        case .isEmpty:
+            try container.encode(true, forKey: .isEmpty)
+        case .isNotEmpty:
+            try container.encode(true, forKey: .isNotEmpty)
+        case .onOrAfter(let value):
+            try container.encode(value, forKey: .onOrAfter)
+        case .pastWeek:
+            try container.encode(Empty(), forKey: .pastWeek)
+        case .pastMonth:
+            try container.encode(Empty(), forKey: .pastMonth)
+        case .pastYear:
+            try container.encode(Empty(), forKey: .pastYear)
+        case .nextWeek:
+            try container.encode(Empty(), forKey: .nextWeek)
+        case .nextMonth:
+            try container.encode(Empty(), forKey: .nextMonth)
+        case .nextYear:
+            try container.encode(Empty(), forKey: .nextYear)
+        }
     }
 }
 
 extension DatabasePropertyFilter.FormulaCondition: Encodable {
+    enum CodingKeys: String, CodingKey {
+        case text
+        case checkbox
+        case number
+        case date
+    }
+    
     public func encode(to encoder: Encoder) throws {
-        // TODO: Add implementation
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .text(let value):
+            try container.encode(value, forKey: .text)
+        case .checkbox(let value):
+            try container.encode(value, forKey: .checkbox)
+        case .number(let value):
+            try container.encode(value, forKey: .number)
+        case .date(let value):
+            try container.encode(value, forKey: .date)
+        }
     }
 }
 
@@ -105,6 +168,7 @@ extension DatabasePropertyFilter.FilesCondition: Encodable {
         case isEmpty = "is_empty"
         case isNotEmpty = "is_not_empty"
     }
+    
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {

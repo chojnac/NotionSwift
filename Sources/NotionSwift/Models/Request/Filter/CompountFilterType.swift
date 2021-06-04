@@ -5,8 +5,8 @@
 import Foundation
 
 public enum CompountFilterType {
-    case or([FilterType])
-    case and([FilterType])
+    case or([DatabaseFilterType])
+    case and([DatabaseFilterType])
 }
 
 // MARK: - Codable
