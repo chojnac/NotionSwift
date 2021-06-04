@@ -1,3 +1,4 @@
+![](banner.png)
 # NotionSwift
 
 Unofficial [Notion](https://www.notion.so) SDK for iOS & macOS. 
@@ -6,32 +7,8 @@ This is still work in progress version, the module interface might change.
 
 ## API Documentation
 
-This library is a client SDK for the official Notion API. 
+This library is a client for the official Notion API. 
 For more details and documentation please check [Notion Developer Portal](https://developers.notion.com/)
-
-## Supported Endpoints
-
-### Databases
- * Retrieve a database ✅
- * Query a database ✅
- * List databases ✅
- 
-### Pages
-* Retrieve a page ✅
-* Create a page ✅
-* Update page properties ✅
-
-### Blocks 
-* Retrieve block children ✅
-* Append block children ✅
-
-### Users
-* Retrieve a user ✅
-* List all users ✅
-
-### Search 
-* Search ✅
-
 
 ## Installation
 
@@ -53,6 +30,8 @@ dependencies: [
 
 Currently, this library supports only the "internal integration" authorization mode. For more information about authorization and 
 instruction how to obtain `NOTION_TOKEN` please check [Notion Offical Documentation](https://developers.notion.com/docs/authorization).
+
+**Important:** Integrations are granted access to resources (pages and databases) which users have shared with the integration. Resources that are not shared with the integration are not visible by API endpoints. 
 
 ### Creating a Notion client.
 
@@ -262,9 +241,6 @@ NotionSwift.Environment.logHandler = NotionSwift.PrintLogHandler() // uses print
 NotionSwift.Environment.logLevel = .trace // show me everything
 
 ```
-
-**Important**
-Integrations are granted access to resources (pages and databases) which users have shared with the integration. Once the integration has been added to a workspace by an Admin, users see the integration within `Share` menus inside Notion.
 
 ## License
 
