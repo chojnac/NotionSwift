@@ -15,7 +15,12 @@ public final class DatabaseQueryParams: BaseQueryParams {
         case pageSize = "page_size"
     }
 
-    public init(filter: DatabaseFilter? = nil, sorts: [DatabaseSort]? = nil, startCursor: String? = nil, pageSize: Int32? = nil) {
+    public init(
+        filter: DatabaseFilter? = nil,
+        sorts: [DatabaseSort]? = nil,
+        startCursor: String? = nil,
+        pageSize: Int32? = nil
+    ) {
         self.filter = filter
         self.sorts = sorts
         super.init(startCursor: startCursor, pageSize: pageSize)
@@ -24,7 +29,7 @@ public final class DatabaseQueryParams: BaseQueryParams {
     public override func encode(to encoder: Encoder) throws {
         try super.encode(to: encoder)
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(filter, forKey: .filter)
-        try container.encode(sorts, forKey: .sorts)
+        try container.encodeIfPresent(filter, forKey: .filter)
+        try container.encodeIfPresent(sorts, forKey: .sorts)
     }
 }

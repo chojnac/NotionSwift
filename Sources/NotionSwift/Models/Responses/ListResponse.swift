@@ -8,9 +8,9 @@
 import Foundation
 
 public struct ListResponse<T> {
-    let results: [T]
-    let nextCursor: Int?
-    let hasMore: Bool
+    public let results: [T]
+    public let nextCursor: Int?
+    public let hasMore: Bool
 }
 
 extension ListResponse: Decodable where T: Decodable {

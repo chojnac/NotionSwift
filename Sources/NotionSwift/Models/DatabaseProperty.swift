@@ -8,6 +8,14 @@ public struct DatabaseProperty {
     public typealias Identifier = EntityIdentifier<DatabaseProperty, String>
     public let id: Identifier
     public let type: DatabasePropertyType
+
+    public init(
+        id: DatabaseProperty.Identifier,
+        type: DatabasePropertyType
+    ) {
+        self.id = id
+        self.type = type
+    }
 }
 
 extension DatabaseProperty: Decodable {
@@ -34,6 +42,7 @@ extension DatabaseProperty: Decodable {
         case id
         case type
     }
+
     public init(from decoder: Decoder) throws {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -52,16 +61,16 @@ extension DatabaseProperty: Decodable {
             self.type = .number(value)
         case CodingKeys.select.rawValue:
             let value = try container.decode(
-                DatabasePropertyType.SelectPropertyConfiguration.self,
+                SelectOptionValueHelper.self,
                 forKey: .select
             )
-            self.type = .select(value)
+            self.type = .select(value.options)
         case CodingKeys.multiSelect.rawValue:
             let value = try container.decode(
-                DatabasePropertyType.MultiSelectPropertyConfiguration.self,
+                SelectOptionValueHelper.self,
                 forKey: .multiSelect
             )
-            self.type = .multiSelect(value)
+            self.type = .multiSelect(value.options)
         case CodingKeys.date.rawValue:
             self.type = .date
         case CodingKeys.people.rawValue:
@@ -78,10 +87,10 @@ extension DatabaseProperty: Decodable {
             self.type = .phoneNumber
         case CodingKeys.formula.rawValue:
             let value = try container.decode(
-                DatabasePropertyType.FormulaPropertyConfiguration.self,
+                FormulaValueHelper.self,
                 forKey: .formula
             )
-            self.type = .formula(value)
+            self.type = .formula(expression: value.expression)
         case CodingKeys.relation.rawValue:
             let value = try container.decode(
                 DatabasePropertyType.RelationPropertyConfiguration.self,
@@ -105,5 +114,15 @@ extension DatabaseProperty: Decodable {
         default:
             self.type = .unknown
         }
+    }
+}
+
+extension DatabaseProperty {
+    private struct SelectOptionValueHelper: Decodable {
+        let options: [DatabasePropertyType.SelectOption]
+    }
+
+    private struct FormulaValueHelper: Decodable {
+        let expression: String
     }
 }

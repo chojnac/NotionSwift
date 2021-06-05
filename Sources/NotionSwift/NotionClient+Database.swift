@@ -23,7 +23,7 @@ extension NotionClient {
 
     public func databaseQuery(
         databaseId: Database.Identifier,
-        params: DatabaseQueryParams = .init(),
+        params: DatabaseQueryParams,
         completed: @escaping (Result<ListResponse<Page>, Network.Errors>) -> Void
     ) {
         networkClient.post(
@@ -38,7 +38,7 @@ extension NotionClient {
     }
 
     public func databaseList(
-        params: BaseQueryParams = .init(),
+        params: BaseQueryParams,
         completed: @escaping (Result<ListResponse<Database>, Network.Errors>) -> Void
     ) {
 

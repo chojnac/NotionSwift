@@ -4,7 +4,7 @@
 
 import Foundation
 
-public final class NotionClient {
+public final class NotionClient: NotionClientType {
     private let accessKeyProvider: AccessKeyProvider
     let networkClient: NetworkClient
 

@@ -32,3 +32,6 @@ extension EntityIdentifier where Marker == Page, T == UUIDv4 {
         return Block.Identifier(self.rawValue)
     }
 }
+
+@available(iOS 13.0, *)
+extension Page: Identifiable {}

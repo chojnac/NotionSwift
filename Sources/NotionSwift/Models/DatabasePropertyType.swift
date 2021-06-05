@@ -8,8 +8,8 @@ public enum DatabasePropertyType {
     case title
     case richText
     case number(NumberPropertyConfiguration)
-    case select(SelectPropertyConfiguration)
-    case multiSelect(MultiSelectPropertyConfiguration)
+    case select([SelectOption])
+    case multiSelect([SelectOption])
     case date
     case people
     case file
@@ -17,7 +17,7 @@ public enum DatabasePropertyType {
     case url
     case email
     case phoneNumber
-    case formula(FormulaPropertyConfiguration)
+    case formula(expression: String)
     case relation(RelationPropertyConfiguration)
     case rollup(RollupPropertyConfiguration)
     case createdTime
@@ -28,50 +28,38 @@ public enum DatabasePropertyType {
 }
 
 extension DatabasePropertyType {
-    public struct NumberPropertyConfiguration {
-        public enum Format: String {
-            case number
-            case numberWithCommas = "number_with_commas"
-            case percent
-            case dollar
-            case euro
-            case pound
-            case yen
-            case ruble
-            case rupee
-            case won
-            case yua
-            case unknown
-        }
-        public let format: Format
+    public enum NumberPropertyConfiguration: String {
+        case number
+        case numberWithCommas = "number_with_commas"
+        case percent
+        case dollar
+        case euro
+        case pound
+        case yen
+        case ruble
+        case rupee
+        case won
+        case yua
+        case unknown
     }
 }
 
 extension DatabasePropertyType {
-    public struct SelectPropertyConfiguration {
-        public struct Option {
-            public let name: String
-            public let id: EntityIdentifier<Option, UUIDv4>
-            public let color: String
-        }
-        public let options: [Option]
-    }
-}
+    public struct SelectOption {
+        public typealias Identifier = EntityIdentifier<SelectOption, UUIDv4>
+        public let name: String
+        public let id: Identifier
+        public let color: String
 
-extension DatabasePropertyType {
-    public struct MultiSelectPropertyConfiguration {
-        public struct Option {
-            public let name: String
-            public let id: EntityIdentifier<Option, UUIDv4>
-            public let color: String
+        public init(
+            name: String,
+            id: Identifier,
+            color: String = "default"
+        ) {
+            self.name = name
+            self.id = id
+            self.color = color
         }
-        public let options: [Option]
-    }
-}
-
-extension DatabasePropertyType {
-    public struct FormulaPropertyConfiguration {
-        public let expression: String
     }
 }
 
@@ -80,10 +68,21 @@ extension DatabasePropertyType {
         public let databaseId: Database.Identifier
         public let syncedPropertyName: String?
         public let syncedPropertyId: DatabaseProperty.Identifier?
+
+        public init(
+            databaseId: Database.Identifier,
+            syncedPropertyName: String? = nil,
+            syncedPropertyId: DatabaseProperty.Identifier? = nil
+        ) {
+            self.databaseId = databaseId
+            self.syncedPropertyName = syncedPropertyName
+            self.syncedPropertyId = syncedPropertyId
+        }
     }
 }
 
 extension DatabasePropertyType {
+
     public struct RollupPropertyConfiguration {
         public let relationPropertyName: String
         public let relationPropertyId: DatabaseProperty.Identifier
@@ -91,16 +90,42 @@ extension DatabasePropertyType {
         public let rollupPropertyId: DatabaseProperty.Identifier
         public let function: String
 
+        public init(
+            relationPropertyName: String,
+            relationPropertyId: DatabaseProperty.Identifier,
+            rollupPropertyName: String,
+            rollupPropertyId: DatabaseProperty.Identifier,
+            function: String
+        ) {
+            self.relationPropertyName = relationPropertyName
+            self.relationPropertyId = relationPropertyId
+            self.rollupPropertyName = rollupPropertyName
+            self.rollupPropertyId = rollupPropertyId
+            self.function = function
+        }
     }
 }
 
-extension DatabasePropertyType.FormulaPropertyConfiguration: Decodable {}
-extension DatabasePropertyType.MultiSelectPropertyConfiguration: Decodable {}
-extension DatabasePropertyType.MultiSelectPropertyConfiguration.Option: Decodable {}
-extension DatabasePropertyType.SelectPropertyConfiguration: Decodable {}
-extension DatabasePropertyType.SelectPropertyConfiguration.Option: Decodable {}
-extension DatabasePropertyType.NumberPropertyConfiguration: Decodable {}
-extension DatabasePropertyType.NumberPropertyConfiguration.Format: Decodable {}
+extension DatabasePropertyType.SelectOption: Decodable {}
+
+extension DatabasePropertyType.NumberPropertyConfiguration: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case format
+    }
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let format = try container.decode(String.self, forKey: .format)
+        
+        guard let value = Self(rawValue: format) else {
+            self = .unknown
+            return
+        }
+
+        self = value
+    }
+
+}
+
 extension DatabasePropertyType.RelationPropertyConfiguration: Decodable {
     enum CodingKeys: String, CodingKey {
         case databaseId = "database_id"

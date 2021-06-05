@@ -23,19 +23,36 @@ public struct Mention {
 extension Mention {
     public struct UserMentionValue {
         public let user: User
+
+        public init(_ user: User) {
+            self.user = user
+        }
     }
 
     public struct PageMentionValue {
         public let id: Page.Identifier
+
+        public init(_ id: Page.Identifier) {
+            self.id = id
+        }
     }
 
     public struct DatabaseMentionValue {
         public let id: Database.Identifier
+
+        public init(_ id: Database.Identifier) {
+            self.id = id
+        }
     }
 
     public struct DateMentionValue {
         public let start: Date
         public let end: Date?
+
+        public init(start: Date, end: Date?) {
+            self.start = start
+            self.end = end
+        }
     }
 }
 

@@ -8,7 +8,7 @@ import Foundation
 
 extension NotionClient {
     public func search(
-        request: SearchRequest = .init(),
+        request: SearchRequest,
         completed: @escaping (Result<SearchResponse, Network.Errors>) -> Void
     ) {
         networkClient.post(

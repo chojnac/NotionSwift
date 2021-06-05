@@ -19,7 +19,10 @@ import Foundation
         )
     }
 
-    public func pageCreate(request: PageCreateRequest, completed: @escaping (Result<Page, Network.Errors>) -> Void) {
+    public func pageCreate(
+        request: PageCreateRequest,
+        completed: @escaping (Result<Page, Network.Errors>) -> Void
+    ) {
         networkClient.post(
             urlBuilder.url(path: "/v1/pages"),
             body: request,

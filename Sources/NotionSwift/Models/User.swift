@@ -13,15 +13,33 @@ public struct User {
 
     public struct Person {
         public let email: String
+
+        public init(email: String) {
+            self.email = email
+        }
     }
 
-    public struct Bot {}
+    public struct Bot {
+        public init() {}
+    }
 
     public typealias Identifier = EntityIdentifier<User, UUIDv4>
     public let id: Identifier
     public let type: UserType?
     public let name: String?
     public let avatarURL: String?
+
+    public init(
+        id: User.Identifier,
+        type: User.UserType?,
+        name: String?,
+        avatarURL: String?
+    ) {
+        self.id = id
+        self.type = type
+        self.name = name
+        self.avatarURL = avatarURL
+    }
 }
 
 extension User.Person: Codable {}
@@ -77,3 +95,6 @@ extension User: Codable {
         }
     }
 }
+
+@available(iOS 13.0, *)
+extension User: Identifiable {}
