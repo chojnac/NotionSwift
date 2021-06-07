@@ -14,6 +14,22 @@ public struct Page {
     public let parent: PageParentType
     public let archived: Bool
     public let properties: [PropertyName: PageProperty]
+
+    public init(
+        id: Identifier,
+        createdTime: Date,
+        lastEditedTime: Date,
+        parent: PageParentType,
+        archived: Bool,
+        properties: [PropertyName: PageProperty]
+    ) {
+        self.id = id
+        self.createdTime = createdTime
+        self.lastEditedTime = lastEditedTime
+        self.parent = parent
+        self.archived = archived
+        self.properties = properties
+    }
 }
 
 extension Page: Decodable {

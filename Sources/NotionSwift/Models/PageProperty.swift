@@ -8,6 +8,11 @@ public struct PageProperty {
     public typealias Identifier = EntityIdentifier<PageProperty, String>
     public let id: Identifier
     public let type: PagePropertyType
+
+    public init(id: PageProperty.Identifier, type: PagePropertyType) {
+        self.id = id
+        self.type = type
+    }
 }
 
 public struct WritePageProperty {
@@ -46,15 +51,34 @@ extension PagePropertyType {
         public let id: EntityIdentifier<SelectPropertyValue, UUIDv4>?
         public let name: String?
         public let color: String?
+
+        public init(
+            id: EntityIdentifier<SelectPropertyValue, UUIDv4>?,
+            name: String?,
+            color: String?
+        ) {
+            self.id = id
+            self.name = name
+            self.color = color
+        }
     }
 
     public struct DatePropertyValue {
         public let start: Date
         public let end: Date?
+
+        public init(start: Date, end: Date?) {
+            self.start = start
+            self.end = end
+        }
     }
 
     public struct FilesPropertyValue {
         public let name: String
+
+        public init(_ name: String) {
+            self.name = name
+        }
     }
 
     public enum FormulaPropertyValue {
@@ -72,6 +96,7 @@ extension PagePropertyType {
         case unknown
     }
 }
+
 extension PageProperty: Decodable {
     enum CodingKeys: String, CodingKey {
         case id
@@ -113,6 +138,7 @@ extension PagePropertyType: Codable {
 
         case type
     }
+    
     private struct PageRelation: Decodable {
         let id: Page.Identifier
     }

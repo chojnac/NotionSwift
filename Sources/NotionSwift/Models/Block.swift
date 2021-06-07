@@ -9,7 +9,7 @@ public enum Block {
     public typealias Identifier = EntityIdentifier<Block, UUIDv4>
 }
 
-/// Block object read from server
+/// Block object from a server response
 public struct ReadBlock: CustomStringConvertible {
     public let id: Block.Identifier
     public let createdTime: Date
@@ -36,7 +36,7 @@ public struct ReadBlock: CustomStringConvertible {
     }
 }
 
-/// Block object used in adding new content
+/// Block object used in adding a new content
 public struct WriteBlock {
     public let type: BlockType
     public let hasChildren: Bool

@@ -11,6 +11,12 @@ public struct ListResponse<T> {
     public let results: [T]
     public let nextCursor: Int?
     public let hasMore: Bool
+
+    public init(results: [T], nextCursor: Int?, hasMore: Bool) {
+        self.results = results
+        self.nextCursor = nextCursor
+        self.hasMore = hasMore
+    }
 }
 
 extension ListResponse: Decodable where T: Decodable {
