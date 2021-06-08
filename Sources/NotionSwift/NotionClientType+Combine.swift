@@ -36,8 +36,7 @@ extension NotionClientType {
     // MARK: - database
 
     public func database(
-        databaseId: Database.Identifier,
-        completed: @escaping (Result<Database, Network.Errors>) -> Void
+        databaseId: Database.Identifier
     ) -> AnyPublisher<Database, Network.Errors> {
         convertToPublisher { promise in
             self.database(databaseId: databaseId, completed: promise)
