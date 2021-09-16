@@ -9,22 +9,31 @@ public struct Database {
     public typealias PropertyName = String
     public let id: Identifier
     public let title: [RichText]
+    public let icon: IconFile?
+    public let cover: CoverFile?
     public let createdTime: Date
     public let lastEditedTime: Date
     public let properties: [PropertyName: DatabaseProperty]
+    public let parent: DatabaseParent
 
     public init(
         id: Database.Identifier,
         title: [RichText],
+        icon: IconFile?,
+        cover: CoverFile?,
         createdTime: Date,
         lastEditedTime: Date,
-        properties: [Database.PropertyName: DatabaseProperty]
+        properties: [Database.PropertyName: DatabaseProperty],
+        parent: DatabaseParent
     ) {
         self.id = id
         self.title = title
+        self.icon = icon
+        self.cover = cover
         self.createdTime = createdTime
         self.lastEditedTime = lastEditedTime
         self.properties = properties
+        self.parent = parent
     }
 }
 
@@ -32,9 +41,12 @@ extension Database: Decodable {
     enum CodingKeys: String, CodingKey {
         case id
         case title
+        case icon
+        case cover
         case createdTime = "created_time"
         case lastEditedTime = "last_edited_time"
         case properties
+        case parent
     }
 }
 

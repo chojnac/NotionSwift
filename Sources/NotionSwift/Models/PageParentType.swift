@@ -8,7 +8,7 @@ public enum PageParentType {
     case database(Database.Identifier)
     case page(Page.Identifier)
     case workspace
-    case unknown
+    case unknown(typeName: String)
 }
 
 extension PageParentType: Codable {
@@ -32,7 +32,7 @@ extension PageParentType: Codable {
         case CodingKeys.workspace.stringValue:
             self = .workspace
         default:
-            self = .unknown
+            self = .unknown(typeName: type)
         }
     }
 

@@ -26,8 +26,8 @@ public struct WritePageProperty {
 public enum PagePropertyType {
     case richText([RichText])
     case number(Int)
-    case select(SelectPropertyValue)
-    case multiSelect([SelectPropertyValue])
+    case select(SelectPropertyValue?)
+    case multiSelect([MultiSelectPropertyValue])
     case date(DatePropertyValue)
     case formula(FormulaPropertyValue)
     case relation([Page.Identifier])
@@ -48,12 +48,28 @@ public enum PagePropertyType {
 
 extension PagePropertyType {
     public struct SelectPropertyValue {
-        public let id: EntityIdentifier<SelectPropertyValue, UUIDv4>?
+        public let id: EntityIdentifier<SelectPropertyValue, String>?
         public let name: String?
         public let color: String?
 
         public init(
-            id: EntityIdentifier<SelectPropertyValue, UUIDv4>?,
+            id: EntityIdentifier<SelectPropertyValue, String>?,
+            name: String?,
+            color: String?
+        ) {
+            self.id = id
+            self.name = name
+            self.color = color
+        }
+    }
+
+    public struct MultiSelectPropertyValue {
+        public let id: EntityIdentifier<MultiSelectPropertyValue, UUIDv4>?
+        public let name: String?
+        public let color: String?
+
+        public init(
+            id: EntityIdentifier<MultiSelectPropertyValue, UUIDv4>?,
             name: String?,
             color: String?
         ) {
@@ -161,14 +177,14 @@ extension PagePropertyType: Codable {
             )
             self = .number(value)
         case CodingKeys.select.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 PagePropertyType.SelectPropertyValue.self,
                 forKey: .select
             )
             self = .select(value)
         case CodingKeys.multiSelect.stringValue:
             let value = try container.decode(
-                [PagePropertyType.SelectPropertyValue].self,
+                [PagePropertyType.MultiSelectPropertyValue].self,
                 forKey: .multiSelect
             )
             self = .multiSelect(value)
@@ -271,61 +287,42 @@ extension PagePropertyType: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
         case .richText(let value):
-//            try container.encode(CodingKeys.richText.rawValue, forKey: .type)
             try container.encode(value, forKey: .richText)
         case .number(let value):
-//            try container.encode(CodingKeys.richText.rawValue, forKey: .type)
             try container.encode(value, forKey: .number)
         case .select(let value):
-//            try container.encode(CodingKeys.select.rawValue, forKey: .type)
             try container.encode(value, forKey: .select)
         case .multiSelect(let value):
-//            try container.encode(CodingKeys.multiSelect.rawValue, forKey: .type)
             try container.encode(value, forKey: .multiSelect)
         case .date(let value):
-//            try container.encode(CodingKeys.date.rawValue, forKey: .type)
             try container.encode(value, forKey: .date)
         case .formula(let value):
-//            try container.encode(CodingKeys.formula.rawValue, forKey: .type)
             try container.encode(value, forKey: .formula)
         case .relation(let value):
-//            try container.encode(CodingKeys.relation.rawValue, forKey: .type)
             try container.encode(value, forKey: .relation)
         case .rollup(let value):
-//            try container.encode(CodingKeys.rollup.rawValue, forKey: .type)
             try container.encode(value, forKey: .rollup)
         case .title(let value):
-//            try container.encode(CodingKeys.title.rawValue, forKey: .type)
             try container.encode(value, forKey: .title)
         case .people(let value):
-//            try container.encode(CodingKeys.people.rawValue, forKey: .type)
             try container.encode(value, forKey: .people)
         case .files(let value):
-//            try container.encode(CodingKeys.files.rawValue, forKey: .type)
             try container.encode(value, forKey: .files)
         case .checkbox(let value):
-//            try container.encode(CodingKeys.checkbox.rawValue, forKey: .type)
             try container.encode(value, forKey: .checkbox)
         case .url(let value):
-//            try container.encode(CodingKeys.url.rawValue, forKey: .type)
             try container.encode(value, forKey: .url)
         case .email(let value):
-//            try container.encode(CodingKeys.email.rawValue, forKey: .type)
             try container.encode(value, forKey: .email)
         case .phoneNumber(let value):
-//            try container.encode(CodingKeys.phoneNumber.rawValue, forKey: .type)
             try container.encode(value, forKey: .phoneNumber)
         case .createdTime(let value):
-//            try container.encode(CodingKeys.createdTime.rawValue, forKey: .type)
             try container.encode(value, forKey: .createdTime)
         case .createdBy(let value):
-//            try container.encode(CodingKeys.createdBy.rawValue, forKey: .type)
             try container.encode(value, forKey: .createdBy)
         case .lastEditedTime(let value):
-//            try container.encode(CodingKeys.lastEditedTime.rawValue, forKey: .type)
             try container.encode(value, forKey: .lastEditedTime)
         case .lastEditedBy(let value):
-//            try container.encode(CodingKeys.lastEditedBy.rawValue, forKey: .type)
             try container.encode(value, forKey: .lastEditedBy)
         case .unknown:
             break
@@ -334,6 +331,7 @@ extension PagePropertyType: Codable {
 }
 
 extension PagePropertyType.SelectPropertyValue: Codable {}
+extension PagePropertyType.MultiSelectPropertyValue: Codable {}
 extension PagePropertyType.DatePropertyValue: Codable {}
 extension PagePropertyType.FilesPropertyValue: Codable {}
 
