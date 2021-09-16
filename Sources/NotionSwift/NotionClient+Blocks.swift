@@ -39,6 +39,20 @@ extension NotionClient {
             completed: completed
         )
     }
+
+    public func blockDelete(
+        blockId: Block.Identifier,
+        completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
+    ) {
+        networkClient.delete(
+            urlBuilder.url(
+                path: "/v1/blocks/{identifier}",
+                identifier: blockId
+            ),
+            headers: headers(),
+            completed: completed
+        )
+    }
 }
 
 private struct BlockAppendRequest: Encodable {

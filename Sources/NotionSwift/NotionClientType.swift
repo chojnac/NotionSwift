@@ -20,6 +20,11 @@ public protocol NotionClientType: AnyObject {
         completed: @escaping (Result<ListResponse<ReadBlock>, Network.Errors>) -> Void
     )
 
+    func blockDelete(
+        blockId: Block.Identifier,
+        completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
+    )
+
     // MARK: - database
 
     func database(

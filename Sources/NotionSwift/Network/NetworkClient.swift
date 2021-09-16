@@ -10,7 +10,7 @@ public enum Network {
     public static let notionBaseURL = URL(string: "https://api.notion.com/")!
 
     public enum HTTPMethod: String {
-        case GET, POST, PUT, PATCH
+        case GET, POST, PUT, PATCH, DELETE
     }
 
     public enum Errors: Error {
@@ -41,6 +41,19 @@ public protocol NetworkClient: AnyObject {
     func patch<T: Encodable, R: Decodable>(
         _ url: URL,
         body: T,
+        headers: Network.HTTPHeaders,
+        completed: @escaping (Result<R, Network.Errors>) -> Void
+    )
+
+    func delete<T: Encodable, R: Decodable>(
+        _ url: URL,
+        body: T,
+        headers: Network.HTTPHeaders,
+        completed: @escaping (Result<R, Network.Errors>) -> Void
+    )
+
+    func delete<R: Decodable>(
+        _ url: URL,
         headers: Network.HTTPHeaders,
         completed: @escaping (Result<R, Network.Errors>) -> Void
     )
@@ -109,6 +122,49 @@ public class DefaultNetworkClient: NetworkClient {
         Environment.log.trace("BODY:\n " + String(data: requestBody, encoding: .utf8)!)
 
         request.httpBody = requestBody
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        executeRequest(request: request, completed: completed)
+    }
+
+    public func delete<R: Decodable>(
+        _ url: URL,
+        headers: Network.HTTPHeaders,
+        completed: @escaping (Result<R, Network.Errors>) -> Void
+    ) {
+        self.delete(url, body: Optional<Int>.none, headers: headers, completed: completed)
+    }
+
+    public func delete<T: Encodable, R: Decodable>(
+        _ url: URL,
+        body: T,
+        headers: Network.HTTPHeaders,
+        completed: @escaping (Result<R, Network.Errors>) -> Void
+    ) {
+        self.delete(url, body: body, headers: headers, completed: completed)
+    }
+
+    private func delete<T: Encodable, R: Decodable>(
+        _ url: URL,
+        body: T?,
+        headers: Network.HTTPHeaders,
+        completed: @escaping (Result<R, Network.Errors>) -> Void
+    ) {
+        var request = buildRequest(method: .DELETE, url: url, headers: headers)
+        if let body = body {
+            let requestBody: Data
+
+            do {
+                requestBody = try encoder.encode(body)
+            } catch {
+                completed(.failure(.bodyEncodingError(error)))
+                return
+            }
+
+            Environment.log.trace("BODY:\n " + String(data: requestBody, encoding: .utf8)!)
+
+            request.httpBody = requestBody
+        }
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         executeRequest(request: request, completed: completed)

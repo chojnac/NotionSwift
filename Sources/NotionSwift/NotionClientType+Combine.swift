@@ -33,6 +33,15 @@ extension NotionClientType {
         }
     }
 
+    public func blockDelete(
+        blockId: Block.Identifier,
+        completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
+    ) -> AnyPublisher<ReadBlock, Network.Errors> {
+        convertToPublisher { promise in
+            self.blockDelete(blockId: blockId, completed: promise)
+        }
+    }
+
     // MARK: - database
 
     public func database(

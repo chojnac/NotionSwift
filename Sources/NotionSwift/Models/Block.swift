@@ -14,17 +14,20 @@ public struct ReadBlock: CustomStringConvertible {
     public let id: Block.Identifier
     public let createdTime: Date
     public let lastEditedTime: Date
+    public let archived: Bool
     public let type: BlockType
     public let hasChildren: Bool
 
     init(
         id: Block.Identifier,
+        archived: Bool,
         type: BlockType,
         createdTime: Date,
         lastEditedTime: Date,
         hasChildren: Bool
     ) {
         self.id = id
+        self.archived = archived
         self.createdTime = createdTime
         self.lastEditedTime = lastEditedTime
         self.type = type
@@ -53,6 +56,7 @@ extension Block {
     enum CodingKeys: String, CodingKey {
         case id
         case type
+        case archived
         case createdTime = "created_time"
         case lastEditedTime = "last_edited_time"
         case hasChildren = "has_children"
@@ -64,6 +68,7 @@ extension ReadBlock: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: Block.CodingKeys.self)
         id = try container.decode(Block.Identifier.self, forKey: .id)
+        archived = try container.decode(Bool.self, forKey: .archived)
         createdTime = try container.decode(Date.self, forKey: .createdTime)
         lastEditedTime = try container.decode(Date.self, forKey: .lastEditedTime)
         type = try BlockType(from: decoder)
