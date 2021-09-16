@@ -17,7 +17,7 @@ public protocol NotionClientType: AnyObject {
     func blockAppend(
         blockId: Block.Identifier,
         children: [WriteBlock],
-        completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
+        completed: @escaping (Result<ListResponse<ReadBlock>, Network.Errors>) -> Void
     )
 
     // MARK: - database

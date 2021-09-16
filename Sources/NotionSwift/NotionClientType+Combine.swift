@@ -27,7 +27,7 @@ extension NotionClientType {
     public func blockAppend(
         blockId: Block.Identifier,
         children: [WriteBlock]
-    ) -> AnyPublisher<ReadBlock, Network.Errors> {
+    ) -> AnyPublisher<ListResponse<ReadBlock>, Network.Errors> {
         convertToPublisher { promise in
             self.blockAppend(blockId: blockId, children: children, completed: promise)
         }

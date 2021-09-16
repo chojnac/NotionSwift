@@ -27,7 +27,7 @@ extension NotionClient {
     public func blockAppend(
         blockId: Block.Identifier,
         children: [WriteBlock],
-        completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
+        completed: @escaping (Result<ListResponse<ReadBlock>, Network.Errors>) -> Void
     ) {
         networkClient.patch(
             urlBuilder.url(

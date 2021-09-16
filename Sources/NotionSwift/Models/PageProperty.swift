@@ -25,10 +25,10 @@ public struct WritePageProperty {
 
 public enum PagePropertyType {
     case richText([RichText])
-    case number(Int)
+    case number(Int?)
     case select(SelectPropertyValue?)
     case multiSelect([MultiSelectPropertyValue])
-    case date(DatePropertyValue)
+    case date(DatePropertyValue?)
     case formula(FormulaPropertyValue)
     case relation([Page.Identifier])
     case rollup(RollupPropertyValue)
@@ -37,7 +37,7 @@ public enum PagePropertyType {
     case files([FilesPropertyValue])
     case checkbox(Bool)
     case url(URL?)
-    case email(String)
+    case email(String?)
     case phoneNumber(String)
     case createdTime(Date)
     case createdBy(User)
@@ -171,7 +171,7 @@ extension PagePropertyType: Codable {
             )
             self = .richText(value)
         case CodingKeys.number.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 Int.self,
                 forKey: .number
             )
@@ -189,7 +189,7 @@ extension PagePropertyType: Codable {
             )
             self = .multiSelect(value)
         case CodingKeys.date.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 PagePropertyType.DatePropertyValue.self,
                 forKey: .date
             )
@@ -243,7 +243,7 @@ extension PagePropertyType: Codable {
             )
             self = .url(URL(string: value))
         case CodingKeys.email.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 String.self,
                 forKey: .email
             )
