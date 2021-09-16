@@ -11,30 +11,55 @@ public enum IconFile {
     case unknown(typeName: String)
 }
 
-extension IconFile: Decodable {
+extension IconFile: Codable {
     enum CodingKeys: String, CodingKey {
         case type
-        case url
-        case expiryTime = "expiry_time"
+        case external
+        case file
         case emoji
+    }
+
+    private struct _ExternalFileLink: Codable {
+        let url: String
+    }
+
+    private struct _FileLink: Codable {
+        let url: String
+        let expiry_time: Date
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(String.self, forKey: .type)
 
-        if type == "external" {
-            let url = try container.decode(String.self, forKey: .url)
-            self = .external(url: url)
-        } else if type == "file" {
-            let url = try container.decode(String.self, forKey: .url)
-            let expiryTime = try container.decode(Date.self, forKey: .expiryTime)
-            self = .file(url: url, expiryTime: expiryTime)
-        } else if type == "emoji" {
+        if type == CodingKeys.external.rawValue {
+            let value = try container.decode(_ExternalFileLink.self, forKey: .external)
+            self = .external(url: value.url)
+        } else if type == CodingKeys.file.rawValue {
+            let value = try container.decode(_FileLink.self, forKey: .file)
+            self = .file(url: value.url, expiryTime: value.expiry_time)
+        } else if type == CodingKeys.emoji.rawValue {
             let emoji = try container.decode(String.self, forKey: .emoji)
             self = .emoji(emoji)
         } else {
             self = .unknown(typeName: type)
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case let .external(url):
+            try container.encode(CodingKeys.external.rawValue, forKey: .type)
+            try container.encode(_ExternalFileLink(url: url), forKey: .external)
+        case let .file(url, expiryTime):
+            try container.encode(CodingKeys.file.rawValue, forKey: .type)
+            try container.encode(_FileLink(url: url, expiry_time: expiryTime), forKey: .file)
+        case let .emoji(emoji):
+            try container.encode(CodingKeys.emoji.rawValue, forKey: .type)
+            try container.encode(emoji, forKey: .emoji)
+        case .unknown:
+            break
         }
     }
 }
