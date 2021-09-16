@@ -275,7 +275,7 @@ extension PagePropertyType: Codable {
             try container.encode(value, forKey: .richText)
         case .number(let value):
 //            try container.encode(CodingKeys.richText.rawValue, forKey: .type)
-            try container.encode(value, forKey: .richText)
+            try container.encode(value, forKey: .number)
         case .select(let value):
 //            try container.encode(CodingKeys.select.rawValue, forKey: .type)
             try container.encode(value, forKey: .select)
