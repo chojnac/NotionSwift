@@ -50,6 +50,16 @@ public struct WriteBlock {
     }
 }
 
+public struct UpdateBlock {
+    public let value: BlockType?
+    public let archived: Bool?
+
+    public init(value: BlockType?, archived: Bool? = nil) {
+        self.value = value
+        self.archived = archived
+    }
+}
+
 // MARK: - Codable
 
 extension Block {
@@ -82,6 +92,16 @@ extension WriteBlock: Encodable {
         try type.encode(to: encoder)
         try container.encode(hasChildren, forKey: .hasChildren)
         try container.encode("block", forKey: .object)
+    }
+}
+
+extension UpdateBlock: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Block.CodingKeys.self)
+        if let value = value {
+            try value.encode(to: encoder)
+        }
+        try container.encodeIfPresent(archived, forKey: .archived)
     }
 }
 

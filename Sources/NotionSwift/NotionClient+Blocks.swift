@@ -40,6 +40,22 @@ extension NotionClient {
         )
     }
 
+    public func blockUpdate(
+        blockId: Block.Identifier,
+        value: UpdateBlock,
+        completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
+    ) {
+        networkClient.patch(
+            urlBuilder.url(
+                path: "/v1/blocks/{identifier}",
+                identifier: blockId
+            ),
+            body: value,
+            headers: headers(),
+            completed: completed
+        )
+    }
+
     public func blockDelete(
         blockId: Block.Identifier,
         completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
