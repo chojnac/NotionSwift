@@ -90,10 +90,18 @@ extension PagePropertyType {
     }
 
     public struct FilesPropertyValue {
-        public let name: String
+        public enum FileLink {
+            case external(url: String)
+            case file(url: String, expiryTime: Date)
+            case unknown(typeName: String)
+        }
 
-        public init(_ name: String) {
+        public let name: String
+        public let link: FileLink
+
+        public init(_ name: String, type: FileLink) {
             self.name = name
+            self.link = type
         }
     }
 
@@ -333,7 +341,55 @@ extension PagePropertyType: Codable {
 extension PagePropertyType.SelectPropertyValue: Codable {}
 extension PagePropertyType.MultiSelectPropertyValue: Codable {}
 extension PagePropertyType.DatePropertyValue: Codable {}
-extension PagePropertyType.FilesPropertyValue: Codable {}
+extension PagePropertyType.FilesPropertyValue: Codable {
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case type
+        case file
+        case external
+    }
+
+    private struct _ExternalFileLink: Codable {
+        let url: String
+    }
+
+    private struct _FileLink: Codable {
+        let url: String
+        let expiry_time: Date
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        let type = try container.decode(String.self, forKey: .type)
+
+        if type == CodingKeys.external.rawValue {
+            let value = try container.decode(_ExternalFileLink.self, forKey: .external)
+            link = .external(url: value.url)
+        } else if type == CodingKeys.file.rawValue {
+            let value = try container.decode(_FileLink.self, forKey: .file)
+            link = .file(url: value.url, expiryTime: value.expiry_time)
+        } else {
+            link = .unknown(typeName: type)
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        switch link {
+        case let .external(url):
+            try container.encode(CodingKeys.external.rawValue, forKey: .type)
+            try container.encode(_ExternalFileLink(url: url), forKey: .external)
+        case let .file(url, expiryTime):
+            try container.encode(CodingKeys.file.rawValue, forKey: .type)
+            try container.encode(_FileLink(url: url, expiry_time: expiryTime), forKey: .file)
+        case .unknown:
+            break
+        }
+    }
+}
 
 extension PagePropertyType.FormulaPropertyValue: Codable {
     enum CodingKeys: String, CodingKey {

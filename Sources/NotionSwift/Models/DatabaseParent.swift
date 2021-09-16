@@ -1,7 +1,4 @@
 //
-//  DatabaseParent.swift
-//  NotionSwift
-//
 //  Created by Wojciech Chojnacki on 16/09/2021.
 //
 
