@@ -9,7 +9,7 @@ import Foundation
 extension NotionClient {
     public func search(
         request: SearchRequest,
-        completed: @escaping (Result<SearchResponse, Network.Errors>) -> Void
+        completed: @escaping (Result<SearchResponse, NotionClientError>) -> Void
     ) {
         networkClient.post(
             urlBuilder.url(path: "/v1/search"),

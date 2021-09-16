@@ -17,7 +17,6 @@ public struct Page {
     public let archived: Bool
     public let properties: [PropertyName: PageProperty]
     
-
     public init(
         id: Identifier,
         createdTime: Date,

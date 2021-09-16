@@ -9,7 +9,7 @@ import Foundation
 extension NotionClient {
     public func database(
         databaseId: Database.Identifier,
-        completed: @escaping (Result<Database, Network.Errors>) -> Void
+        completed: @escaping (Result<Database, NotionClientError>) -> Void
     ) {
         networkClient.get(
             urlBuilder.url(
@@ -24,7 +24,7 @@ extension NotionClient {
     public func databaseQuery(
         databaseId: Database.Identifier,
         params: DatabaseQueryParams,
-        completed: @escaping (Result<ListResponse<Page>, Network.Errors>) -> Void
+        completed: @escaping (Result<ListResponse<Page>, NotionClientError>) -> Void
     ) {
         networkClient.post(
             urlBuilder.url(
@@ -39,7 +39,7 @@ extension NotionClient {
 
     public func databaseList(
         params: BaseQueryParams,
-        completed: @escaping (Result<ListResponse<Database>, Network.Errors>) -> Void
+        completed: @escaping (Result<ListResponse<Database>, NotionClientError>) -> Void
     ) {
 
         networkClient.get(

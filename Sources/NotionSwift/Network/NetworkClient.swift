@@ -14,13 +14,8 @@ public enum Network {
     }
 
     public enum Errors: Error {
-        case unauthorized
         case HTTPError(code: Int)
-        case bodyEncodingError(Error)
-        case decodingError(Error)
         case genericError(Error)
-        case unsupportedResponseError
-        case requestLimitExceeded
     }
 }
 
@@ -28,34 +23,34 @@ public protocol NetworkClient: AnyObject {
     func get<R: Decodable>(
         _ url: URL,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     )
 
     func post<T: Encodable, R: Decodable>(
         _ url: URL,
         body: T,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     )
 
     func patch<T: Encodable, R: Decodable>(
         _ url: URL,
         body: T,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     )
 
     func delete<T: Encodable, R: Decodable>(
         _ url: URL,
         body: T,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     )
 
     func delete<R: Decodable>(
         _ url: URL,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     )
 }
 
@@ -74,7 +69,7 @@ public class DefaultNetworkClient: NetworkClient {
     public func get<R: Decodable>(
         _ url: URL,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     ) {
         
         let request = buildRequest(method: .GET, url: url, headers: headers)
@@ -85,7 +80,7 @@ public class DefaultNetworkClient: NetworkClient {
         _ url: URL,
         body: T,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     ) {
         var request = buildRequest(method: .POST, url: url, headers: headers)
         let requestBody: Data
@@ -107,7 +102,7 @@ public class DefaultNetworkClient: NetworkClient {
         _ url: URL,
         body: T,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     ) {
         var request = buildRequest(method: .PATCH, url: url, headers: headers)
         let requestBody: Data
@@ -130,8 +125,9 @@ public class DefaultNetworkClient: NetworkClient {
     public func delete<R: Decodable>(
         _ url: URL,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     ) {
+        // swiftlint:disable:next syntactic_sugar
         self.delete(url, body: Optional<Int>.none, headers: headers, completed: completed)
     }
 
@@ -139,7 +135,7 @@ public class DefaultNetworkClient: NetworkClient {
         _ url: URL,
         body: T,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     ) {
         self.delete(url, body: body, headers: headers, completed: completed)
     }
@@ -148,7 +144,7 @@ public class DefaultNetworkClient: NetworkClient {
         _ url: URL,
         body: T?,
         headers: Network.HTTPHeaders,
-        completed: @escaping (Result<R, Network.Errors>) -> Void
+        completed: @escaping (Result<R, NotionClientError>) -> Void
     ) {
         var request = buildRequest(method: .DELETE, url: url, headers: headers)
         if let body = body {
@@ -186,43 +182,24 @@ public class DefaultNetworkClient: NetworkClient {
 
     private func executeRequest<T: Decodable>(
         request: URLRequest,
-        completed: @escaping (Result<T, Network.Errors>) -> Void
+        completed: @escaping (Result<T, NotionClientError>) -> Void
     ) {
-
         Environment.log.debug("Request: \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            var completeResult: Result<T, NotionClientError>?
 
-            var completeResult: Result<T, Network.Errors>?
-
-            if let error = error {
-                completeResult = .failure(Network.Errors.genericError(error))
+            if let error = NetworkClientHelpers.extractError(data: data, response: response, error: error) {
+                completeResult = .failure(error)
             } else if let data = data {
-                // this is a basic implementation supporting only positive path
-                // TODO: Implement support for handling errors and non 200 response codes
-                if let response = response as? HTTPURLResponse {
-                    if response.statusCode == 401 {
-                        completeResult = .failure(.unauthorized)
-                    } else if response.statusCode == 429 {
-                        completeResult = .failure(.requestLimitExceeded)
-                    } else if response.statusCode != 200, response.statusCode != 220  {
-                        completeResult = .failure(.HTTPError(code: response.statusCode))
-                    }
-
-                    if completeResult != nil {
-                        Environment.log.trace(String(data: data, encoding: .utf8) ?? "")
-                    }
-                }
-
-                if completeResult == nil {
-                    do {
-                        Environment.log.trace(String(data: data, encoding: .utf8) ?? "")
-                        let result = try self.decoder.decode(T.self, from: data)
-                        completeResult = .success(result)
-                    } catch let decodingError as Swift.DecodingError {
-                        completeResult = .failure(.decodingError(decodingError))
-                    } catch {
-                        completeResult = .failure(.genericError(error))
-                    }
+                Environment.log.trace(String(data: data, encoding: .utf8) ?? "")
+                do {
+                    Environment.log.trace(String(data: data, encoding: .utf8) ?? "")
+                    let result = try self.decoder.decode(T.self, from: data)
+                    completeResult = .success(result)
+                } catch let decodingError as Swift.DecodingError {
+                    completeResult = .failure(.decodingError(decodingError))
+                } catch {
+                    completeResult = .failure(.genericError(error))
                 }
             } else {
                 completeResult = .failure(.unsupportedResponseError)

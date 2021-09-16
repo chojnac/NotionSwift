@@ -356,6 +356,7 @@ extension PagePropertyType.FilesPropertyValue: Codable {
 
     private struct _FileLink: Codable {
         let url: String
+        // swiftlint:disable:next identifier_name
         let expiry_time: Date
     }
 
