@@ -44,11 +44,6 @@ public protocol NotionClientType: AnyObject {
         completed: @escaping (Result<ListResponse<Page>, NotionClientError>) -> Void
     )
 
-    func databaseList(
-        params: BaseQueryParams,
-        completed: @escaping (Result<ListResponse<Database>, NotionClientError>) -> Void
-    )
-
     // MARK: - page
 
     func page(
@@ -103,12 +98,6 @@ extension NotionClientType {
         completed: @escaping (Result<ListResponse<Page>, NotionClientError>) -> Void
     ) {
         self.databaseQuery(databaseId: databaseId, params: .init(), completed: completed)
-    }
-
-    public func databaseList(
-        completed: @escaping (Result<ListResponse<Database>, NotionClientError>) -> Void
-    ) {
-        self.databaseList(params: .init(), completed: completed)
     }
 
     public func usersList(

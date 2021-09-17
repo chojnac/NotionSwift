@@ -61,14 +61,6 @@ extension NotionClientType {
         }
     }
 
-    public func databaseList(
-        params: BaseQueryParams = .init()
-    ) -> AnyPublisher<ListResponse<Database>, NotionClientError> {
-        convertToPublisher { promise in
-            self.databaseList(params: params, completed: promise)
-        }
-    }
-
     // MARK: - page
 
     public func page(

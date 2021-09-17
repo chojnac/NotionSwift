@@ -43,10 +43,22 @@ let notion = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: 
 
 ### List all databases
 
+The `https://api.notion.com/v1/databases` is deprecated. To recommended way to list all databases is to use `https://api.notion.com/v1/search` endpoint. 
+In theory, search allows filtering results by object type. However, currently, the only filter allowed is `object` which will filter by type of object (either `page` or `database`)
+To narrow search results,  use code snippet belove. 
+
 ```swift
 // fetch avaiable databases
-notion.databaseList {
-    print($0)
+notion.search(request: .init(filter: .database)) { result in
+    let databases = result.map { objects in
+        objects.results.compactMap({ object -> Database? in
+            if case .database(let db) = object {
+                return db
+            }
+            return nil
+        })
+    }
+    print(databases)
 }
 ```
 

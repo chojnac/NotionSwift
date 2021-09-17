@@ -36,16 +36,4 @@ extension NotionClient {
             completed: completed
         )
     }
-
-    public func databaseList(
-        params: BaseQueryParams,
-        completed: @escaping (Result<ListResponse<Database>, NotionClientError>) -> Void
-    ) {
-
-        networkClient.get(
-            urlBuilder.url(path: "/v1/databases"),
-            headers: headers(),
-            completed: completed
-        )
-    }
 }
