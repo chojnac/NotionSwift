@@ -49,6 +49,12 @@ public protocol NotionClientType: AnyObject {
         completed: @escaping (Result<Database, NotionClientError>) -> Void
     )
 
+    func databaseUpdate(
+        databaseId: Database.Identifier,
+        request: DatabaseUpdateRequest,
+        completed: @escaping (Result<Database, NotionClientError>) -> Void
+    )
+
     // MARK: - page
 
     func page(

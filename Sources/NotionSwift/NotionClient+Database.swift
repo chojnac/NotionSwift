@@ -50,4 +50,20 @@ extension NotionClient {
             completed: completed
         )
     }
+
+    public func databaseUpdate(
+        databaseId: Database.Identifier,
+        request: DatabaseUpdateRequest,
+        completed: @escaping (Result<Database, NotionClientError>) -> Void
+    ) {
+        networkClient.patch(
+            urlBuilder.url(
+                path: "/v1/databases/{identifier}",
+                identifier: databaseId
+            ),
+            body: request,
+            headers: headers(),
+            completed: completed
+        )
+    }
 }

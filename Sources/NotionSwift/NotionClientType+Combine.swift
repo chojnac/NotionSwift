@@ -69,6 +69,15 @@ extension NotionClientType {
         }
     }
 
+    func databaseUpdate(
+        databaseId: Database.Identifier,
+        request: DatabaseUpdateRequest
+    ) -> AnyPublisher<Database, NotionClientError> {
+        convertToPublisher { promise in
+            self.databaseUpdate(databaseId: databaseId, request: request, completed: promise)
+        }
+    }
+
     // MARK: - page
 
     public func page(
