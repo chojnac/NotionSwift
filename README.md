@@ -179,6 +179,20 @@ notion.blockAppend(blockId: pageId, children: blocks) {
 }
 ```
 
+### Update a block 
+
+```swift
+let blockId = Block.Identifier("{BLOCK UUIDv4}")
+let text: [RichText] = [
+    .init(string: "Current time: "),
+    .init(string: Date().description, annotations: .bold)
+]
+let block = UpdateBlock(value: .paragraph(text: text))
+notion.blockUpdate(blockId: blockId, value: block) {
+    print("Updated: ", $0)
+}
+```
+
 ### Retrieve a user
 
 ```swift
