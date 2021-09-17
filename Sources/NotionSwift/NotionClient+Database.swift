@@ -36,4 +36,18 @@ extension NotionClient {
             completed: completed
         )
     }
+
+    public func databaseCreate(
+        request: DatabaseCreateRequest,
+        completed: @escaping (Result<Database, NotionClientError>) -> Void
+    ) {
+        networkClient.post(
+            urlBuilder.url(
+                path: "/v1/databases"
+            ),
+            body: request,
+            headers: headers(),
+            completed: completed
+        )
+    }
 }

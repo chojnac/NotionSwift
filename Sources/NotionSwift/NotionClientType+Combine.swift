@@ -61,6 +61,14 @@ extension NotionClientType {
         }
     }
 
+    public func databaseCreate(
+        request: DatabaseCreateRequest
+    ) -> AnyPublisher<Database, NotionClientError> {
+        convertToPublisher { promise in
+            self.databaseCreate(request: request, completed: promise)
+        }
+    }
+
     // MARK: - page
 
     public func page(

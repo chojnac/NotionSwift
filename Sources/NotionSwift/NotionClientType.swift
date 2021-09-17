@@ -44,6 +44,11 @@ public protocol NotionClientType: AnyObject {
         completed: @escaping (Result<ListResponse<Page>, NotionClientError>) -> Void
     )
 
+    func databaseCreate(
+        request: DatabaseCreateRequest,
+        completed: @escaping (Result<Database, NotionClientError>) -> Void
+    )
+
     // MARK: - page
 
     func page(
