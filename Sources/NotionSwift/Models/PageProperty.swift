@@ -38,7 +38,7 @@ public enum PagePropertyType {
     case checkbox(Bool)
     case url(URL?)
     case email(String?)
-    case phoneNumber(String)
+    case phoneNumber(String?)
     case createdTime(Date)
     case createdBy(User)
     case lastEditedTime(Date)
@@ -80,10 +80,15 @@ extension PagePropertyType {
     }
 
     public struct DatePropertyValue {
-        public let start: Date
-        public let end: Date?
+        public enum DateValue {
+            case dateOnly(Date)
+            case dateAndTime(Date)
+        }
+        
+        public let start: DateValue
+        public let end: DateValue?
 
-        public init(start: Date, end: Date?) {
+        public init(start: DateValue, end: DateValue?) {
             self.start = start
             self.end = end
         }
@@ -257,7 +262,7 @@ extension PagePropertyType: Codable {
             )
             self = .email(value)
         case CodingKeys.phoneNumber.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 String.self,
                 forKey: .phoneNumber
             )
@@ -340,7 +345,72 @@ extension PagePropertyType: Codable {
 
 extension PagePropertyType.SelectPropertyValue: Codable {}
 extension PagePropertyType.MultiSelectPropertyValue: Codable {}
-extension PagePropertyType.DatePropertyValue: Codable {}
+extension PagePropertyType.DatePropertyValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case start
+        case end
+    }
+
+    static let errorMessage = "Date string does not match format expected by formatter."
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let startValue = try container.decode(String.self, forKey: .start)
+        let endValue = try container.decodeIfPresent(String.self, forKey: .end)
+
+        guard let start = Self.decodeDateValue(startValue) else {
+            throw Swift.DecodingError.dataCorruptedError(
+                forKey: .start,
+                in: container,
+                debugDescription: Self.errorMessage
+            )
+        }
+        self.start = start
+
+        guard let endValue = endValue else {
+            self.end = nil
+            return
+        }
+
+        guard let end = Self.decodeDateValue(endValue) else {
+            throw Swift.DecodingError.dataCorruptedError(
+                forKey: .end,
+                in: container,
+                debugDescription: Self.errorMessage
+            )
+        }
+
+        self.end = end
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        let start = Self.encodeDateValue(start)
+        let end = self.end.map(Self.encodeDateValue(_:))
+        try container.encode(start, forKey: .start)
+        try container.encodeIfPresent(end, forKey: .end)
+    }
+
+    private static func decodeDateValue(_ value: String) -> DateValue? {
+        if let date = DateFormatter.iso8601Full.date(from: value) {
+            return .dateAndTime(date)
+        }
+
+        if let date = DateFormatter.iso8601DateOnly.date(from: value) {
+            return .dateOnly(date)
+        }
+
+        return nil
+    }
+
+    private static func encodeDateValue(_ value: DateValue) -> String {
+        switch value {
+        case .dateOnly(let date):
+            return DateFormatter.iso8601DateOnly.string(from: date)
+        case .dateAndTime(let date):
+            return DateFormatter.iso8601Full.string(from: date)
+        }
+    }
+}
 extension PagePropertyType.FilesPropertyValue: Codable {
 
     enum CodingKeys: String, CodingKey {
