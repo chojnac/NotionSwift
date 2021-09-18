@@ -10,7 +10,7 @@ extension NotionClient {
 
     public func user(
         userId: User.Identifier,
-        completed: @escaping (Result<User, Network.Errors>) -> Void
+        completed: @escaping (Result<User, NotionClientError>) -> Void
     ) {
         networkClient.get(
             urlBuilder.url(path: "/v1/users/{identifier}", identifier: userId),
@@ -21,7 +21,7 @@ extension NotionClient {
 
     public func usersList(
         params: BaseQueryParams,
-        completed: @escaping (Result<ListResponse<User>, Network.Errors>) -> Void
+        completed: @escaping (Result<ListResponse<User>, NotionClientError>) -> Void
     ) {
         networkClient.get(
             urlBuilder.url(path: "/v1/users", params: params.asParams),

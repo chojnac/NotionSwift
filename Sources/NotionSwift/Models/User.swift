@@ -58,10 +58,10 @@ extension User: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(Identifier.self, forKey: .id)
-        self.name = try container.decode(String?.self, forKey: .name)
-        self.avatarURL = try container.decode(String?.self, forKey: .avatarURL)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.avatarURL = try container.decodeIfPresent(String.self, forKey: .avatarURL)
 
-        if let type = try container.decode(String?.self, forKey: .type) {
+        if let type = try container.decodeIfPresent(String?.self, forKey: .type) {
             switch type {
             case CodingKeys.person.stringValue:
                 let person = try container.decode(Person.self, forKey: .person)

@@ -18,7 +18,7 @@ extension NotionClientType {
     public func blockChildren(
         blockId: Block.Identifier,
         params: BaseQueryParams = .init()
-    ) -> AnyPublisher<ListResponse<ReadBlock>, Network.Errors> {
+    ) -> AnyPublisher<ListResponse<ReadBlock>, NotionClientError> {
         convertToPublisher { promise in
             self.blockChildren(blockId: blockId, params: params, completed: promise)
         }
@@ -27,9 +27,18 @@ extension NotionClientType {
     public func blockAppend(
         blockId: Block.Identifier,
         children: [WriteBlock]
-    ) -> AnyPublisher<ReadBlock, Network.Errors> {
+    ) -> AnyPublisher<ListResponse<ReadBlock>, NotionClientError> {
         convertToPublisher { promise in
             self.blockAppend(blockId: blockId, children: children, completed: promise)
+        }
+    }
+
+    public func blockDelete(
+        blockId: Block.Identifier,
+        completed: @escaping (Result<ReadBlock, NotionClientError>) -> Void
+    ) -> AnyPublisher<ReadBlock, NotionClientError> {
+        convertToPublisher { promise in
+            self.blockDelete(blockId: blockId, completed: promise)
         }
     }
 
@@ -37,7 +46,7 @@ extension NotionClientType {
 
     public func database(
         databaseId: Database.Identifier
-    ) -> AnyPublisher<Database, Network.Errors> {
+    ) -> AnyPublisher<Database, NotionClientError> {
         convertToPublisher { promise in
             self.database(databaseId: databaseId, completed: promise)
         }
@@ -46,17 +55,26 @@ extension NotionClientType {
     public func databaseQuery(
         databaseId: Database.Identifier,
         params: DatabaseQueryParams = .init()
-    ) -> AnyPublisher<ListResponse<Page>, Network.Errors> {
+    ) -> AnyPublisher<ListResponse<Page>, NotionClientError> {
         convertToPublisher { promise in
             self.databaseQuery(databaseId: databaseId, params: params, completed: promise)
         }
     }
 
-    public func databaseList(
-        params: BaseQueryParams = .init()
-    ) -> AnyPublisher<ListResponse<Database>, Network.Errors> {
+    public func databaseCreate(
+        request: DatabaseCreateRequest
+    ) -> AnyPublisher<Database, NotionClientError> {
         convertToPublisher { promise in
-            self.databaseList(params: params, completed: promise)
+            self.databaseCreate(request: request, completed: promise)
+        }
+    }
+
+    func databaseUpdate(
+        databaseId: Database.Identifier,
+        request: DatabaseUpdateRequest
+    ) -> AnyPublisher<Database, NotionClientError> {
+        convertToPublisher { promise in
+            self.databaseUpdate(databaseId: databaseId, request: request, completed: promise)
         }
     }
 
@@ -64,7 +82,7 @@ extension NotionClientType {
 
     public func page(
         pageId: Page.Identifier
-    ) -> AnyPublisher<Page, Network.Errors> {
+    ) -> AnyPublisher<Page, NotionClientError> {
         convertToPublisher { promise in
             self.page(pageId: pageId, completed: promise)
         }
@@ -72,7 +90,7 @@ extension NotionClientType {
 
     public func pageCreate(
         request: PageCreateRequest
-    ) -> AnyPublisher<Page, Network.Errors> {
+    ) -> AnyPublisher<Page, NotionClientError> {
         convertToPublisher { promise in
             self.pageCreate(request: request, completed: promise)
         }
@@ -81,7 +99,7 @@ extension NotionClientType {
     public func pageUpdateProperties(
         pageId: Page.Identifier,
         request: PageProperiesUpdateRequest
-    ) -> AnyPublisher<Page, Network.Errors> {
+    ) -> AnyPublisher<Page, NotionClientError> {
         convertToPublisher { promise in
             self.pageUpdateProperties(
                 pageId: pageId,
@@ -95,7 +113,7 @@ extension NotionClientType {
     
     public func user(
         userId: User.Identifier
-    ) -> AnyPublisher<User, Network.Errors> {
+    ) -> AnyPublisher<User, NotionClientError> {
         convertToPublisher { promise in
             self.user(userId: userId, completed: promise)
         }
@@ -103,7 +121,7 @@ extension NotionClientType {
 
     public func usersList(
         params: BaseQueryParams = .init()
-    ) -> AnyPublisher<ListResponse<User>, Network.Errors> {
+    ) -> AnyPublisher<ListResponse<User>, NotionClientError> {
         convertToPublisher { promise in
             self.usersList(params: params, completed: promise)
         }
@@ -113,7 +131,7 @@ extension NotionClientType {
 
     public func search(
         request: SearchRequest
-    ) -> AnyPublisher<SearchResponse, Network.Errors> {
+    ) -> AnyPublisher<SearchResponse, NotionClientError> {
         convertToPublisher { promise in
             self.search(request: request, completed: promise)
         }
@@ -122,8 +140,8 @@ extension NotionClientType {
 
 @available(iOS 13.0, macOS 10.15, *)
 private func convertToPublisher<Output>(
-    _ attemptToFulfill: @escaping (@escaping Future<Output, Network.Errors>.Promise) -> Void
-) -> AnyPublisher<Output, Network.Errors> {
+    _ attemptToFulfill: @escaping (@escaping Future<Output, NotionClientError>.Promise) -> Void
+) -> AnyPublisher<Output, NotionClientError> {
     return Deferred { Future(attemptToFulfill) }.eraseToAnyPublisher()
 }
 

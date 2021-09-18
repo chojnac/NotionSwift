@@ -11,7 +11,7 @@ extension NotionClient {
     public func blockChildren(
         blockId: Block.Identifier,
         params: BaseQueryParams,
-        completed: @escaping (Result<ListResponse<ReadBlock>, Network.Errors>) -> Void
+        completed: @escaping (Result<ListResponse<ReadBlock>, NotionClientError>) -> Void
     ) {
         networkClient.get(
             urlBuilder.url(
@@ -27,7 +27,7 @@ extension NotionClient {
     public func blockAppend(
         blockId: Block.Identifier,
         children: [WriteBlock],
-        completed: @escaping (Result<ReadBlock, Network.Errors>) -> Void
+        completed: @escaping (Result<ListResponse<ReadBlock>, NotionClientError>) -> Void
     ) {
         networkClient.patch(
             urlBuilder.url(
@@ -35,6 +35,36 @@ extension NotionClient {
                 identifier: blockId
             ),
             body: BlockAppendRequest(children: children),
+            headers: headers(),
+            completed: completed
+        )
+    }
+
+    public func blockUpdate(
+        blockId: Block.Identifier,
+        value: UpdateBlock,
+        completed: @escaping (Result<ReadBlock, NotionClientError>) -> Void
+    ) {
+        networkClient.patch(
+            urlBuilder.url(
+                path: "/v1/blocks/{identifier}",
+                identifier: blockId
+            ),
+            body: value,
+            headers: headers(),
+            completed: completed
+        )
+    }
+
+    public func blockDelete(
+        blockId: Block.Identifier,
+        completed: @escaping (Result<ReadBlock, NotionClientError>) -> Void
+    ) {
+        networkClient.delete(
+            urlBuilder.url(
+                path: "/v1/blocks/{identifier}",
+                identifier: blockId
+            ),
             headers: headers(),
             completed: completed
         )

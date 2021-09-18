@@ -14,17 +14,20 @@ public struct ReadBlock: CustomStringConvertible {
     public let id: Block.Identifier
     public let createdTime: Date
     public let lastEditedTime: Date
+    public let archived: Bool
     public let type: BlockType
     public let hasChildren: Bool
 
     init(
         id: Block.Identifier,
+        archived: Bool,
         type: BlockType,
         createdTime: Date,
         lastEditedTime: Date,
         hasChildren: Bool
     ) {
         self.id = id
+        self.archived = archived
         self.createdTime = createdTime
         self.lastEditedTime = lastEditedTime
         self.type = type
@@ -47,12 +50,23 @@ public struct WriteBlock {
     }
 }
 
+public struct UpdateBlock {
+    public let value: BlockType?
+    public let archived: Bool?
+
+    public init(value: BlockType?, archived: Bool? = nil) {
+        self.value = value
+        self.archived = archived
+    }
+}
+
 // MARK: - Codable
 
 extension Block {
     enum CodingKeys: String, CodingKey {
         case id
         case type
+        case archived
         case createdTime = "created_time"
         case lastEditedTime = "last_edited_time"
         case hasChildren = "has_children"
@@ -64,6 +78,7 @@ extension ReadBlock: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: Block.CodingKeys.self)
         id = try container.decode(Block.Identifier.self, forKey: .id)
+        archived = try container.decode(Bool.self, forKey: .archived)
         createdTime = try container.decode(Date.self, forKey: .createdTime)
         lastEditedTime = try container.decode(Date.self, forKey: .lastEditedTime)
         type = try BlockType(from: decoder)
@@ -77,6 +92,16 @@ extension WriteBlock: Encodable {
         try type.encode(to: encoder)
         try container.encode(hasChildren, forKey: .hasChildren)
         try container.encode("block", forKey: .object)
+    }
+}
+
+extension UpdateBlock: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Block.CodingKeys.self)
+        if let value = value {
+            try value.encode(to: encoder)
+        }
+        try container.encodeIfPresent(archived, forKey: .archived)
     }
 }
 

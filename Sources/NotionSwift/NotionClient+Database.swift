@@ -9,7 +9,7 @@ import Foundation
 extension NotionClient {
     public func database(
         databaseId: Database.Identifier,
-        completed: @escaping (Result<Database, Network.Errors>) -> Void
+        completed: @escaping (Result<Database, NotionClientError>) -> Void
     ) {
         networkClient.get(
             urlBuilder.url(
@@ -24,7 +24,7 @@ extension NotionClient {
     public func databaseQuery(
         databaseId: Database.Identifier,
         params: DatabaseQueryParams,
-        completed: @escaping (Result<ListResponse<Page>, Network.Errors>) -> Void
+        completed: @escaping (Result<ListResponse<Page>, NotionClientError>) -> Void
     ) {
         networkClient.post(
             urlBuilder.url(
@@ -37,13 +37,31 @@ extension NotionClient {
         )
     }
 
-    public func databaseList(
-        params: BaseQueryParams,
-        completed: @escaping (Result<ListResponse<Database>, Network.Errors>) -> Void
+    public func databaseCreate(
+        request: DatabaseCreateRequest,
+        completed: @escaping (Result<Database, NotionClientError>) -> Void
     ) {
+        networkClient.post(
+            urlBuilder.url(
+                path: "/v1/databases"
+            ),
+            body: request,
+            headers: headers(),
+            completed: completed
+        )
+    }
 
-        networkClient.get(
-            urlBuilder.url(path: "/v1/databases"),
+    public func databaseUpdate(
+        databaseId: Database.Identifier,
+        request: DatabaseUpdateRequest,
+        completed: @escaping (Result<Database, NotionClientError>) -> Void
+    ) {
+        networkClient.patch(
+            urlBuilder.url(
+                path: "/v1/databases/{identifier}",
+                identifier: databaseId
+            ),
+            body: request,
             headers: headers(),
             completed: completed
         )

@@ -43,10 +43,22 @@ let notion = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: 
 
 ### List all databases
 
+The `https://api.notion.com/v1/databases` is deprecated. To recommended way to list all databases is to use `https://api.notion.com/v1/search` endpoint. 
+In theory, search allows filtering results by object type. However, currently, the only filter allowed is `object` which will filter by type of object (either `page` or `database`)
+To narrow search results,  use code snippet belove. 
+
 ```swift
 // fetch avaiable databases
-notion.databaseList {
-    print($0)
+notion.search(request: .init(filter: .database)) { result in
+    let databases = result.map { objects in
+        objects.results.compactMap({ object -> Database? in
+            if case .database(let db) = object {
+                return db
+            }
+            return nil
+        })
+    }
+    print(databases)
 }
 ```
 
@@ -67,6 +79,48 @@ notion.databaseQuery(databaseId: databaseId) {
 let databaseId = Database.Identifier("{DATABASE UUIDv4}")
 
 notion.database(databaseId: databaseId) {
+    print($0)
+}
+```
+
+### Create a database
+
+```swift
+let parentPageId = Page.Identifier("e67db074-973a-4ddb-b397-66d3c75f9ec9")
+
+let request = DatabaseCreateRequest(
+    parent: .pageId(parentPageId),
+    icon: .emoji("🤔"),
+    cover: .external(url: "https://images.unsplash.com/photo-1606787366850-de6330128bfc"),
+    title: [
+        .init(string: "Created at: \(Date())")
+    ],
+    properties: [
+        "Field 10": .richText
+    ]
+)
+
+notion.databaseCreate(request: request) {
+    print($0)
+}
+```
+
+### Update a database
+
+```swift
+let id = Database.Identifier("{DATABASE UUIDv4}")
+
+// update cover, icon & add a new field
+let request = DatabaseUpdateRequest(
+    title: nil,
+    icon: .emoji("🤔"),
+    cover: .external(url: "https://images.unsplash.com/photo-1606787366850-de6330128bfc"),
+    properties: [
+        "Field 10": .richText
+    ]
+)
+
+notion.databaseUpdate(databaseId: id, request: request) {
     print($0)
 }
 ```
@@ -176,6 +230,30 @@ let blocks: [WriteBlock] = [
 ]
 notion.blockAppend(blockId: pageId, children: blocks) {
     print($0)
+}
+```
+
+### Update a block 
+
+```swift
+let blockId = Block.Identifier("{BLOCK UUIDv4}")
+let text: [RichText] = [
+    .init(string: "Current time: "),
+    .init(string: Date().description, annotations: .bold)
+]
+let block = UpdateBlock(value: .paragraph(text: text))
+notion.blockUpdate(blockId: blockId, value: block) {
+    print("Updated: ", $0)
+}
+```
+
+### Block delete
+
+```swift
+let blockId = Block.Identifier("{BLOCK UUIDv4}")
+
+notion.blockDelete(blockId: block.id) {
+    print("Delete: ", $0)
 }
 ```
 

@@ -25,10 +25,10 @@ public struct WritePageProperty {
 
 public enum PagePropertyType {
     case richText([RichText])
-    case number(Int)
-    case select(SelectPropertyValue)
-    case multiSelect([SelectPropertyValue])
-    case date(DatePropertyValue)
+    case number(Int?)
+    case select(SelectPropertyValue?)
+    case multiSelect([MultiSelectPropertyValue])
+    case date(DatePropertyValue?)
     case formula(FormulaPropertyValue)
     case relation([Page.Identifier])
     case rollup(RollupPropertyValue)
@@ -37,8 +37,8 @@ public enum PagePropertyType {
     case files([FilesPropertyValue])
     case checkbox(Bool)
     case url(URL?)
-    case email(String)
-    case phoneNumber(String)
+    case email(String?)
+    case phoneNumber(String?)
     case createdTime(Date)
     case createdBy(User)
     case lastEditedTime(Date)
@@ -48,12 +48,28 @@ public enum PagePropertyType {
 
 extension PagePropertyType {
     public struct SelectPropertyValue {
-        public let id: EntityIdentifier<SelectPropertyValue, UUIDv4>?
+        public let id: EntityIdentifier<SelectPropertyValue, String>?
         public let name: String?
         public let color: String?
 
         public init(
-            id: EntityIdentifier<SelectPropertyValue, UUIDv4>?,
+            id: EntityIdentifier<SelectPropertyValue, String>?,
+            name: String?,
+            color: String?
+        ) {
+            self.id = id
+            self.name = name
+            self.color = color
+        }
+    }
+
+    public struct MultiSelectPropertyValue {
+        public let id: EntityIdentifier<MultiSelectPropertyValue, UUIDv4>?
+        public let name: String?
+        public let color: String?
+
+        public init(
+            id: EntityIdentifier<MultiSelectPropertyValue, UUIDv4>?,
             name: String?,
             color: String?
         ) {
@@ -64,20 +80,33 @@ extension PagePropertyType {
     }
 
     public struct DatePropertyValue {
-        public let start: Date
-        public let end: Date?
+        public enum DateValue {
+            case dateOnly(Date)
+            case dateAndTime(Date)
+        }
+        
+        public let start: DateValue
+        public let end: DateValue?
 
-        public init(start: Date, end: Date?) {
+        public init(start: DateValue, end: DateValue?) {
             self.start = start
             self.end = end
         }
     }
 
     public struct FilesPropertyValue {
-        public let name: String
+        public enum FileLink {
+            case external(url: String)
+            case file(url: String, expiryTime: Date)
+            case unknown(typeName: String)
+        }
 
-        public init(_ name: String) {
+        public let name: String
+        public let link: FileLink
+
+        public init(_ name: String, type: FileLink) {
             self.name = name
+            self.link = type
         }
     }
 
@@ -155,25 +184,25 @@ extension PagePropertyType: Codable {
             )
             self = .richText(value)
         case CodingKeys.number.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 Int.self,
                 forKey: .number
             )
             self = .number(value)
         case CodingKeys.select.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 PagePropertyType.SelectPropertyValue.self,
                 forKey: .select
             )
             self = .select(value)
         case CodingKeys.multiSelect.stringValue:
             let value = try container.decode(
-                [PagePropertyType.SelectPropertyValue].self,
+                [PagePropertyType.MultiSelectPropertyValue].self,
                 forKey: .multiSelect
             )
             self = .multiSelect(value)
         case CodingKeys.date.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 PagePropertyType.DatePropertyValue.self,
                 forKey: .date
             )
@@ -227,13 +256,13 @@ extension PagePropertyType: Codable {
             )
             self = .url(URL(string: value))
         case CodingKeys.email.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 String.self,
                 forKey: .email
             )
             self = .email(value)
         case CodingKeys.phoneNumber.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 String.self,
                 forKey: .phoneNumber
             )
@@ -271,61 +300,42 @@ extension PagePropertyType: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
         case .richText(let value):
-//            try container.encode(CodingKeys.richText.rawValue, forKey: .type)
             try container.encode(value, forKey: .richText)
         case .number(let value):
-//            try container.encode(CodingKeys.richText.rawValue, forKey: .type)
             try container.encode(value, forKey: .number)
         case .select(let value):
-//            try container.encode(CodingKeys.select.rawValue, forKey: .type)
             try container.encode(value, forKey: .select)
         case .multiSelect(let value):
-//            try container.encode(CodingKeys.multiSelect.rawValue, forKey: .type)
             try container.encode(value, forKey: .multiSelect)
         case .date(let value):
-//            try container.encode(CodingKeys.date.rawValue, forKey: .type)
             try container.encode(value, forKey: .date)
         case .formula(let value):
-//            try container.encode(CodingKeys.formula.rawValue, forKey: .type)
             try container.encode(value, forKey: .formula)
         case .relation(let value):
-//            try container.encode(CodingKeys.relation.rawValue, forKey: .type)
             try container.encode(value, forKey: .relation)
         case .rollup(let value):
-//            try container.encode(CodingKeys.rollup.rawValue, forKey: .type)
             try container.encode(value, forKey: .rollup)
         case .title(let value):
-//            try container.encode(CodingKeys.title.rawValue, forKey: .type)
             try container.encode(value, forKey: .title)
         case .people(let value):
-//            try container.encode(CodingKeys.people.rawValue, forKey: .type)
             try container.encode(value, forKey: .people)
         case .files(let value):
-//            try container.encode(CodingKeys.files.rawValue, forKey: .type)
             try container.encode(value, forKey: .files)
         case .checkbox(let value):
-//            try container.encode(CodingKeys.checkbox.rawValue, forKey: .type)
             try container.encode(value, forKey: .checkbox)
         case .url(let value):
-//            try container.encode(CodingKeys.url.rawValue, forKey: .type)
             try container.encode(value, forKey: .url)
         case .email(let value):
-//            try container.encode(CodingKeys.email.rawValue, forKey: .type)
             try container.encode(value, forKey: .email)
         case .phoneNumber(let value):
-//            try container.encode(CodingKeys.phoneNumber.rawValue, forKey: .type)
             try container.encode(value, forKey: .phoneNumber)
         case .createdTime(let value):
-//            try container.encode(CodingKeys.createdTime.rawValue, forKey: .type)
             try container.encode(value, forKey: .createdTime)
         case .createdBy(let value):
-//            try container.encode(CodingKeys.createdBy.rawValue, forKey: .type)
             try container.encode(value, forKey: .createdBy)
         case .lastEditedTime(let value):
-//            try container.encode(CodingKeys.lastEditedTime.rawValue, forKey: .type)
             try container.encode(value, forKey: .lastEditedTime)
         case .lastEditedBy(let value):
-//            try container.encode(CodingKeys.lastEditedBy.rawValue, forKey: .type)
             try container.encode(value, forKey: .lastEditedBy)
         case .unknown:
             break
@@ -334,8 +344,122 @@ extension PagePropertyType: Codable {
 }
 
 extension PagePropertyType.SelectPropertyValue: Codable {}
-extension PagePropertyType.DatePropertyValue: Codable {}
-extension PagePropertyType.FilesPropertyValue: Codable {}
+extension PagePropertyType.MultiSelectPropertyValue: Codable {}
+extension PagePropertyType.DatePropertyValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case start
+        case end
+    }
+
+    static let errorMessage = "Date string does not match format expected by formatter."
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let startValue = try container.decode(String.self, forKey: .start)
+
+        guard let start = Self.decodeDateValue(startValue) else {
+            throw Swift.DecodingError.dataCorruptedError(
+                forKey: .start,
+                in: container,
+                debugDescription: Self.errorMessage
+            )
+        }
+        self.start = start
+
+        guard let endValue = try container.decodeIfPresent(String.self, forKey: .end) else {
+            self.end = nil
+            return
+        }
+
+        guard let end = Self.decodeDateValue(endValue) else {
+            throw Swift.DecodingError.dataCorruptedError(
+                forKey: .end,
+                in: container,
+                debugDescription: Self.errorMessage
+            )
+        }
+
+        self.end = end
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        let start = Self.encodeDateValue(self.start)
+        let end = self.end.map(Self.encodeDateValue(_:))
+        try container.encode(start, forKey: .start)
+        try container.encodeIfPresent(end, forKey: .end)
+    }
+
+    private static func decodeDateValue(_ value: String) -> DateValue? {
+        if let date = DateFormatter.iso8601Full.date(from: value) {
+            return .dateAndTime(date)
+        }
+
+        if let date = DateFormatter.iso8601DateOnly.date(from: value) {
+            return .dateOnly(date)
+        }
+
+        return nil
+    }
+
+    private static func encodeDateValue(_ value: DateValue) -> String {
+        switch value {
+        case .dateOnly(let date):
+            return DateFormatter.iso8601DateOnly.string(from: date)
+        case .dateAndTime(let date):
+            return DateFormatter.iso8601Full.string(from: date)
+        }
+    }
+}
+extension PagePropertyType.FilesPropertyValue: Codable {
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case type
+        case file
+        case external
+    }
+
+    private struct _ExternalFileLink: Codable {
+        let url: String
+    }
+
+    private struct _FileLink: Codable {
+        let url: String
+        // swiftlint:disable:next identifier_name
+        let expiry_time: Date
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        let type = try container.decode(String.self, forKey: .type)
+
+        if type == CodingKeys.external.rawValue {
+            let value = try container.decode(_ExternalFileLink.self, forKey: .external)
+            link = .external(url: value.url)
+        } else if type == CodingKeys.file.rawValue {
+            let value = try container.decode(_FileLink.self, forKey: .file)
+            link = .file(url: value.url, expiryTime: value.expiry_time)
+        } else {
+            link = .unknown(typeName: type)
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        switch link {
+        case let .external(url):
+            try container.encode(CodingKeys.external.rawValue, forKey: .type)
+            try container.encode(_ExternalFileLink(url: url), forKey: .external)
+        case let .file(url, expiryTime):
+            try container.encode(CodingKeys.file.rawValue, forKey: .type)
+            try container.encode(_FileLink(url: url, expiry_time: expiryTime), forKey: .file)
+        case .unknown:
+            break
+        }
+    }
+}
 
 extension PagePropertyType.FormulaPropertyValue: Codable {
     enum CodingKeys: String, CodingKey {

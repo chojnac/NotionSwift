@@ -15,6 +15,44 @@ public enum BlockType {
     case toggle(TextAndChildrenBlockValue)
     case childPage(ChildBlockValue)
     case unsupported
+
+    // MARK: - helper builders
+
+    public static func paragraph(text: [RichText], children: [BlockType]? = nil) -> BlockType {
+        return .paragraph(.init(text: text, children: children))
+    }
+
+    public static func heading1(text: [RichText]) -> BlockType {
+        return .heading1(.init(text: text))
+    }
+
+    public static func heading2(text: [RichText]) -> BlockType {
+        return .heading2(.init(text: text))
+    }
+
+    public static func heading3(text: [RichText]) -> BlockType {
+        return .heading3(.init(text: text))
+    }
+
+    public static func bulletedListItem(text: [RichText], children: [BlockType]? = nil) -> BlockType {
+        return .bulletedListItem(.init(text: text, children: children))
+    }
+
+    public static func numberedListItem(text: [RichText], children: [BlockType]? = nil) -> BlockType {
+        return .numberedListItem(.init(text: text, children: children))
+    }
+
+    public static func toDo(text: [RichText], checked: Bool? = nil, children: [BlockType]? = nil) -> BlockType {
+        return .toDo(.init(text: text, checked: checked, children: children))
+    }
+
+    public static func toggle(text: [RichText], children: [BlockType]? = nil) -> BlockType {
+        return .toggle(.init(text: text, children: children))
+    }
+
+    public static func childPage(_ title: String) -> BlockType {
+        return .childPage(.init(title: title))
+    }
 }
 
 extension BlockType {
