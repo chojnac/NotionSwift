@@ -355,7 +355,6 @@ extension PagePropertyType.DatePropertyValue: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let startValue = try container.decode(String.self, forKey: .start)
-        let endValue = try container.decodeIfPresent(String.self, forKey: .end)
 
         guard let start = Self.decodeDateValue(startValue) else {
             throw Swift.DecodingError.dataCorruptedError(
@@ -366,7 +365,7 @@ extension PagePropertyType.DatePropertyValue: Codable {
         }
         self.start = start
 
-        guard let endValue = endValue else {
+        guard let endValue = try container.decodeIfPresent(String.self, forKey: .end) else {
             self.end = nil
             return
         }
@@ -384,7 +383,7 @@ extension PagePropertyType.DatePropertyValue: Codable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        let start = Self.encodeDateValue(start)
+        let start = Self.encodeDateValue(self.start)
         let end = self.end.map(Self.encodeDateValue(_:))
         try container.encode(start, forKey: .start)
         try container.encodeIfPresent(end, forKey: .end)

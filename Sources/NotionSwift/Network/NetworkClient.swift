@@ -128,7 +128,7 @@ public class DefaultNetworkClient: NetworkClient {
         completed: @escaping (Result<R, NotionClientError>) -> Void
     ) {
         // swiftlint:disable:next syntactic_sugar
-        self.delete(url, body: Optional<Int>.none, headers: headers, completed: completed)
+        self.genericDelete(url, body: Optional<Int>.none, headers: headers, completed: completed)
     }
 
     public func delete<T: Encodable, R: Decodable>(
@@ -137,10 +137,10 @@ public class DefaultNetworkClient: NetworkClient {
         headers: Network.HTTPHeaders,
         completed: @escaping (Result<R, NotionClientError>) -> Void
     ) {
-        self.delete(url, body: body, headers: headers, completed: completed)
+        self.genericDelete(url, body: body, headers: headers, completed: completed)
     }
 
-    private func delete<T: Encodable, R: Decodable>(
+    private func genericDelete<T: Encodable, R: Decodable>(
         _ url: URL,
         body: T?,
         headers: Network.HTTPHeaders,
