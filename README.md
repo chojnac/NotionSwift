@@ -83,6 +83,48 @@ notion.database(databaseId: databaseId) {
 }
 ```
 
+### Create a database
+
+```swift
+let parentPageId = Page.Identifier("e67db074-973a-4ddb-b397-66d3c75f9ec9")
+
+let request = DatabaseCreateRequest(
+    parent: .pageId(parentPageId),
+    icon: .emoji("🤔"),
+    cover: .external(url: "https://images.unsplash.com/photo-1606787366850-de6330128bfc"),
+    title: [
+        .init(string: "Created at: \(Date())")
+    ],
+    properties: [
+        "Field 10": .richText
+    ]
+)
+
+notion.databaseCreate(request: request) {
+    print($0)
+}
+```
+
+### Update a database
+
+```swift
+let id = Database.Identifier("{DATABASE UUIDv4}")
+
+// update cover, icon & add a new field
+let request = DatabaseUpdateRequest(
+    title: nil,
+    icon: .emoji("🤔"),
+    cover: .external(url: "https://images.unsplash.com/photo-1606787366850-de6330128bfc"),
+    properties: [
+        "Field 10": .richText
+    ]
+)
+
+notion.databaseUpdate(databaseId: id, request: request) {
+    print($0)
+}
+```
+
 ### Retrieve a page
 
 Retrieve page properties. 
@@ -202,6 +244,16 @@ let text: [RichText] = [
 let block = UpdateBlock(value: .paragraph(text: text))
 notion.blockUpdate(blockId: blockId, value: block) {
     print("Updated: ", $0)
+}
+```
+
+### Block delete
+
+```swift
+let blockId = Block.Identifier("{BLOCK UUIDv4}")
+
+notion.blockDelete(blockId: block.id) {
+    print("Delete: ", $0)
 }
 ```
 
