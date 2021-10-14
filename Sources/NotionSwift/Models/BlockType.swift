@@ -14,6 +14,7 @@ public enum BlockType {
     case toDo(ToDoBlockValue)
     case toggle(TextAndChildrenBlockValue)
     case childPage(ChildBlockValue)
+    case image(ImageBlockValue)
     case unsupported
 
     // MARK: - helper builders
@@ -52,6 +53,10 @@ public enum BlockType {
 
     public static func childPage(_ title: String) -> BlockType {
         return .childPage(.init(title: title))
+    }
+    
+    public static func image(caption: [RichText], file: ImageBlockValue.FileBlock?) -> BlockType {
+        return .image(.init(caption: caption, file: file))
     }
 }
 
@@ -93,6 +98,26 @@ extension BlockType {
             self.title = title
         }
     }
+    
+    public struct ImageBlockValue {
+        public struct FileBlock: Codable {
+            public let url: String
+            public let expiryTime: Date
+            
+            enum CodingKeys: String, CodingKey {
+                case url
+                case expiryTime = "expiry_time"
+            }
+        }
+        
+        public let caption: [RichText]
+        public let file: FileBlock?
+
+        public init(caption: [RichText], file: FileBlock?) {
+            self.caption = caption
+            self.file = file
+        }
+    }
 }
 
 // MARK: - Codable
@@ -109,6 +134,7 @@ extension BlockType: Codable {
         case toDo = "to_do"
         case toggle
         case childPage = "child_page"
+        case image = "image"
         case unsupported
     }
 
@@ -132,6 +158,8 @@ extension BlockType: Codable {
             return .toggle
         case .childPage:
             return .childPage
+        case .image:
+            return .image
         case .unsupported:
             return .unsupported
         }
@@ -175,6 +203,9 @@ extension BlockType: Codable {
         case .childPage:
             let value = try container.decode(ChildBlockValue.self, forKey: key)
             self = .childPage(value)
+        case .image:
+            let value = try container.decode(ImageBlockValue.self, forKey: key)
+            self = .image(value)
         case .type, .unsupported:
             self = .unsupported
         }
@@ -204,6 +235,8 @@ extension BlockType: Codable {
             try container.encode(value, forKey: key)
         case .childPage(let value):
             try container.encode(value, forKey: key)
+        case .image(let value):
+            try container.encode(value, forKey: key)
         case .unsupported:
             break
         }
@@ -214,3 +247,4 @@ extension BlockType.TextAndChildrenBlockValue: Codable {}
 extension BlockType.HeadingBlockValue: Codable {}
 extension BlockType.ToDoBlockValue: Codable {}
 extension BlockType.ChildBlockValue: Codable {}
+extension BlockType.ImageBlockValue: Codable {}
