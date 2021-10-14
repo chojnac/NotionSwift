@@ -58,4 +58,24 @@ final class PageCreateRequestTests: XCTestCase {
 
         XCTAssertEqual(result, #"{"children":[{"has_children":false,"object":"block","paragraph":{"text":[{"text":{"content":"Lorem ipsum dolor sit amet, "}}]},"type":"paragraph"}],"parent":{"type":"page_id","page_id":"12345"},"properties":{}}"#)
     }
+    
+    /// Please test this with a page that has an image block as first block
+    func testImageBlock() {
+        let expectation = XCTestExpectation(description: "Testing block image support")
+        
+        let parentId = Block.Identifier("id")
+        NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: "secret")).blockChildren(blockId: parentId) { result in
+            switch result {
+            case .success(let blocks):
+                XCTAssertNotNil(blocks.results.first?.type)
+                
+            case .failure(let error):
+                XCTAssertNotNil(error)
+            }
+            
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 10.0)
+    }
 }
