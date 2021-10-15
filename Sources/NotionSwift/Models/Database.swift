@@ -8,6 +8,7 @@ public struct Database {
     public typealias Identifier = EntityIdentifier<Database, UUIDv4>
     public typealias PropertyName = String
     public let id: Identifier
+    public let url: String
     public let title: [RichText]
     public let icon: IconFile?
     public let cover: CoverFile?
@@ -18,6 +19,7 @@ public struct Database {
 
     public init(
         id: Database.Identifier,
+        url: String,
         title: [RichText],
         icon: IconFile?,
         cover: CoverFile?,
@@ -27,6 +29,7 @@ public struct Database {
         parent: DatabaseParent
     ) {
         self.id = id
+        self.url = url
         self.title = title
         self.icon = icon
         self.cover = cover
@@ -40,6 +43,7 @@ public struct Database {
 extension Database: Decodable {
     enum CodingKeys: String, CodingKey {
         case id
+        case url
         case title
         case icon
         case cover
