@@ -64,13 +64,58 @@ public enum BlockType {
         return .toggle(.init(text: text, children: children))
     }
 
+    public static func code(text: [RichText], language: String? = nil) -> BlockType {
+        return .code(.init(text: text, language: language))
+    }
+
     public static func childPage(_ title: String) -> BlockType {
         return .childPage(.init(title: title))
     }
-    
-    public static func image(file: FileFile, caption: [RichText]) -> BlockType {
+
+    public static func childDatabase(_ title: String) -> BlockType {
+        return .childPage(.init(title: title))
+    }
+
+    public static func embed(url: String, caption: [RichText]) -> BlockType {
+        return .embed(.init(url: url, caption: caption))
+    }
+
+    public static func callout(text: [RichText], children: [BlockType]? = nil, icon: IconFile? = nil) -> BlockType {
+        return .callout(.init(text: text, children: children, icon: icon))
+    }
+
+    public static func quote(text: [RichText], children: [BlockType]? = nil) -> BlockType {
+        return .quote(.init(text: text, children: children))
+    }
+
+    public static func video(file: FileFile, caption: [RichText] = []) -> BlockType {
+        return .video(.init(file: file, caption: caption))
+    }
+
+    public static func audio(file: FileFile, caption: [RichText] = []) -> BlockType {
+        return .audio(.init(file: file, caption: caption))
+    }
+
+    public static func image(file: FileFile, caption: [RichText] = []) -> BlockType {
         return .image(.init(file: file, caption: caption))
     }
+
+    public static func file(file: FileFile, caption: [RichText] = []) -> BlockType {
+        return .file(.init(file: file, caption: caption))
+    }
+
+    public static func pdf(file: FileFile, caption: [RichText] = []) -> BlockType {
+        return .pdf(.init(file: file, caption: caption))
+    }
+
+    public static func bookmark(url: String, caption: [RichText] = []) -> BlockType {
+        return .bookmark(.init(url: url, caption: caption))
+    }
+
+    public static func equation(expression: String) -> BlockType {
+        return .equation(.init(expression: expression))
+    }
+
 }
 
 extension BlockType {
