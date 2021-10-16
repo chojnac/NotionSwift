@@ -85,6 +85,10 @@ public protocol NotionClientType: AnyObject {
         completed: @escaping (Result<ListResponse<User>, NotionClientError>) -> Void
     )
 
+    func usersMe(
+        completed: @escaping (Result<User, NotionClientError>) -> Void
+    )
+
     // MARK: - search
     
     func search(

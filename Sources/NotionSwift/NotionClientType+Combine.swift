@@ -127,6 +127,12 @@ extension NotionClientType {
         }
     }
 
+    public func usersMe() -> AnyPublisher<User, NotionClientError> {
+        convertToPublisher { promise in
+            self.usersMe(completed: promise)
+        }
+    }
+
     // MARK: - search
 
     public func search(

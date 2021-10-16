@@ -29,4 +29,14 @@ extension NotionClient {
             completed: completed
         )
     }
+
+    public func usersMe(
+        completed: @escaping (Result<User, NotionClientError>) -> Void
+    ) {
+        networkClient.get(
+            urlBuilder.url(path: "/v1/users/me"),
+            headers: headers(),
+            completed: completed
+        )
+    }
 }
