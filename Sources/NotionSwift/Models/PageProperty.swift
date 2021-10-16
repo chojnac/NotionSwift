@@ -43,7 +43,7 @@ public enum PagePropertyType {
     case createdBy(User)
     case lastEditedTime(Date)
     case lastEditedBy(User)
-    case unknown
+    case unknown(type: String)
 }
 
 extension PagePropertyType {
@@ -292,7 +292,7 @@ extension PagePropertyType: Codable {
             )
             self = .lastEditedBy(value)
         default:
-            self = .unknown
+            self = .unknown(type: type)
         }
     }
 
