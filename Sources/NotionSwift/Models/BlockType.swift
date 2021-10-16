@@ -13,9 +13,22 @@ public enum BlockType {
     case numberedListItem(TextAndChildrenBlockValue)
     case toDo(ToDoBlockValue)
     case toggle(TextAndChildrenBlockValue)
-    case childPage(ChildBlockValue)
-    case image(ImageBlockValue)
-    case unsupported
+    case code(CodeBlockValue)
+    case childPage(ChildPageBlockValue)
+    case childDatabase(ChildDatabaseBlockValue)
+    case embed(EmbedBlockValue)
+    case callout(CalloutBlockValue)
+    case quote(QuoteBlockValue)
+    case video(FileBlockValue)
+    case audio(FileBlockValue)
+    case image(FileBlockValue)
+    case file(FileBlockValue)
+    case pdf(FileBlockValue)
+    case bookmark(BookmarkBlockValue)
+    case equation(EquationBlockValue)
+    case divider
+    case tableOfContents
+    case unsupported(type: String)
 
     // MARK: - helper builders
 
@@ -55,8 +68,8 @@ public enum BlockType {
         return .childPage(.init(title: title))
     }
     
-    public static func image(caption: [RichText], file: ImageBlockValue.FileBlock?) -> BlockType {
-        return .image(.init(caption: caption, file: file))
+    public static func image(file: FileFile, caption: [RichText]) -> BlockType {
+        return .image(.init(file: file, caption: caption))
     }
 }
 
@@ -91,31 +104,89 @@ extension BlockType {
         }
     }
 
-    public struct ChildBlockValue {
+    public struct ChildPageBlockValue {
         public let title: String
 
         public init(title: String) {
             self.title = title
         }
     }
-    
-    public struct ImageBlockValue {
-        public struct FileBlock: Codable {
-            public let url: String
-            public let expiryTime: Date
-            
-            enum CodingKeys: String, CodingKey {
-                case url
-                case expiryTime = "expiry_time"
-            }
-        }
-        
-        public let caption: [RichText]
-        public let file: FileBlock?
 
-        public init(caption: [RichText], file: FileBlock?) {
+    public struct ChildDatabaseBlockValue {
+        public let title: String
+
+        public init(title: String) {
+            self.title = title
+        }
+    }
+
+    public struct CodeBlockValue {
+        public let text: [RichText]
+        public let language: String?
+
+        public init(text: [RichText], language: String? = nil) {
+            self.text = text
+            self.language = language
+        }
+    }
+
+    public struct CalloutBlockValue {
+        public let text: [RichText]
+        public let children: [BlockType]?
+        public let icon: IconFile?
+
+        public init(text: [RichText], children: [BlockType]? = nil, icon: IconFile? = nil) {
+            self.text = text
+            self.children = children
+            self.icon = icon
+        }
+    }
+
+    public struct QuoteBlockValue {
+        public let text: [RichText]
+        public let children: [BlockType]?
+
+        public init(text: [RichText], children: [BlockType]? = nil) {
+            self.text = text
+            self.children = children
+        }
+    }
+
+    public struct EmbedBlockValue {
+        public let url: String
+        public let caption: [RichText]
+
+        public init(url: String, caption: [RichText]) {
+            self.url = url
             self.caption = caption
+        }
+    }
+
+    public struct BookmarkBlockValue {
+        public let url: String
+        public let caption: [RichText]
+
+        public init(url: String, caption: [RichText]) {
+            self.url = url
+            self.caption = caption
+        }
+    }
+
+    public struct FileBlockValue {
+        public let file: FileFile
+        public let caption: [RichText]
+
+        public init(file: FileFile, caption: [RichText]) {
             self.file = file
+            self.caption = caption
+        }
+    }
+
+    public struct EquationBlockValue {
+        public let expression: String
+
+        public init(expression: String) {
+            self.expression = expression
         }
     }
 }
@@ -134,7 +205,20 @@ extension BlockType: Codable {
         case toDo = "to_do"
         case toggle
         case childPage = "child_page"
-        case image = "image"
+        case childDatabase = "child_database"
+        case code
+        case embed
+        case callout
+        case quote
+        case video
+        case audio
+        case image
+        case file
+        case pdf
+        case bookmark
+        case equation
+        case divider
+        case tableOfContents = "table_of_contents"
         case unsupported
     }
 
@@ -158,10 +242,36 @@ extension BlockType: Codable {
             return .toggle
         case .childPage:
             return .childPage
+        case .childDatabase:
+            return .childDatabase
+        case .embed:
+            return .embed
+        case .callout:
+            return .callout
+        case .quote:
+            return .quote
+        case .video:
+            return .video
+        case .audio:
+            return .audio
         case .image:
             return .image
+        case .file:
+            return .file
+        case .pdf:
+            return .pdf
+        case .bookmark:
+            return .bookmark
+        case .equation:
+            return .equation
+        case .divider:
+            return .divider
+        case .tableOfContents:
+            return .tableOfContents
         case .unsupported:
             return .unsupported
+        case .code:
+            return .code
         }
     }
 
@@ -171,7 +281,7 @@ extension BlockType: Codable {
         let type = try container.decode(String.self, forKey: .type)
 
         guard let key = CodingKeys(stringValue: type) else {
-            self = .unsupported
+            self = .unsupported(type: type)
             return
         }
 
@@ -200,14 +310,51 @@ extension BlockType: Codable {
         case .toggle:
             let value = try container.decode(TextAndChildrenBlockValue.self, forKey: key)
             self = .toggle(value)
+        case .code:
+            let value = try container.decode(CodeBlockValue.self, forKey: key)
+            self = .code(value)
         case .childPage:
-            let value = try container.decode(ChildBlockValue.self, forKey: key)
+            let value = try container.decode(ChildPageBlockValue.self, forKey: key)
             self = .childPage(value)
+        case .childDatabase:
+            let value = try container.decode(ChildDatabaseBlockValue.self, forKey: key)
+            self = .childDatabase(value)
+        case .embed:
+            let value = try container.decode(EmbedBlockValue.self, forKey: key)
+            self = .embed(value)
+        case .callout:
+            let value = try container.decode(CalloutBlockValue.self, forKey: key)
+            self = .callout(value)
+        case .quote:
+            let value = try container.decode(QuoteBlockValue.self, forKey: key)
+            self = .quote(value)
+        case .video:
+            let value = try container.decode(FileBlockValue.self, forKey: key)
+            self = .video(value)
+        case .audio:
+            let value = try container.decode(FileBlockValue.self, forKey: key)
+            self = .audio(value)
         case .image:
-            let value = try container.decode(ImageBlockValue.self, forKey: key)
+            let value = try container.decode(FileBlockValue.self, forKey: key)
             self = .image(value)
+        case .file:
+            let value = try container.decode(FileBlockValue.self, forKey: key)
+            self = .file(value)
+        case .pdf:
+            let value = try container.decode(FileBlockValue.self, forKey: key)
+            self = .pdf(value)
+        case .bookmark:
+            let value = try container.decode(BookmarkBlockValue.self, forKey: key)
+            self = .bookmark(value)
+        case .equation:
+            let value = try container.decode(EquationBlockValue.self, forKey: key)
+            self = .equation(value)
+        case .divider:
+            self = .divider
+        case .tableOfContents:
+            self = .tableOfContents
         case .type, .unsupported:
-            self = .unsupported
+            self = .unsupported(type: type)
         }
     }
 
@@ -235,8 +382,34 @@ extension BlockType: Codable {
             try container.encode(value, forKey: key)
         case .childPage(let value):
             try container.encode(value, forKey: key)
+        case .code(let value):
+            try container.encode(value, forKey: key)
+        case .childDatabase(let value):
+            try container.encode(value, forKey: key)
+        case .embed(let value):
+            try container.encode(value, forKey: key)
+        case .callout(let value):
+            try container.encode(value, forKey: key)
+        case .quote(let value):
+            try container.encode(value, forKey: key)
+        case .video(let value):
+            try container.encode(value, forKey: key)
+        case .audio(let value):
+            try container.encode(value, forKey: key)
         case .image(let value):
             try container.encode(value, forKey: key)
+        case .file(let value):
+            try container.encode(value, forKey: key)
+        case .pdf(let value):
+            try container.encode(value, forKey: key)
+        case .bookmark(let value):
+            try container.encode(value, forKey: key)
+        case .equation(let value):
+            try container.encode(value, forKey: key)
+        case .divider:
+            break
+        case .tableOfContents:
+            break
         case .unsupported:
             break
         }
@@ -246,5 +419,27 @@ extension BlockType: Codable {
 extension BlockType.TextAndChildrenBlockValue: Codable {}
 extension BlockType.HeadingBlockValue: Codable {}
 extension BlockType.ToDoBlockValue: Codable {}
-extension BlockType.ChildBlockValue: Codable {}
-extension BlockType.ImageBlockValue: Codable {}
+extension BlockType.ChildPageBlockValue: Codable {}
+extension BlockType.ChildDatabaseBlockValue: Codable {}
+extension BlockType.EmbedBlockValue: Codable {}
+extension BlockType.CalloutBlockValue: Codable {}
+extension BlockType.CodeBlockValue: Codable {}
+extension BlockType.QuoteBlockValue: Codable {}
+extension BlockType.BookmarkBlockValue: Codable {}
+extension BlockType.EquationBlockValue: Codable {}
+extension BlockType.FileBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case caption
+    }
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.caption = try container.decode([RichText].self, forKey: .caption)
+        self.file = try FileFile(from: decoder)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(caption, forKey: .caption)
+        try file.encode(to: encoder)
+    }
+}
