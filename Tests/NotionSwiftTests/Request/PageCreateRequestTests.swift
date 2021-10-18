@@ -19,7 +19,7 @@ final class PageCreateRequestTests: XCTestCase {
 
         let result = try encodeToJson(given)
 
-        XCTAssertEqual(result, #"{"children":[],"parent":{"type":"page_id","page_id":"12345"},"properties":{"title":{"title":[{"text":{"content":"Lorem ipsum"}}]}}}"#)
+        XCTAssertEqual(result, #"{"children":[],"parent":{"page_id":"12345"},"properties":{"title":{"title":[{"text":{"content":"Lorem ipsum"}}]}}}"#)
     }
 
     func test_propertiesAndChildrenEncoding_case01() throws {
@@ -37,7 +37,7 @@ final class PageCreateRequestTests: XCTestCase {
 
         let result = try encodeToJson(given)
 
-        XCTAssertEqual(result, #"{"children":[{"has_children":false,"object":"block","paragraph":{"text":[{"text":{"content":"Lorem ipsum dolor sit amet, "}}]},"type":"paragraph"}],"parent":{"type":"page_id","page_id":"12345"},"properties":{"title":{"title":[{"text":{"content":"Lorem ipsum"}}]}}}"#)
+        XCTAssertEqual(result, #"{"children":[{"has_children":false,"object":"block","paragraph":{"text":[{"text":{"content":"Lorem ipsum dolor sit amet, "}}]},"type":"paragraph"}],"parent":{"page_id":"12345"},"properties":{"title":{"title":[{"text":{"content":"Lorem ipsum"}}]}}}"#)
     }
 
     func test_childrenEncoding_case01() throws {
@@ -56,6 +56,6 @@ final class PageCreateRequestTests: XCTestCase {
 
         let result = try encodeToJson(given)
 
-        XCTAssertEqual(result, #"{"children":[{"has_children":false,"object":"block","paragraph":{"text":[{"text":{"content":"Lorem ipsum dolor sit amet, "}}]},"type":"paragraph"}],"parent":{"type":"page_id","page_id":"12345"},"properties":{}}"#)
+        XCTAssertEqual(result, #"{"children":[{"has_children":false,"object":"block","paragraph":{"text":[{"text":{"content":"Lorem ipsum dolor sit amet, "}}]},"type":"paragraph"}],"parent":{"page_id":"12345"},"properties":{}}"#)
     }
 }
