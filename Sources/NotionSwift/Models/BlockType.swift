@@ -28,6 +28,7 @@ public enum BlockType {
     case equation(EquationBlockValue)
     case divider
     case tableOfContents
+    case breadcrumb
     case unsupported(type: String)
 
     // MARK: - helper builders
@@ -264,6 +265,7 @@ extension BlockType: Codable {
         case equation
         case divider
         case tableOfContents = "table_of_contents"
+        case breadcrumb
         case unsupported
     }
 
@@ -317,6 +319,8 @@ extension BlockType: Codable {
             return .unsupported
         case .code:
             return .code
+        case .breadcrumb:
+            return .breadcrumb
         }
     }
 
@@ -398,6 +402,8 @@ extension BlockType: Codable {
             self = .divider
         case .tableOfContents:
             self = .tableOfContents
+        case .breadcrumb:
+            self = .breadcrumb
         case .type, .unsupported:
             self = .unsupported(type: type)
         }
@@ -451,9 +457,7 @@ extension BlockType: Codable {
             try container.encode(value, forKey: key)
         case .equation(let value):
             try container.encode(value, forKey: key)
-        case .divider:
-            break
-        case .tableOfContents:
+        case .divider, .tableOfContents, .breadcrumb:
             break
         case .unsupported:
             break
