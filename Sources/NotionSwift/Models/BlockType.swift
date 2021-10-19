@@ -458,6 +458,7 @@ extension BlockType: Codable {
         case .equation(let value):
             try container.encode(value, forKey: key)
         case .divider, .tableOfContents, .breadcrumb:
+            try container.encode([String: String](), forKey: key)
             break
         case .unsupported:
             break
