@@ -124,6 +124,7 @@ public enum BlockType {
 extension BlockType {
 
     public struct ChildrenBlockValue {
+        /// field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
         public init(children: [BlockType]? = nil) {
@@ -135,6 +136,7 @@ extension BlockType {
 
     public struct TextAndChildrenBlockValue {
         public let text: [RichText]
+        /// field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
         public init(text: [RichText], children: [BlockType]? = nil) {
@@ -154,6 +156,7 @@ extension BlockType {
     public struct ToDoBlockValue {
         public let text: [RichText]
         public let checked: Bool?
+        // field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
         public init(text: [RichText], checked: Bool? = nil, children: [BlockType]? = nil) {
@@ -191,6 +194,7 @@ extension BlockType {
 
     public struct CalloutBlockValue {
         public let text: [RichText]
+        // field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
         public let icon: IconFile?
 
@@ -203,6 +207,7 @@ extension BlockType {
 
     public struct QuoteBlockValue {
         public let text: [RichText]
+        // field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
         public init(text: [RichText], children: [BlockType]? = nil) {
