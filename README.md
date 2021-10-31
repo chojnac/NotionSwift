@@ -15,14 +15,14 @@ For more details and documentation please check [Notion Developer Portal](https:
 ### CocoaPods
 
 ```ruby
-pod 'NotionSwift', '0.3.0'
+pod 'NotionSwift', '0.4.0'
 ```
 
 ### Swift Package Manager
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/chojnac/NotionSwift.git", .upToNextMajor(from: "0.3.0"))
+    .package(url: "https://github.com/chojnac/NotionSwift.git", .upToNextMajor(from: "0.4.0"))
 ]
 ```
 
@@ -233,7 +233,7 @@ notion.blockAppend(blockId: pageId, children: blocks) {
 }
 ```
 
-### Update a block 
+### Update a block
 
 ```swift
 let blockId = Block.Identifier("{BLOCK UUIDv4}")
