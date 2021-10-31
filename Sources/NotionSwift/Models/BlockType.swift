@@ -29,6 +29,8 @@ public enum BlockType {
     case divider
     case tableOfContents
     case breadcrumb
+    case column(ChildrenBlockValue)
+    case columnList(ChildrenBlockValue)
     case unsupported(type: String)
 
     // MARK: - helper builders
@@ -120,6 +122,17 @@ public enum BlockType {
 }
 
 extension BlockType {
+
+    public struct ChildrenBlockValue {
+        public let children: [BlockType]?
+
+        public init(children: [BlockType]? = nil) {
+            self.children = children
+        }
+
+        public static let none = ChildrenBlockValue(children: nil)
+    }
+
     public struct TextAndChildrenBlockValue {
         public let text: [RichText]
         public let children: [BlockType]?
@@ -266,6 +279,8 @@ extension BlockType: Codable {
         case divider
         case tableOfContents = "table_of_contents"
         case breadcrumb
+        case column
+        case columnList = "column_list"
         case unsupported
     }
 
@@ -319,6 +334,10 @@ extension BlockType: Codable {
             return .unsupported
         case .code:
             return .code
+        case .column:
+            return .column
+        case .columnList:
+            return .columnList
         case .breadcrumb:
             return .breadcrumb
         }
@@ -404,6 +423,12 @@ extension BlockType: Codable {
             self = .tableOfContents
         case .breadcrumb:
             self = .breadcrumb
+        case .column:
+            let value = try container.decode(ChildrenBlockValue.self, forKey: key)
+            self = .column(value)
+        case .columnList:
+            let value = try container.decode(ChildrenBlockValue.self, forKey: key)
+            self = .columnList(value)
         case .type, .unsupported:
             self = .unsupported(type: type)
         }
@@ -457,7 +482,7 @@ extension BlockType: Codable {
             try container.encode(value, forKey: key)
         case .equation(let value):
             try container.encode(value, forKey: key)
-        case .divider, .tableOfContents, .breadcrumb:
+        case .divider, .tableOfContents, .breadcrumb, .column, .columnList:
             try container.encode([String: String](), forKey: key)
             break
         case .unsupported:
@@ -466,6 +491,7 @@ extension BlockType: Codable {
     }
 }
 
+extension BlockType.ChildrenBlockValue: Codable {}
 extension BlockType.TextAndChildrenBlockValue: Codable {}
 extension BlockType.HeadingBlockValue: Codable {}
 extension BlockType.ToDoBlockValue: Codable {}
