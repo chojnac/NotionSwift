@@ -90,6 +90,7 @@ extension User: Codable {
         case .person(let value):
             try container.encode(CodingKeys.person.stringValue, forKey: .type)
             try container.encode(value, forKey: .person)
+            try container.encode(self.id, forKey: .id)
         case .unknown:
             break
         }
