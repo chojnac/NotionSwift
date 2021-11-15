@@ -28,7 +28,7 @@ public enum PagePropertyType {
     case number(Int?)
     case select(SelectPropertyValue?)
     case multiSelect([MultiSelectPropertyValue])
-    case date(DatePropertyValue?)
+    case date(DateRange?)
     case formula(FormulaPropertyValue)
     case relation([Page.Identifier])
     case rollup(RollupPropertyValue)
@@ -79,21 +79,6 @@ extension PagePropertyType {
         }
     }
 
-    public struct DatePropertyValue {
-        public enum DateValue {
-            case dateOnly(Date)
-            case dateAndTime(Date)
-        }
-        
-        public let start: DateValue
-        public let end: DateValue?
-
-        public init(start: DateValue, end: DateValue?) {
-            self.start = start
-            self.end = end
-        }
-    }
-
     public struct FilesPropertyValue {
         public enum FileLink {
             case external(url: String)
@@ -114,14 +99,14 @@ extension PagePropertyType {
         case string(String?)
         case number(Int?)
         case boolean(Bool?)
-        case date(DatePropertyValue?)
+        case date(DateRange?)
         case unknown
     }
 
     public enum RollupPropertyValue {
         case array([PagePropertyType])
         case number(Int)
-        case date(DatePropertyValue)
+        case date(DateRange)
         case unknown
     }
 }
@@ -203,7 +188,7 @@ extension PagePropertyType: Codable {
             self = .multiSelect(value)
         case CodingKeys.date.stringValue:
             let value = try container.decodeIfPresent(
-                PagePropertyType.DatePropertyValue.self,
+                DateRange.self,
                 forKey: .date
             )
             self = .date(value)
@@ -345,71 +330,7 @@ extension PagePropertyType: Codable {
 
 extension PagePropertyType.SelectPropertyValue: Codable {}
 extension PagePropertyType.MultiSelectPropertyValue: Codable {}
-extension PagePropertyType.DatePropertyValue: Codable {
-    enum CodingKeys: String, CodingKey {
-        case start
-        case end
-    }
 
-    static let errorMessage = "Date string does not match format expected by formatter."
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let startValue = try container.decode(String.self, forKey: .start)
-
-        guard let start = Self.decodeDateValue(startValue) else {
-            throw Swift.DecodingError.dataCorruptedError(
-                forKey: .start,
-                in: container,
-                debugDescription: Self.errorMessage
-            )
-        }
-        self.start = start
-
-        guard let endValue = try container.decodeIfPresent(String.self, forKey: .end) else {
-            self.end = nil
-            return
-        }
-
-        guard let end = Self.decodeDateValue(endValue) else {
-            throw Swift.DecodingError.dataCorruptedError(
-                forKey: .end,
-                in: container,
-                debugDescription: Self.errorMessage
-            )
-        }
-
-        self.end = end
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        let start = Self.encodeDateValue(self.start)
-        let end = self.end.map(Self.encodeDateValue(_:))
-        try container.encode(start, forKey: .start)
-        try container.encodeIfPresent(end, forKey: .end)
-    }
-
-    private static func decodeDateValue(_ value: String) -> DateValue? {
-        if let date = DateFormatter.iso8601Full.date(from: value) {
-            return .dateAndTime(date)
-        }
-
-        if let date = DateFormatter.iso8601DateOnly.date(from: value) {
-            return .dateOnly(date)
-        }
-
-        return nil
-    }
-
-    private static func encodeDateValue(_ value: DateValue) -> String {
-        switch value {
-        case .dateOnly(let date):
-            return DateFormatter.iso8601DateOnly.string(from: date)
-        case .dateAndTime(let date):
-            return DateFormatter.iso8601Full.string(from: date)
-        }
-    }
-}
 extension PagePropertyType.FilesPropertyValue: Codable {
 
     enum CodingKeys: String, CodingKey {
@@ -485,7 +406,7 @@ extension PagePropertyType.FormulaPropertyValue: Codable {
             let value = try container.decode(Bool?.self, forKey: .boolean)
             self = .boolean(value)
         case CodingKeys.date.rawValue:
-            let value = try container.decode(PagePropertyType.DatePropertyValue?.self, forKey: .date)
+            let value = try container.decode(DateRange?.self, forKey: .date)
             self = .date(value)
         default:
             self = .unknown
@@ -532,7 +453,7 @@ extension PagePropertyType.RollupPropertyValue: Codable {
             let value = try container.decode(Int.self, forKey: .number)
             self = .number(value)
         case CodingKeys.date.rawValue:
-            let value = try container.decode(PagePropertyType.DatePropertyValue.self, forKey: .date)
+            let value = try container.decode(DateRange.self, forKey: .date)
             self = .date(value)
         default:
             self = .unknown

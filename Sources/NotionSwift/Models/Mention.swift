@@ -4,12 +4,12 @@
 
 import Foundation
 
-public struct Mention {
+public struct MentionTypeValue {
     public enum MentionType {
-        case user(UserMentionValue)
+        case user(User)
         case page(PageMentionValue)
         case database(DatabaseMentionValue)
-        case date(DateMentionValue)
+        case date(DateRange)
         case unknown
     }
 
@@ -20,14 +20,7 @@ public struct Mention {
     }
 }
 
-extension Mention {
-    public struct UserMentionValue {
-        public let user: User
-
-        public init(_ user: User) {
-            self.user = user
-        }
-    }
+extension MentionTypeValue {
 
     public struct PageMentionValue {
         public let id: Page.Identifier
@@ -44,19 +37,10 @@ extension Mention {
             self.id = id
         }
     }
-
-    public struct DateMentionValue {
-        public let start: Date
-        public let end: Date?
-
-        public init(start: Date, end: Date?) {
-            self.start = start
-            self.end = end
-        }
-    }
 }
 
-extension Mention: Codable {
+extension MentionTypeValue: Codable {
+
     public init(from decoder: Decoder) throws {
         self.type = try MentionType(from: decoder)
     }
@@ -66,7 +50,7 @@ extension Mention: Codable {
     }
 }
 
-extension Mention.MentionType: Codable {
+extension MentionTypeValue.MentionType: Codable {
     enum CodingKeys: String, CodingKey {
         case user
         case page
@@ -81,16 +65,16 @@ extension Mention.MentionType: Codable {
 
         switch type {
         case CodingKeys.user.stringValue:
-            let value = try container.decode(Mention.UserMentionValue.self, forKey: .user)
+            let value = try container.decode(User.self, forKey: .user)
             self = .user(value)
         case CodingKeys.page.stringValue:
-            let value = try container.decode(Mention.PageMentionValue.self, forKey: .page)
+            let value = try container.decode(MentionTypeValue.PageMentionValue.self, forKey: .page)
             self = .page(value)
         case CodingKeys.database.stringValue:
-            let value = try container.decode(Mention.DatabaseMentionValue.self, forKey: .database)
+            let value = try container.decode(MentionTypeValue.DatabaseMentionValue.self, forKey: .database)
             self = .database(value)
         case CodingKeys.date.stringValue:
-            let value = try container.decode(Mention.DateMentionValue.self, forKey: .date)
+            let value = try container.decode(DateRange.self, forKey: .date)
             self = .date(value)
         default:
             self = .unknown
@@ -118,7 +102,6 @@ extension Mention.MentionType: Codable {
         }
     }
 }
-extension Mention.UserMentionValue: Codable {}
-extension Mention.PageMentionValue: Codable {}
-extension Mention.DatabaseMentionValue: Codable {}
-extension Mention.DateMentionValue: Codable {}
+
+extension MentionTypeValue.PageMentionValue: Codable {}
+extension MentionTypeValue.DatabaseMentionValue: Codable {}

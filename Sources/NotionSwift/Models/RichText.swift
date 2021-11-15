@@ -66,7 +66,7 @@ public struct RichText {
 
 public enum RichTextType {
     case text(TextTypeValue)
-    case mention(Mention)
+    case mention(MentionTypeValue)
     case equation(EquationTypeValue)
     case unknown
 }
@@ -135,7 +135,7 @@ extension RichTextType: Codable {
             let value = try container.decode(TextTypeValue.self, forKey: .text)
             self = .text(value)
         case CodingKeys.mention.stringValue:
-            let value = try container.decode(Mention.self, forKey: .mention)
+            let value = try container.decode(MentionTypeValue.self, forKey: .mention)
             self = .mention(value)
         case CodingKeys.equation.stringValue:
             let value = try container.decode(EquationTypeValue.self, forKey: .equation)
