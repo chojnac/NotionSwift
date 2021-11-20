@@ -31,6 +31,7 @@ public enum BlockType {
     case breadcrumb
     case column(ChildrenBlockValue)
     case columnList(ChildrenBlockValue)
+    case linkToPage(LinkToPageBlockValue)
     case unsupported(type: String)
 
     // MARK: - helper builders
@@ -253,6 +254,12 @@ extension BlockType {
             self.expression = expression
         }
     }
+
+    public enum LinkToPageBlockValue {
+        case page(Page.Identifier)
+        case database(Database.Identifier)
+        case unknown
+    }
 }
 
 // MARK: - Codable
@@ -286,6 +293,7 @@ extension BlockType: Codable {
         case breadcrumb
         case column
         case columnList = "column_list"
+        case linkToPage = "link_to_page"
         case unsupported
     }
 
@@ -345,6 +353,8 @@ extension BlockType: Codable {
             return .columnList
         case .breadcrumb:
             return .breadcrumb
+        case .linkToPage:
+            return .linkToPage
         }
     }
 
@@ -434,6 +444,9 @@ extension BlockType: Codable {
         case .columnList:
             let value = try container.decode(ChildrenBlockValue.self, forKey: key)
             self = .columnList(value)
+        case .linkToPage:
+            let value = try container.decode(LinkToPageBlockValue.self, forKey: key)
+            self = .linkToPage(value)
         case .type, .unsupported:
             self = .unsupported(type: type)
         }
@@ -487,6 +500,8 @@ extension BlockType: Codable {
             try container.encode(value, forKey: key)
         case .equation(let value):
             try container.encode(value, forKey: key)
+        case .linkToPage(let value):
+            try container.encode(value, forKey: key)
         case .divider, .tableOfContents, .breadcrumb, .column, .columnList:
             try container.encode([String: String](), forKey: key)
             break
@@ -512,6 +527,7 @@ extension BlockType.FileBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
         case caption
     }
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.caption = try container.decode([RichText].self, forKey: .caption)
@@ -522,5 +538,42 @@ extension BlockType.FileBlockValue: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(caption, forKey: .caption)
         try file.encode(to: encoder)
+    }
+}
+
+extension BlockType.LinkToPageBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case type
+        case pageId = "page_id"
+        case databaseId = "database_id"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(String.self, forKey: .type)
+        switch type {
+        case CodingKeys.pageId.rawValue:
+            let value = try container.decode(Page.Identifier.self, forKey: .pageId)
+            self = .page(value)
+        case CodingKeys.databaseId.rawValue:
+            let value = try container.decode(Database.Identifier.self, forKey: .databaseId)
+            self = .database(value)
+        default:
+            self = .unknown
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .database(let value):
+            try container.encode(CodingKeys.databaseId.rawValue, forKey: .type)
+            try container.encode(value, forKey: .databaseId)
+        case .page(let value):
+            try container.encode(CodingKeys.pageId.rawValue, forKey: .type)
+            try container.encode(value, forKey: .pageId)
+        case .unknown:
+            break
+        }
     }
 }
