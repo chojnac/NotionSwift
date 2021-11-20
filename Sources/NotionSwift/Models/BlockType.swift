@@ -32,6 +32,7 @@ public enum BlockType {
     case column(ChildrenBlockValue)
     case columnList(ChildrenBlockValue)
     case linkToPage(LinkToPageBlockValue)
+    case syncedBlock(SyncedBlockValue)
     case unsupported(type: String)
 
     // MARK: - helper builders
@@ -260,6 +261,11 @@ extension BlockType {
         case database(Database.Identifier)
         case unknown
     }
+
+    public enum SyncedBlockValue {
+        case originalBlock
+        case reference(Block.Identifier)
+    }
 }
 
 // MARK: - Codable
@@ -294,6 +300,7 @@ extension BlockType: Codable {
         case column
         case columnList = "column_list"
         case linkToPage = "link_to_page"
+        case syncedBlock = "synced_block"
         case unsupported
     }
 
@@ -355,6 +362,8 @@ extension BlockType: Codable {
             return .breadcrumb
         case .linkToPage:
             return .linkToPage
+        case .syncedBlock:
+            return .syncedBlock
         }
     }
 
@@ -447,6 +456,9 @@ extension BlockType: Codable {
         case .linkToPage:
             let value = try container.decode(LinkToPageBlockValue.self, forKey: key)
             self = .linkToPage(value)
+        case .syncedBlock:
+            let value = try container.decode(SyncedBlockValue.self, forKey: key)
+            self = .syncedBlock(value)
         case .type, .unsupported:
             self = .unsupported(type: type)
         }
@@ -502,6 +514,8 @@ extension BlockType: Codable {
             try container.encode(value, forKey: key)
         case .linkToPage(let value):
             try container.encode(value, forKey: key)
+        case .syncedBlock(let value):
+            try container.encode(value, forKey: key)
         case .divider, .tableOfContents, .breadcrumb, .column, .columnList:
             try container.encode([String: String](), forKey: key)
             break
@@ -523,6 +537,7 @@ extension BlockType.CodeBlockValue: Codable {}
 extension BlockType.QuoteBlockValue: Codable {}
 extension BlockType.BookmarkBlockValue: Codable {}
 extension BlockType.EquationBlockValue: Codable {}
+
 extension BlockType.FileBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
         case caption
@@ -574,6 +589,36 @@ extension BlockType.LinkToPageBlockValue: Codable {
             try container.encode(value, forKey: .pageId)
         case .unknown:
             break
+        }
+    }
+}
+
+extension BlockType.SyncedBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case syncedFrom = "synced_from"
+        case children
+    }
+
+    private struct _ReferenceValue: Codable {
+        let block_id: Block.Identifier
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let reference = try container.decodeIfPresent(_ReferenceValue.self, forKey: .syncedFrom) {
+            self = .reference(reference.block_id)
+        } else {
+            self = .originalBlock
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .reference(let identifier):
+            try container.encode(_ReferenceValue(block_id: identifier), forKey: .syncedFrom)
+        case .originalBlock:
+            try container.encode(Optional<_ReferenceValue>.none, forKey: .syncedFrom)
         }
     }
 }
