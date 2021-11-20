@@ -33,6 +33,7 @@ public enum BlockType {
     case columnList(ChildrenBlockValue)
     case linkToPage(LinkToPageBlockValue)
     case syncedBlock(SyncedBlockValue)
+    case template(TemplateBlockValue)
     case unsupported(type: String)
 
     // MARK: - helper builders
@@ -266,6 +267,17 @@ extension BlockType {
         case originalBlock
         case reference(Block.Identifier)
     }
+
+    public struct TemplateBlockValue {
+        public let text: [RichText]
+        /// field used only for encoding for adding/appending new blocks
+        public let children: [BlockType]?
+
+        public init(text: [RichText], children: [BlockType]? = nil) {
+            self.text = text
+            self.children = children
+        }
+    }
 }
 
 // MARK: - Codable
@@ -301,6 +313,7 @@ extension BlockType: Codable {
         case columnList = "column_list"
         case linkToPage = "link_to_page"
         case syncedBlock = "synced_block"
+        case template
         case unsupported
     }
 
@@ -364,6 +377,8 @@ extension BlockType: Codable {
             return .linkToPage
         case .syncedBlock:
             return .syncedBlock
+        case .template:
+            return .template
         }
     }
 
@@ -459,6 +474,9 @@ extension BlockType: Codable {
         case .syncedBlock:
             let value = try container.decode(SyncedBlockValue.self, forKey: key)
             self = .syncedBlock(value)
+        case .template:
+            let value = try container.decode(TemplateBlockValue.self, forKey: key)
+            self = .template(value)
         case .type, .unsupported:
             self = .unsupported(type: type)
         }
@@ -516,6 +534,8 @@ extension BlockType: Codable {
             try container.encode(value, forKey: key)
         case .syncedBlock(let value):
             try container.encode(value, forKey: key)
+        case .template(let value):
+            try container.encode(value, forKey: key)
         case .divider, .tableOfContents, .breadcrumb, .column, .columnList:
             try container.encode([String: String](), forKey: key)
             break
@@ -537,6 +557,7 @@ extension BlockType.CodeBlockValue: Codable {}
 extension BlockType.QuoteBlockValue: Codable {}
 extension BlockType.BookmarkBlockValue: Codable {}
 extension BlockType.EquationBlockValue: Codable {}
+extension BlockType.TemplateBlockValue: Codable {}
 
 extension BlockType.FileBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
