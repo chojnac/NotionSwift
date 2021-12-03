@@ -9,10 +9,10 @@ import Foundation
 
 public struct ListResponse<T> {
     public let results: [T]
-    public let nextCursor: Int?
+    public let nextCursor: String?
     public let hasMore: Bool
 
-    public init(results: [T], nextCursor: Int?, hasMore: Bool) {
+    public init(results: [T], nextCursor: String?, hasMore: Bool) {
         self.results = results
         self.nextCursor = nextCursor
         self.hasMore = hasMore
