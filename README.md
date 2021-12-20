@@ -130,7 +130,7 @@ notion.databaseUpdate(databaseId: id, request: request) {
 Retrieve page properties. 
 
 ```swift
-let pageId = Block.Identifier("{PAGE UUIDv4}")
+let pageId = Page.Identifier("{PAGE UUIDv4}")
 
 notion.page(pageId: pageId) {
     print($0)
@@ -140,7 +140,7 @@ notion.page(pageId: pageId) {
 Page content (text for example) is represented as an array of blocks. The example below loads properties and page content. 
 
 ```swift
-let pageId = Block.Identifier("{PAGE UUIDv4}")
+let pageId = Page.Identifier("{PAGE UUIDv4}")
 
 notion.page(pageId: pageId) { [notion] in
     print("---- Properties ----- ")
@@ -161,7 +161,7 @@ notion.page(pageId: pageId) { [notion] in
 ### Create a page
 
 ```swift
-let parentPageId = Block.Identifier("{PAGE UUIDv4}")
+let parentPageId = Page.Identifier("{PAGE UUIDv4}")
 
 let request = PageCreateRequest(
     parent: .page(parentPageId),
@@ -171,8 +171,7 @@ let request = PageCreateRequest(
                 .init(string: "Lorem ipsum \(Date())")
             ])
         )
-    ],
-    children: blocks
+    ]
 )
 
 notion.pageCreate(request: request) {
@@ -183,7 +182,7 @@ notion.pageCreate(request: request) {
 ### Update page properties
 
 ```swift
-let pageId = Block.Identifier("{PAGE UUIDv4}")
+let pageId = Page.Identifier("{PAGE UUIDv4}")
 
 // update title property
 let request = PageProperiesUpdateRequest(
