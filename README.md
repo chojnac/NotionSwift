@@ -221,11 +221,19 @@ let pageId = Block.Identifier("{PAGE UUIDv4}")
 
 // append paragraph with styled text to a page.
 let blocks: [WriteBlock] = [
-    .init(type: .paragraph(.init(text: [
-        .init(string: "Lorem ipsum dolor sit amet, "),
+    .paragraph([
+        "Lorem ipsum dolor sit amet, ",
         .init(string: "consectetur", annotations: .bold),
-        .init(string: " adipiscing elit.")
-    ])))
+        " adipiscing elit."
+    ]),
+    .columnList(columns: [
+        .column([
+            .paragraph(["Column 1"])
+        ]),
+        .column([
+            .paragraph(["Column 2"])
+        ])
+    ])
 ]
 notion.blockAppend(blockId: pageId, children: blocks) {
     print($0)
@@ -237,7 +245,7 @@ notion.blockAppend(blockId: pageId, children: blocks) {
 ```swift
 let blockId = Block.Identifier("{BLOCK UUIDv4}")
 let text: [RichText] = [
-    .init(string: "Current time: "),
+    "Current time: ",
     .init(string: Date().description, annotations: .bold)
 ]
 let block = UpdateBlock(value: .paragraph(text: text))
