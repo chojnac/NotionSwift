@@ -12,7 +12,7 @@ final class FiltersTests: XCTestCase {
         let given: DatabaseFilter = .property(name: "title", type: .title(.contains("Hello world")))
 
         let result = try encodeToJson(given)
-        XCTAssertEqual(result, #"{"title":{"contains":"Hello world"},"property":"title"}"#)
+        XCTAssertEqual(result, #"{"property":"title","title":{"contains":"Hello world"}}"#)
     }
 
     func test_encode_simpleOrCondition() throws {
@@ -23,7 +23,7 @@ final class FiltersTests: XCTestCase {
 
         let result = try encodeToJson(given)
 
-        XCTAssertEqual(result, #"{"or":[{"title":{"contains":"Hello world"},"property":"title"},{"rich_text":{"contains":"Hello world"},"property":"body"}]}"#)
+        XCTAssertEqual(result, #"{"or":[{"property":"title","title":{"contains":"Hello world"}},{"property":"body","rich_text":{"contains":"Hello world"}}]}"#)
     }
 
     func test_encode_simpleAndCondition() throws {
@@ -34,7 +34,7 @@ final class FiltersTests: XCTestCase {
 
         let result = try encodeToJson(given)
 
-        XCTAssertEqual(result, #"{"and":[{"title":{"contains":"Hello world"},"property":"title"},{"rich_text":{"contains":"Hello world"},"property":"body"}]}"#)
+        XCTAssertEqual(result, #"{"and":[{"property":"title","title":{"contains":"Hello world"}},{"property":"body","rich_text":{"contains":"Hello world"}}]}"#)
     }
 
     func test_encode_docExample01() throws {
@@ -45,6 +45,6 @@ final class FiltersTests: XCTestCase {
 
         let result = try encodeToJson(given)
 
-        XCTAssertEqual(result, #"{"or":[{"property":"In stock","checkbox":{"equals":true}},{"number":{"greater_than_or_equal_to":2},"property":"Cost of next trip"}]}"#)
+        XCTAssertEqual(result, #"{"or":[{"checkbox":{"equals":true},"property":"In stock"},{"number":{"greater_than_or_equal_to":2},"property":"Cost of next trip"}]}"#)
     }
 }
