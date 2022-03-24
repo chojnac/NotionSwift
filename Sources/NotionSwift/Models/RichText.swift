@@ -150,13 +150,10 @@ extension RichTextType: Codable {
 
         switch self {
         case .text(let value):
-//            try container.encode(CodingKeys.text.stringValue, forKey: .type)
             try container.encode(value, forKey: .text)
         case .mention(let value):
-//            try container.encode(CodingKeys.mention.stringValue, forKey: .type)
             try container.encode(value, forKey: .mention)
         case .equation(let value):
-//            try container.encode(CodingKeys.equation.stringValue, forKey: .type)
             try container.encode(value, forKey: .equation)
         case .unknown:
             break
