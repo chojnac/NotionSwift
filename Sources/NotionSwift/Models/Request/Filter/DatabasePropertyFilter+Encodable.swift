@@ -10,7 +10,7 @@ extension DatabasePropertyFilter: Encodable {
         case richText = "rich_text"
         case url
         case email
-        case phone
+        case phoneNumber = "phone_number"
         case number
         case checkbox
         case select
@@ -40,8 +40,8 @@ extension DatabasePropertyFilter: Encodable {
             try container.encode(contition, forKey: .url)
         case .email(let contition):
             try container.encode(contition, forKey: .email)
-        case .phone(let contition):
-            try container.encode(contition, forKey: .phone)
+        case .phoneNumber(let contition):
+            try container.encode(contition, forKey: .phoneNumber)
         case .number(let contition):
             try container.encode(contition, forKey: .number)
         case .checkbox(let contition):
@@ -142,7 +142,7 @@ extension DatabasePropertyFilter.DateCondition: Encodable {
 
 extension DatabasePropertyFilter.FormulaCondition: Encodable {
     enum CodingKeys: String, CodingKey {
-        case text
+        case string
         case checkbox
         case number
         case date
@@ -151,8 +151,8 @@ extension DatabasePropertyFilter.FormulaCondition: Encodable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
-        case .text(let value):
-            try container.encode(value, forKey: .text)
+        case .string(let value):
+            try container.encode(value, forKey: .string)
         case .checkbox(let value):
             try container.encode(value, forKey: .checkbox)
         case .number(let value):

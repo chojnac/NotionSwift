@@ -15,7 +15,7 @@ extension DatabasePropertyFilter {
         case richText(TextCondition)
         case url(TextCondition)
         case email(TextCondition)
-        case phone(TextCondition)
+        case phoneNumber(TextCondition)
         case number(NumberCondition)
         case checkbox(CheckboxCondition)
         case select(SimpleGenericCondition<String>)
@@ -34,7 +34,7 @@ extension DatabasePropertyFilter {
 
 extension DatabasePropertyFilter {
     public enum FormulaCondition {
-        case text(TextCondition)
+        case string(TextCondition)
         case checkbox(CheckboxCondition)
         case number(NumberCondition)
         case date(DateCondition)

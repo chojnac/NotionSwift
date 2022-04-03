@@ -8,7 +8,7 @@ public final class NotionClient: NotionClientType {
     private let accessKeyProvider: AccessKeyProvider
     let networkClient: NetworkClient
 
-    private let APIVersion = "2021-08-16"
+    private let APIVersion = "2022-02-22"
     let urlBuilder = URLBuilder()
 
     public init(

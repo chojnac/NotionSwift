@@ -6,56 +6,56 @@ import Foundation
 
 public extension BlockType {
 
-    static func paragraph(_ text: [RichText], children: [BlockType]? = nil) -> BlockType {
-        return .paragraph(.init(text: text, children: children))
+    static func paragraph(_ richText: [RichText], children: [BlockType]? = nil) -> BlockType {
+        return .paragraph(.init(richText: richText, children: children))
     }
     
-    static func heading1(_ text: [RichText]) -> Self {
-        return .heading1(.init(text: text))
+    static func heading1(_ richText: [RichText]) -> Self {
+        return .heading1(.init(richText: richText))
     }
 
-    static func heading2(_ text: [RichText]) -> Self {
-        return .heading2(.init(text: text))
+    static func heading2(_ richText: [RichText]) -> Self {
+        return .heading2(.init(richText: richText))
     }
 
-    static func heading3(_ text: [RichText]) -> Self {
-        return .heading3(.init(text: text))
+    static func heading3(_ richText: [RichText]) -> Self {
+        return .heading3(.init(richText: richText))
     }
 
     static func bulletedListItem(
-        _ text: [RichText],
+        _ richText: [RichText],
         children: [BlockType]? = nil
     ) -> Self {
-        return .bulletedListItem(.init(text: text, children: children))
+        return .bulletedListItem(.init(richText: richText, children: children))
     }
 
     static func numberedListItem(
-        _ text: [RichText],
+        _ richText: [RichText],
         children: [BlockType]? = nil
     ) -> Self {
-        return .numberedListItem(.init(text: text, children: children))
+        return .numberedListItem(.init(richText: richText, children: children))
     }
 
     static func toDo(
-        _ text: [RichText],
+        _ richText: [RichText],
         checked: Bool? = nil,
         children: [BlockType]? = nil
     ) -> Self {
-        return .toDo(.init(text: text, checked: checked, children: children))
+        return .toDo(.init(richText: richText, checked: checked, children: children))
     }
 
     static func toggle(
-        _ text: [RichText],
+        _ richText: [RichText],
         children: [BlockType]? = nil
     ) -> Self {
-        return .toggle(.init(text: text, children: children))
+        return .toggle(.init(richText: richText, children: children))
     }
 
     static func code(
-        _ text: [RichText],
+        _ richText: [RichText],
         language: String? = nil
     ) -> Self {
-        return .code(.init(text: text, language: language))
+        return .code(.init(richText: richText, language: language))
     }
 
     static func childPage(_ title: String) -> Self {
@@ -71,18 +71,18 @@ public extension BlockType {
     }
 
     static func callout(
-        _ text: [RichText],
+        _ richText: [RichText],
         children: [BlockType]? = nil,
         icon: IconFile? = nil
     ) -> Self {
-        return .callout(.init(text: text, children: children, icon: icon))
+        return .callout(.init(richText: richText, children: children, icon: icon))
     }
 
     static func quote(
-        _ text: [RichText],
+        _ richText: [RichText],
         children: [BlockType]? = nil
     ) -> Self {
-        return .quote(.init(text: text, children: children))
+        return .quote(.init(richText: richText, children: children))
     }
 
     static func video(file: FileFile, caption: [RichText] = []) -> Self {
@@ -114,9 +114,9 @@ public extension BlockType {
     }
     
     static func template(
-        _ text: [RichText],
+        _ richText: [RichText],
         children: [BlockType]? = nil
     ) -> Self {
-        return .template(.init(text: text, children: children))
+        return .template(.init(richText: richText, children: children))
     }
 }

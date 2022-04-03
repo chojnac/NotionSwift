@@ -18,32 +18,61 @@ public extension BlockType {
     }
 
     struct TextAndChildrenBlockValue {
-        public let text: [RichText]
+        public let richText: [RichText]
+        @available(*, deprecated, renamed: "richText")
+        public var text: [RichText] {
+            richText
+        }
         /// field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
+        @available(*, deprecated, message: "Please use init(richText:children:) instead")
         public init(text: [RichText], children: [BlockType]? = nil) {
-            self.text = text
+            self.richText = text
+            self.children = children
+        }
+        
+        public init(richText: [RichText], children: [BlockType]? = nil) {
+            self.richText = richText
             self.children = children
         }
     }
 
     struct HeadingBlockValue {
-        public let text: [RichText]
-
+        public let richText: [RichText]
+        @available(*, deprecated, renamed: "richText")
+        public var text: [RichText] {
+            richText
+        }
+        @available(*, deprecated, message: "Please use init(richText:) instead")
         public init(text: [RichText]) {
-            self.text = text
+            self.richText = text
+        }
+        
+        public init(richText: [RichText]) {
+            self.richText = richText
         }
     }
 
     struct ToDoBlockValue {
-        public let text: [RichText]
+        public let richText: [RichText]
+        @available(*, deprecated, renamed: "richText")
+        public var text: [RichText] {
+            richText
+        }
         public let checked: Bool?
         // field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
+        @available(*, deprecated, message: "Please use init(richText:checked:children:) instead")
         public init(text: [RichText], checked: Bool? = nil, children: [BlockType]? = nil) {
-            self.text = text
+            self.richText = text
+            self.checked = checked
+            self.children = children
+        }
+        
+        public init(richText: [RichText], checked: Bool? = nil, children: [BlockType]? = nil) {
+            self.richText = richText
             self.checked = checked
             self.children = children
         }
@@ -66,35 +95,66 @@ public extension BlockType {
     }
 
     struct CodeBlockValue {
-        public let text: [RichText]
+        public let richText: [RichText]
+        @available(*, deprecated, renamed: "richText")
+        public var text: [RichText] {
+            richText
+        }
         public let language: String?
 
+        @available(*, deprecated, message: "Please use init(richText:language) instead")
         public init(text: [RichText], language: String? = nil) {
-            self.text = text
+            self.richText = text
+            self.language = language
+        }
+        
+        public init(richText: [RichText], language: String? = nil) {
+            self.richText = richText
             self.language = language
         }
     }
 
     struct CalloutBlockValue {
-        public let text: [RichText]
+        public let richText: [RichText]
+        @available(*, deprecated, renamed: "richText")
+        public var text: [RichText] {
+            richText
+        }
         // field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
         public let icon: IconFile?
 
+        @available(*, deprecated, message: "Please use init(richText:children:icon:) instead")
         public init(text: [RichText], children: [BlockType]? = nil, icon: IconFile? = nil) {
-            self.text = text
+            self.richText = text
+            self.children = children
+            self.icon = icon
+        }
+        
+        public init(richText: [RichText], children: [BlockType]? = nil, icon: IconFile? = nil) {
+            self.richText = richText
             self.children = children
             self.icon = icon
         }
     }
 
     struct QuoteBlockValue {
-        public let text: [RichText]
+        public let richText: [RichText]
+        @available(*, deprecated, renamed: "richText")
+        public var text: [RichText] {
+            richText
+        }
         // field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
+        @available(*, deprecated, message: "Please use init(richText:children:) instead")
         public init(text: [RichText], children: [BlockType]? = nil) {
-            self.text = text
+            self.richText = text
+            self.children = children
+        }
+        
+        public init(richText: [RichText], children: [BlockType]? = nil) {
+            self.richText = richText
             self.children = children
         }
     }
@@ -149,12 +209,22 @@ public extension BlockType {
     }
 
     struct TemplateBlockValue {
-        public let text: [RichText]
+        public let richText: [RichText]
+        @available(*, deprecated, renamed: "richText")
+        public var text: [RichText] {
+            richText
+        }
         /// field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
+        @available(*, deprecated, message: "Please use init(richText:children:) instead")
         public init(text: [RichText], children: [BlockType]? = nil) {
-            self.text = text
+            self.richText = text
+            self.children = children
+        }
+        
+        public init(richText: [RichText], children: [BlockType]? = nil) {
+            self.richText = richText
             self.children = children
         }
     }
@@ -163,18 +233,53 @@ public extension BlockType {
 // MARK: - Codable
 
 extension BlockType.ChildrenBlockValue: Codable {}
-extension BlockType.TextAndChildrenBlockValue: Codable {}
-extension BlockType.HeadingBlockValue: Codable {}
-extension BlockType.ToDoBlockValue: Codable {}
+
+extension BlockType.TextAndChildrenBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case richText = "rich_text"
+        case children
+    }
+}
+extension BlockType.HeadingBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case richText = "rich_text"
+    }
+}
+extension BlockType.ToDoBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case richText = "rich_text"
+        case checked
+        case children
+    }
+}
+
 extension BlockType.ChildPageBlockValue: Codable {}
+
 extension BlockType.ChildDatabaseBlockValue: Codable {}
+
+extension BlockType.CodeBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case richText = "rich_text"
+        case language
+    }
+}
+extension BlockType.CalloutBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case richText = "rich_text"
+        case children
+        case icon
+    }
+}
+extension BlockType.QuoteBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case richText = "rich_text"
+        case children
+    }
+}
+
 extension BlockType.EmbedBlockValue: Codable {}
-extension BlockType.CalloutBlockValue: Codable {}
-extension BlockType.CodeBlockValue: Codable {}
-extension BlockType.QuoteBlockValue: Codable {}
+
 extension BlockType.BookmarkBlockValue: Codable {}
-extension BlockType.EquationBlockValue: Codable {}
-extension BlockType.TemplateBlockValue: Codable {}
 
 extension BlockType.FileBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
@@ -193,6 +298,8 @@ extension BlockType.FileBlockValue: Codable {
         try file.encode(to: encoder)
     }
 }
+
+extension BlockType.EquationBlockValue: Codable {}
 
 extension BlockType.LinkToPageBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
@@ -258,5 +365,12 @@ extension BlockType.SyncedBlockValue: Codable {
         case .originalBlock:
             try container.encode(Optional<_ReferenceValue>.none, forKey: .syncedFrom)
         }
+    }
+}
+
+extension BlockType.TemplateBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case richText = "rich_text"
+        case children
     }
 }
