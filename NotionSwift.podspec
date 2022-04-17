@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'NotionSwift'
-  s.version          = '0.5.1'
+  s.version          = '0.6.0'
   s.summary          = 'Unofficial Notion SDK for iOS & macOS.'
   s.homepage         = 'https://github.com/chojnac/NotionSwift'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
@@ -11,10 +11,10 @@ Pod::Spec.new do |s|
   s.swift_version    = '5.3'
   s.source_files = ['Sources/NotionSwift/**/*']
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '11.0'
   s.ios.frameworks = "UIKit"
 
-  s.osx.deployment_target = '10.10'
+  s.osx.deployment_target = '10.13'
   s.osx.frameworks = "AppKit"
 
   s.test_spec 'Tests' do |test_spec|

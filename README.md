@@ -15,14 +15,14 @@ For more details and documentation please check [Notion Developer Portal](https:
 ### CocoaPods
 
 ```ruby
-pod 'NotionSwift', '0.5.1'
+pod 'NotionSwift', '0.6.0'
 ```
 
 ### Swift Package Manager
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/chojnac/NotionSwift.git", .upToNextMajor(from: "0.5.1"))
+    .package(url: "https://github.com/chojnac/NotionSwift.git", .upToNextMajor(from: "0.6.0"))
 ]
 ```
 
