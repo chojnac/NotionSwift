@@ -23,6 +23,8 @@ public extension BlockType {
         public var text: [RichText] {
             richText
         }
+        public let color: BlockColor
+        
         /// field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
@@ -30,11 +32,17 @@ public extension BlockType {
         public init(text: [RichText], children: [BlockType]? = nil) {
             self.richText = text
             self.children = children
+            self.color = .default
         }
         
-        public init(richText: [RichText], children: [BlockType]? = nil) {
+        public init(
+            richText: [RichText],
+            children: [BlockType]? = nil,
+            color: BlockColor
+        ) {
             self.richText = richText
             self.children = children
+            self.color = color
         }
     }
 
@@ -44,13 +52,17 @@ public extension BlockType {
         public var text: [RichText] {
             richText
         }
-        @available(*, deprecated, message: "Please use init(richText:) instead")
+        public let color: BlockColor
+        
+        @available(*, deprecated, message: "Please use init(richText:color:) instead")
         public init(text: [RichText]) {
             self.richText = text
+            self.color = .default
         }
         
-        public init(richText: [RichText]) {
+        public init(richText: [RichText], color: BlockColor) {
             self.richText = richText
+            self.color = color
         }
     }
 
@@ -61,19 +73,22 @@ public extension BlockType {
             richText
         }
         public let checked: Bool?
+        public let color: BlockColor
         // field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
 
-        @available(*, deprecated, message: "Please use init(richText:checked:children:) instead")
+        @available(*, deprecated, message: "Please use init(richText:checked:color:children:) instead")
         public init(text: [RichText], checked: Bool? = nil, children: [BlockType]? = nil) {
             self.richText = text
             self.checked = checked
+            self.color = .default
             self.children = children
         }
         
-        public init(richText: [RichText], checked: Bool? = nil, children: [BlockType]? = nil) {
+        public init(richText: [RichText], checked: Bool? = nil, color: BlockColor, children: [BlockType]? = nil) {
             self.richText = richText
             self.checked = checked
+            self.color = color
             self.children = children
         }
     }
@@ -123,23 +138,27 @@ public extension BlockType {
         // field used only for encoding for adding/appending new blocks
         public let children: [BlockType]?
         public let icon: IconFile?
-
+        public let color: BlockColor
+        
         @available(*, deprecated, message: "Please use init(richText:children:icon:) instead")
         public init(text: [RichText], children: [BlockType]? = nil, icon: IconFile? = nil) {
             self.richText = text
             self.children = children
             self.icon = icon
+            self.color = .default
         }
         
-        public init(richText: [RichText], children: [BlockType]? = nil, icon: IconFile? = nil) {
+        public init(richText: [RichText], children: [BlockType]? = nil, icon: IconFile? = nil, color: BlockColor) {
             self.richText = richText
             self.children = children
             self.icon = icon
+            self.color = color
         }
     }
 
     struct QuoteBlockValue {
         public let richText: [RichText]
+        public let color: BlockColor
         @available(*, deprecated, renamed: "richText")
         public var text: [RichText] {
             richText
@@ -151,11 +170,13 @@ public extension BlockType {
         public init(text: [RichText], children: [BlockType]? = nil) {
             self.richText = text
             self.children = children
+            self.color = .default
         }
         
-        public init(richText: [RichText], children: [BlockType]? = nil) {
+        public init(richText: [RichText], children: [BlockType]? = nil, color: BlockColor) {
             self.richText = richText
             self.children = children
+            self.color = color
         }
     }
 
@@ -197,6 +218,14 @@ public extension BlockType {
         }
     }
 
+    struct TableOfContentsBlockValue {
+        public let color: BlockColor
+        
+        public init(color: BlockColor) {
+            self.color = color
+        }
+    }
+    
     enum LinkToPageBlockValue {
         case page(Page.Identifier)
         case database(Database.Identifier)
@@ -238,17 +267,20 @@ extension BlockType.TextAndChildrenBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
         case richText = "rich_text"
         case children
+        case color
     }
 }
 extension BlockType.HeadingBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
         case richText = "rich_text"
+        case color
     }
 }
 extension BlockType.ToDoBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
         case richText = "rich_text"
         case checked
+        case color
         case children
     }
 }
@@ -268,11 +300,13 @@ extension BlockType.CalloutBlockValue: Codable {
         case richText = "rich_text"
         case children
         case icon
+        case color
     }
 }
 extension BlockType.QuoteBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
         case richText = "rich_text"
+        case color
         case children
     }
 }
@@ -300,6 +334,8 @@ extension BlockType.FileBlockValue: Codable {
 }
 
 extension BlockType.EquationBlockValue: Codable {}
+
+extension BlockType.TableOfContentsBlockValue: Codable {}
 
 extension BlockType.LinkToPageBlockValue: Codable {
     enum CodingKeys: String, CodingKey {

@@ -15,47 +15,52 @@ public extension WriteBlock {
     
     static func paragraph(
         _ text: [RichText],
-        children: [BlockType]? = nil
+        children: [BlockType]? = nil,
+        color: BlockColor = .default
     ) -> Self {
-        .init(type: .paragraph(text, children: children))
+        .init(type: .paragraph(text, children: children, color: color))
     }
     
-    static func heading1(_ text: [RichText]) -> Self {
-        .init(type: .heading1(text))
+    static func heading1(_ text: [RichText], color: BlockColor = .default) -> Self {
+        .init(type: .heading1(text, color: color))
     }
     
-    static func heading2(_ text: [RichText]) -> Self {
-        .init(type: .heading2(text))
+    static func heading2(_ text: [RichText], color: BlockColor = .default) -> Self {
+        .init(type: .heading2(text, color: color))
     }
     
-    static func heading3(_ text: [RichText]) -> Self {
-        .init(type: .heading3(text))
+    static func heading3(_ text: [RichText], color: BlockColor = .default) -> Self {
+        .init(type: .heading3(text, color: color))
     }
     
     static func bulletedListItem(
         _ text: [RichText],
-        children: [BlockType]? = nil
+        children: [BlockType]? = nil,
+        color: BlockColor = .default
     ) -> Self {
-        .init(type: .bulletedListItem(text, children: children))
+        .init(type: .bulletedListItem(text, children: children, color: color))
     }
     static func numberedListItem(
         _ text: [RichText],
-        children: [BlockType]? = nil
+        children: [BlockType]? = nil,
+        color: BlockColor = .default
     ) -> Self {
-        .init(type: .numberedListItem(text, children: children))
+        .init(type: .numberedListItem(text, children: children, color: color))
     }
     static func toDo(
         _ text: [RichText],
         children: [BlockType]? = nil,
-        checked: Bool = false
+        checked: Bool = false,
+        color: BlockColor = .default
     ) -> Self {
-        .init(type: .toDo(text, checked: checked, children: children))
+        .init(type: .toDo(text, checked: checked, children: children, color: color))
     }
     static func toggle(
         _ text: [RichText],
-        children: [BlockType]? = nil
+        children: [BlockType]? = nil,
+        color: BlockColor = .default
     ) -> Self {
-        .init(type: .toggle(text, children: children))
+        .init(type: .toggle(text, children: children, color: color))
     }
     static func code(
         _ text: [RichText],
@@ -74,16 +79,18 @@ public extension WriteBlock {
     static func callout(
         _ text: [RichText],
         children: [BlockType]? = nil,
-        icon: IconFile? = nil
+        icon: IconFile? = nil,
+        color: BlockColor = .default
     ) -> Self {
-        .init(type: .callout(text, children: children, icon: icon))
+        .init(type: .callout(text, children: children, icon: icon, color: color))
     }
     
     static func quote(
         _ text: [RichText],
-        children: [BlockType]? = nil
+        children: [BlockType]? = nil,
+        color: BlockColor = .default
     ) -> Self {
-        .init(type: .quote(text, children: children))
+        .init(type: .quote(text, children: children, color: color))
     }
     
     static func video(
@@ -136,8 +143,8 @@ public extension WriteBlock {
         .init(type: .divider)
     }
     
-    static func tableOfContents() -> Self {
-        .init(type: .tableOfContents)
+    static func tableOfContents(color: BlockColor = .default) -> Self {
+        .init(type: .tableOfContents(.init(color: color)))
     }
     
     static func breadcrumb() -> Self {

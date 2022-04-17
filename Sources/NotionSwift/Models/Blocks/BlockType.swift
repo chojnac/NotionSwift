@@ -27,7 +27,7 @@ public enum BlockType {
     case bookmark(BookmarkBlockValue)
     case equation(EquationBlockValue)
     case divider
-    case tableOfContents
+    case tableOfContents(TableOfContentsBlockValue)
     case breadcrumb
     case column(ChildrenBlockValue)
     case columnList(ChildrenBlockValue)
@@ -216,7 +216,8 @@ extension BlockType: Codable {
         case .divider:
             self = .divider
         case .tableOfContents:
-            self = .tableOfContents
+            let value = try container.decode(TableOfContentsBlockValue.self, forKey: key)
+            self = .tableOfContents(value)
         case .breadcrumb:
             self = .breadcrumb
         case .column:

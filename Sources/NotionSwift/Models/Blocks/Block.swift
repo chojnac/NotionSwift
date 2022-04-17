@@ -19,6 +19,7 @@ extension Block {
         case createdTime = "created_time"
         case lastEditedTime = "last_edited_time"
         case hasChildren = "has_children"
+        case color
         case object
     }
 }
