@@ -257,6 +257,29 @@ public extension BlockType {
             self.children = children
         }
     }
+    
+    struct TableBlockValue {
+        public let tableWidth: Int
+        public let hasColumnHeader: Bool
+        public let hasRowHeader: Bool
+        // field used only for encoding for adding/appending new blocks
+        public let children: [BlockType]?
+        
+        public init(tableWidth: Int, hasColumnHeader: Bool, hasRowHeader: Bool, children: [BlockType]? = nil) {
+            self.tableWidth = tableWidth
+            self.hasColumnHeader = hasColumnHeader
+            self.hasRowHeader = hasRowHeader
+            self.children = children
+        }
+    }
+    
+    struct TableRowBlockValue {
+        public let cells: [[RichText]]
+        
+        public init(cells: [[RichText]]) {
+            self.cells = cells
+        }
+    }
 }
 
 // MARK: - Codable
@@ -410,3 +433,14 @@ extension BlockType.TemplateBlockValue: Codable {
         case children
     }
 }
+
+extension BlockType.TableBlockValue: Codable {
+    enum CodingKeys: String, CodingKey {
+        case tableWidth = "table_width"
+        case hasColumnHeader = "has_column_header"
+        case hasRowHeader = "has_row_header"
+        case children
+    }
+}
+
+extension BlockType.TableRowBlockValue: Codable {}
