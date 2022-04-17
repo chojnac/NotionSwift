@@ -10,6 +10,7 @@ public enum NotionClientError: Error {
     case bodyEncodingError(Error)
     case decodingError(Error)
     case unsupportedResponseError
+    case builderError(message: String)
 }
 
 public enum NotionErrorCode: String {
