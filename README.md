@@ -221,11 +221,13 @@ let pageId = Block.Identifier("{PAGE UUIDv4}")
 
 // append paragraph with styled text to a page.
 let blocks: [WriteBlock] = [
+    .heading1(["Heading 1"], color: .orange),
     .paragraph([
         "Lorem ipsum dolor sit amet, ",
         .init(string: "consectetur", annotations: .bold),
         " adipiscing elit."
     ]),
+    .heading2(["Heading 2"], color: .orangeBackground),
     .columnList(columns: [
         .column([
             .paragraph(["Column 1"])
@@ -233,7 +235,26 @@ let blocks: [WriteBlock] = [
         .column([
             .paragraph(["Column 2"])
         ])
-    ])
+    ]),
+    try! .table(
+        width: 2,
+        headers: [
+            ["Header 1"], ["Header 2"]
+        ],
+        rows: [
+            .row(
+                header: ["Row 1 header"],
+                cells: [
+                    ["Cell 1-1"], ["Cell 1-2"]
+                ]
+            ),
+            .row(
+                cells: [
+                    ["Cell 2-1"], ["Cell 2-2"]
+                ]
+            )
+        ]
+    )
 ]
 notion.blockAppend(blockId: pageId, children: blocks) {
     print($0)
