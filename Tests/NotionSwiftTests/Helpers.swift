@@ -13,6 +13,12 @@ func encodeToJson<T: Encodable>(_ entity: T) throws -> String {
     return String(data: data, encoding: .utf8)!
 }
 
+func decodeFromJson<T: Decodable>(_ entity: String) throws -> T {
+    let decoder = JSONDecoder()
+    let data = try decoder.decode(T.self, from: entity.data(using: .utf8)!)
+    return data
+}
+
 func buildDayDate(day: Int, month: Int, year: Int) -> Date {
     var c = DateComponents()
     c.setValue(day, for: .day)
