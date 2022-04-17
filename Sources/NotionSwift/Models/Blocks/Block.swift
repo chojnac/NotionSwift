@@ -21,5 +21,7 @@ extension Block {
         case hasChildren = "has_children"
         case color
         case object
+        case createdBy = "created_by"
+        case lastEditedBy = "last_edited_by"
     }
 }

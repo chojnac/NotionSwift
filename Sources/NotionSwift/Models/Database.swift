@@ -14,6 +14,8 @@ public struct Database {
     public let cover: CoverFile?
     public let createdTime: Date
     public let lastEditedTime: Date
+    public let createdBy: PartialUser
+    public let lastEditedBy: PartialUser
     public let properties: [PropertyName: DatabaseProperty]
     public let parent: DatabaseParent
 
@@ -25,6 +27,8 @@ public struct Database {
         cover: CoverFile?,
         createdTime: Date,
         lastEditedTime: Date,
+        createdBy: PartialUser,
+        lastEditedBy: PartialUser,
         properties: [Database.PropertyName: DatabaseProperty],
         parent: DatabaseParent
     ) {
@@ -35,6 +39,8 @@ public struct Database {
         self.cover = cover
         self.createdTime = createdTime
         self.lastEditedTime = lastEditedTime
+        self.createdBy = createdBy
+        self.lastEditedBy = lastEditedBy
         self.properties = properties
         self.parent = parent
     }
@@ -49,6 +55,8 @@ extension Database: Decodable {
         case cover
         case createdTime = "created_time"
         case lastEditedTime = "last_edited_time"
+        case createdBy = "created_by"
+        case lastEditedBy = "last_edited_by"
         case properties
         case parent
     }
