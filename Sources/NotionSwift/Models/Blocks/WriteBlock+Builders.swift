@@ -13,6 +13,15 @@ public extension WriteBlock {
         }
     }
     
+    struct TableRow {
+        let header: [RichText]?
+        let cells: [[RichText]]
+        
+        public static func row(header: [RichText]? = nil, cells: [[RichText]]) -> Self {
+            return .init(header: header, cells: cells)
+        }
+    }
+    
     static func paragraph(
         _ text: [RichText],
         children: [BlockType]? = nil,
@@ -171,5 +180,60 @@ public extension WriteBlock {
         children: [BlockType]? = nil
     ) -> Self {
         .init(type: .template(text, children: children))
+    }
+    
+    static func table(
+        width: Int,
+        headers: [[RichText]],
+        rows: [TableRow]
+    ) throws -> Self {
+        let hasColumnHeader = !headers.isEmpty
+        let hasRowHeader = rows.first(where: { $0.header != nil }) != nil
+        var tableRows = rows
+        if hasColumnHeader {
+            if headers.count != width {
+                throw NotionClientError.builderError(
+                    message:  "Number of header cells must match the table width"
+                )
+            }
+        }
+        let tableWidth = hasRowHeader ? width + 1 : width
+        
+        // quarantee that all rows have header is needed
+        if hasRowHeader {
+            tableRows = rows.map {
+                .init(header: $0.header ?? [""], cells: $0.cells)
+            }
+        }
+        
+        var children: [BlockType] = []
+        
+        if hasColumnHeader {
+            children.append(.tableRow(.init(
+                cells: (hasRowHeader ? [[""]] : []) + headers.map({$0})
+            )))
+        }
+        
+        for (line, row) in tableRows.enumerated() {
+            if row.cells.count != width {
+                throw NotionClientError.builderError(
+                    message: "Number of cells in table row \(line) must match the table width"
+                )
+            }
+            
+            var cells = [[RichText]]()
+            if let header = row.header {
+                cells.append(header)
+            }
+            cells.append(contentsOf: row.cells)
+            children.append(.tableRow(.init(cells: cells)))
+        }
+        
+        return .init(type: .table(.init(
+            tableWidth: tableWidth,
+            hasColumnHeader: hasColumnHeader,
+            hasRowHeader: hasRowHeader,
+            children: children
+        )))
     }
 }
