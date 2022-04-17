@@ -12,6 +12,8 @@ public struct ReadBlock: CustomStringConvertible {
     public let archived: Bool
     public let type: BlockType
     public let hasChildren: Bool
+    public let createdBy: PartialUser
+    public let lastEditedBy: PartialUser
     /// Notion API doesn't directly provide block children. To load blok's children use `NotionClient.blockChildren` method
     /// and create a new instance of this struct using `.updateChildren(_)` method.
     public let children: [ReadBlock]
@@ -23,6 +25,8 @@ public struct ReadBlock: CustomStringConvertible {
         createdTime: Date,
         lastEditedTime: Date,
         hasChildren: Bool,
+        createdBy: PartialUser,
+        lastEditedBy: PartialUser,
         children: [ReadBlock] = []
     ) {
         self.id = id
@@ -31,6 +35,8 @@ public struct ReadBlock: CustomStringConvertible {
         self.lastEditedTime = lastEditedTime
         self.type = type
         self.hasChildren = hasChildren
+        self.createdBy = createdBy
+        self.lastEditedBy = lastEditedBy
         self.children = children
     }
 
@@ -46,6 +52,8 @@ public struct ReadBlock: CustomStringConvertible {
             createdTime: self.createdTime,
             lastEditedTime: self.lastEditedTime,
             hasChildren: self.hasChildren,
+            createdBy: self.createdBy,
+            lastEditedBy: self.lastEditedBy,
             children: children
         )
     }
@@ -60,6 +68,8 @@ extension ReadBlock: Decodable {
         archived = try container.decode(Bool.self, forKey: .archived)
         createdTime = try container.decode(Date.self, forKey: .createdTime)
         lastEditedTime = try container.decode(Date.self, forKey: .lastEditedTime)
+        createdBy = try container.decode(PartialUser.self, forKey: .createdBy)
+        lastEditedBy = try container.decode(PartialUser.self, forKey: .lastEditedBy)
         type = try BlockType(from: decoder)
         hasChildren = try container.decode(Bool.self, forKey: .hasChildren)
         children = []

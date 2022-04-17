@@ -11,6 +11,8 @@ public struct Page {
     public let id: Identifier
     public let createdTime: Date
     public let lastEditedTime: Date
+    public let createdBy: PartialUser
+    public let lastEditedBy: PartialUser
     public let icon: IconFile?
     public let cover: CoverFile?
     public let parent: PageParentType
@@ -21,6 +23,8 @@ public struct Page {
         id: Identifier,
         createdTime: Date,
         lastEditedTime: Date,
+        createdBy: PartialUser,
+        lastEditedBy: PartialUser,
         icon: IconFile?,
         cover: CoverFile?,
         parent: PageParentType,
@@ -30,6 +34,8 @@ public struct Page {
         self.id = id
         self.createdTime = createdTime
         self.lastEditedTime = lastEditedTime
+        self.createdBy = createdBy
+        self.lastEditedBy = lastEditedBy
         self.icon = icon
         self.cover = cover
         self.parent = parent
@@ -42,7 +48,9 @@ extension Page: Decodable {
     enum CodingKeys: String, CodingKey {
         case id
         case createdTime = "created_time"
-        case lastEditedTime = "last_edited_time"
+        case lastEditedTime = "last_edited_time"        
+        case createdBy = "created_by"
+        case lastEditedBy = "last_edited_by"
         case icon
         case cover
         case archived

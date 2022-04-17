@@ -8,6 +8,20 @@ public enum SearchResultItem {
     case page(Page)
     case database(Database)
     case unknown
+    
+    public var database: Database? {
+        guard case .database(let value) = self else {
+            return nil
+        }
+        return value
+    }
+    
+    public var page: Page? {
+        guard case .page(let value) = self else {
+            return nil
+        }
+        return value
+    }
 }
 
 extension SearchResultItem: Decodable {
