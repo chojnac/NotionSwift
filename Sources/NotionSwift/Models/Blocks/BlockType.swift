@@ -34,6 +34,8 @@ public enum BlockType {
     case linkToPage(LinkToPageBlockValue)
     case syncedBlock(SyncedBlockValue)
     case template(TemplateBlockValue)
+    case table(TableBlockValue)
+    case tableRow(TableRowBlockValue)
     case unsupported(type: String)
 }
 
@@ -71,6 +73,8 @@ extension BlockType: Codable {
         case linkToPage = "link_to_page"
         case syncedBlock = "synced_block"
         case template
+        case table
+        case tableRow = "table_row"
         case unsupported
     }
 
@@ -136,6 +140,10 @@ extension BlockType: Codable {
             return .syncedBlock
         case .template:
             return .template
+        case .table:
+            return .table
+        case .tableRow:
+            return .tableRow
         }
     }
 
@@ -235,6 +243,12 @@ extension BlockType: Codable {
         case .template:
             let value = try container.decode(TemplateBlockValue.self, forKey: key)
             self = .template(value)
+        case .table:
+            let value = try container.decode(TableBlockValue.self, forKey: key)
+            self = .table(value)
+        case .tableRow:
+            let value = try container.decode(TableRowBlockValue.self, forKey: key)
+            self = .tableRow(value)
         case .type, .unsupported:
             self = .unsupported(type: type)
         }
@@ -298,9 +312,14 @@ extension BlockType: Codable {
             try container.encode(value, forKey: key)
         case .column(let value):
             try container.encode(value, forKey: key)
-        case .divider, .tableOfContents, .breadcrumb:
+        case .tableOfContents(let value):
+            try container.encode(value, forKey: key)
+        case .table(let value):
+            try container.encode(value, forKey: key)
+        case .tableRow(let value):
+            try container.encode(value, forKey: key)
+        case .divider, .breadcrumb:
             try container.encode([String: String](), forKey: key)
-            break
         case .unsupported:
             break
         }
