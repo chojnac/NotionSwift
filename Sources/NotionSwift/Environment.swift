@@ -4,7 +4,9 @@
 
 import Foundation
 
-public struct Environment {
+typealias Environment = NotionSwiftEnvironment
+
+public struct NotionSwiftEnvironment {
     static var log = Logger(handler: EmptyLogHandler(), level: .info)
     public static var logHandler: LoggerHandler {
         get { log.handler }
