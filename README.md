@@ -343,8 +343,8 @@ Example logging configuration:
 ```swift
 // This code should be in the ApplicationDelegate
 
-NotionSwift.Environment.logHandler = NotionSwift.PrintLogHandler() // uses print command
-NotionSwift.Environment.logLevel = .trace // show me everything
+NotionSwiftEnvironment.logHandler = NotionSwift.PrintLogHandler() // uses print command
+NotionSwiftEnvironment.logLevel = .trace // show me everything
 
 ```
 
