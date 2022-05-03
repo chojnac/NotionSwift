@@ -37,3 +37,9 @@ extension EntityIdentifier: Codable {
         try container.encode(rawValue)
     }
 }
+
+extension EntityIdentifier where T == UUIDv4 {
+    public init() {
+        self.init(UUIDv4())
+    }
+}
