@@ -153,7 +153,7 @@ extension PagePropertyType: Codable {
         case type
     }
     
-    private struct PageRelation: Decodable {
+    private struct PageRelation: Codable {
         let id: Page.Identifier
     }
 
@@ -297,7 +297,7 @@ extension PagePropertyType: Codable {
         case .formula(let value):
             try container.encode(value, forKey: .formula)
         case .relation(let value):
-            try container.encode(value, forKey: .relation)
+            try container.encode(value.map(PageRelation.init(id:)), forKey: .relation)
         case .rollup(let value):
             try container.encode(value, forKey: .rollup)
         case .title(let value):
