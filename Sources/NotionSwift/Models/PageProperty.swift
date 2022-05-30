@@ -25,7 +25,7 @@ public struct WritePageProperty {
 
 public enum PagePropertyType {
     case richText([RichText])
-    case number(Int?)
+    case number(Decimal?)
     case select(SelectPropertyValue?)
     case multiSelect([MultiSelectPropertyValue])
     case date(DateRange?)
@@ -97,7 +97,7 @@ extension PagePropertyType {
 
     public enum FormulaPropertyValue {
         case string(String?)
-        case number(Int?)
+        case number(Decimal?)
         case boolean(Bool?)
         case date(DateRange?)
         case unknown
@@ -170,7 +170,7 @@ extension PagePropertyType: Codable {
             self = .richText(value)
         case CodingKeys.number.stringValue:
             let value = try container.decodeIfPresent(
-                Int.self,
+                Decimal.self,
                 forKey: .number
             )
             self = .number(value)
@@ -400,7 +400,7 @@ extension PagePropertyType.FormulaPropertyValue: Codable {
             let value = try container.decode(String?.self, forKey: .string)
             self = .string(value)
         case CodingKeys.number.rawValue:
-            let value = try container.decode(Int?.self, forKey: .number)
+            let value = try container.decode(Decimal?.self, forKey: .number)
             self = .number(value)
         case CodingKeys.boolean.rawValue:
             let value = try container.decode(Bool?.self, forKey: .boolean)
