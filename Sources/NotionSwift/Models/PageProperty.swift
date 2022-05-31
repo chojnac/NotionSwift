@@ -105,7 +105,7 @@ extension PagePropertyType {
 
     public enum RollupPropertyValue {
         case array([PagePropertyType])
-        case number(Decimal)
+        case number(Decimal?)
         case date(DateRange?)
         case unknown
     }
@@ -450,7 +450,7 @@ extension PagePropertyType.RollupPropertyValue: Codable {
             let value = try container.decode([PagePropertyType].self, forKey: .array)
             self = .array(value)
         case CodingKeys.number.rawValue:
-            let value = try container.decode(Decimal.self, forKey: .number)
+            let value = try container.decodeIfPresent(Decimal.self, forKey: .number)
             self = .number(value)
         case CodingKeys.date.rawValue:
             let value = try container.decodeIfPresent(DateRange.self, forKey: .date)
