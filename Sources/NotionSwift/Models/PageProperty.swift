@@ -235,11 +235,15 @@ extension PagePropertyType: Codable {
             )
             self = .checkbox(value)
         case CodingKeys.url.stringValue:
-            let value = try container.decode(
+            let value = try container.decodeIfPresent(
                 String.self,
                 forKey: .url
             )
-            self = .url(URL(string: value))
+            if let value = value {
+                self = .url(URL(string: value))
+            } else {
+                self = .url(nil)
+            }
         case CodingKeys.email.stringValue:
             let value = try container.decodeIfPresent(
                 String.self,
