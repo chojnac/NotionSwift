@@ -14,21 +14,21 @@ public struct DatabaseSort {
         case descending
     }
 
-    public let property: String
+    public let property: String?
     public let timestamp: TimestampValue?
     public let direction: DirectionValue?
 }
 
 extension DatabaseSort {
     public static func ascending(
-        property: String,
+        property: String?,
         timestamp: TimestampValue? = nil
     ) -> Self {
         .init(property: property, timestamp: timestamp, direction: .ascending)
     }
 
     public static func descending(
-        property: String,
+        property: String?,
         timestamp: TimestampValue? = nil
     ) -> Self {
         .init(property: property, timestamp: timestamp, direction: .descending)
