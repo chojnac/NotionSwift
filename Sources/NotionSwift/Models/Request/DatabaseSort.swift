@@ -21,17 +21,29 @@ public struct DatabaseSort {
 
 extension DatabaseSort {
     public static func ascending(
-        property: String?,
+        property: String,
         timestamp: TimestampValue? = nil
     ) -> Self {
         .init(property: property, timestamp: timestamp, direction: .ascending)
     }
 
     public static func descending(
-        property: String?,
+        property: String,
         timestamp: TimestampValue? = nil
     ) -> Self {
         .init(property: property, timestamp: timestamp, direction: .descending)
+    }
+
+    public static func ascending(
+        timestamp: TimestampValue
+    ) -> Self {
+        .init(property: nil, timestamp: timestamp, direction: .ascending)
+    }
+
+    public static func descending(
+        timestamp: TimestampValue
+    ) -> Self {
+        .init(property: nil, timestamp: timestamp, direction: .descending)
     }
 }
 
