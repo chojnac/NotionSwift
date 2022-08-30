@@ -239,8 +239,7 @@ extension PagePropertyType: Codable {
                 String.self,
                 forKey: .url
             )
-            if let value = value,
-               let url = URL(string: value) {
+            if let value = value) {
                 self = .url(url)
             } else {
                 self = .url(nil)
