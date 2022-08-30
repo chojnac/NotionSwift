@@ -240,7 +240,7 @@ extension PagePropertyType: Codable {
                 forKey: .url
             )
             if let value = value) {
-                self = .url(url)
+                self = .url(URL(string: value))           
             } else {
                 self = .url(nil)
             }
