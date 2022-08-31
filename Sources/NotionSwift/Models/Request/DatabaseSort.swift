@@ -14,7 +14,7 @@ public struct DatabaseSort {
         case descending
     }
 
-    public let property: String
+    public let property: String?
     public let timestamp: TimestampValue?
     public let direction: DirectionValue?
 }
@@ -32,6 +32,18 @@ extension DatabaseSort {
         timestamp: TimestampValue? = nil
     ) -> Self {
         .init(property: property, timestamp: timestamp, direction: .descending)
+    }
+
+    public static func ascending(
+        timestamp: TimestampValue
+    ) -> Self {
+        .init(property: nil, timestamp: timestamp, direction: .ascending)
+    }
+
+    public static func descending(
+        timestamp: TimestampValue
+    ) -> Self {
+        .init(property: nil, timestamp: timestamp, direction: .descending)
     }
 }
 
