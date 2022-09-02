@@ -53,16 +53,19 @@ public extension BlockType {
             richText
         }
         public let color: BlockColor
+        public let isToggleable: Bool
         
         @available(*, deprecated, message: "Please use init(richText:color:) instead")
         public init(text: [RichText]) {
             self.richText = text
             self.color = .default
+            self.isToggleable = false
         }
         
-        public init(richText: [RichText], color: BlockColor) {
+        public init(richText: [RichText], color: BlockColor, isToggleable: Bool) {
             self.richText = richText
             self.color = color
+            self.isToggleable = isToggleable
         }
     }
 
@@ -297,6 +300,7 @@ extension BlockType.HeadingBlockValue: Codable {
     enum CodingKeys: String, CodingKey {
         case richText = "rich_text"
         case color
+        case isToggleable = "is_toggleable"
     }
 }
 extension BlockType.ToDoBlockValue: Codable {

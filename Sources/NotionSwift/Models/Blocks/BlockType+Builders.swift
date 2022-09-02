@@ -14,16 +14,16 @@ public extension BlockType {
         return .paragraph(.init(richText: richText, children: children, color: color))
     }
     
-    static func heading1(_ richText: [RichText], color: BlockColor = .default) -> Self {
-        return .heading1(.init(richText: richText, color: color))
+    static func heading1(_ richText: [RichText], color: BlockColor = .default, isToggleable: Bool = false) -> Self {
+        return .heading1(.init(richText: richText, color: color, isToggleable: isToggleable))
     }
 
-    static func heading2(_ richText: [RichText], color: BlockColor = .default) -> Self {
-        return .heading2(.init(richText: richText, color: color))
+    static func heading2(_ richText: [RichText], color: BlockColor = .default, isToggleable: Bool = false) -> Self {
+        return .heading2(.init(richText: richText, color: color, isToggleable: isToggleable))
     }
 
-    static func heading3(_ richText: [RichText], color: BlockColor = .default) -> Self {
-        return .heading3(.init(richText: richText, color: color))
+    static func heading3(_ richText: [RichText], color: BlockColor = .default, isToggleable: Bool = false) -> Self {
+        return .heading3(.init(richText: richText, color: color, isToggleable: isToggleable))
     }
 
     static func bulletedListItem(
