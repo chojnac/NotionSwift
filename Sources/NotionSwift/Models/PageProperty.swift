@@ -43,6 +43,7 @@ public enum PagePropertyType {
     case createdBy(User)
     case lastEditedTime(Date)
     case lastEditedBy(User)
+    case status(StatusPropertyValue?)
     case unknown(type: String)
 }
 
@@ -109,6 +110,22 @@ extension PagePropertyType {
         case date(DateRange?)
         case unknown
     }
+    
+    public struct StatusPropertyValue {
+        public let id: EntityIdentifier<StatusPropertyValue, UUIDv4>?
+        public let name: String?
+        public let color: String?
+
+        public init(
+            id: EntityIdentifier<StatusPropertyValue, UUIDv4>?,
+            name: String?,
+            color: String?
+        ) {
+            self.id = id
+            self.name = name
+            self.color = color
+        }
+    }
 }
 
 extension PageProperty: Decodable {
@@ -149,7 +166,8 @@ extension PagePropertyType: Codable {
         case createdBy = "created_by"
         case lastEditedTime = "last_edited_time"
         case lastEditedBy = "last_edited_by"
-
+        case status
+        
         case type
     }
     
@@ -280,6 +298,12 @@ extension PagePropertyType: Codable {
                 forKey: .lastEditedBy
             )
             self = .lastEditedBy(value)
+        case CodingKeys.status.stringValue:
+            let value = try container.decodeIfPresent(
+                StatusPropertyValue.self,
+                forKey: .status
+            )
+            self = .status(value)
         default:
             self = .unknown(type: type)
         }
@@ -326,6 +350,8 @@ extension PagePropertyType: Codable {
             try container.encode(value, forKey: .lastEditedTime)
         case .lastEditedBy(let value):
             try container.encode(value, forKey: .lastEditedBy)
+        case .status(let value):
+            try container.encode(value, forKey: .status)
         case .unknown:
             break
         }
@@ -480,4 +506,7 @@ extension PagePropertyType.RollupPropertyValue: Codable {
             break
         }
     }
+    
 }
+
+extension PagePropertyType.StatusPropertyValue: Codable {}
