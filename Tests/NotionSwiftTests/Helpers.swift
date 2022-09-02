@@ -15,6 +15,7 @@ func encodeToJson<T: Encodable>(_ entity: T) throws -> String {
 
 func decodeFromJson<T: Decodable>(_ entity: String) throws -> T {
     let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
     let data = try decoder.decode(T.self, from: entity.data(using: .utf8)!)
     return data
 }
