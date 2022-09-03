@@ -24,6 +24,7 @@ public enum DatabasePropertyType {
     case createdBy
     case lastEditedTime
     case lastEditedBy
+    case status(StatusPropertConfirguration)
     case unknown
 }
 
@@ -106,6 +107,63 @@ extension DatabasePropertyType {
     }
 }
 
+extension DatabasePropertyType {
+    public struct StatusPropertConfirguration {
+        public typealias OptionIdentifier = EntityIdentifier<SelectOption, UUIDv4>
+        
+        public struct StatusOption {
+            public let id: OptionIdentifier
+            /// Name of the option as it appears in Notion.
+            public let name: String
+            public let color: String
+            
+            public init(
+                id: OptionIdentifier,
+                name: String,
+                color: String
+            ) {
+                self.id = id
+                self.name = name
+                self.color = color
+            }
+        }
+        
+        public struct StatusGroup {
+            public let id: OptionIdentifier
+            public let name: String
+            public let color: String
+            /// Sorted list of ids of all options that belong to a group.
+            public let optionIds: [OptionIdentifier]
+            
+            public init(
+                id: OptionIdentifier,
+                name: String,
+                color: String,
+                optionIds: [OptionIdentifier]
+            ) {
+                self.id = id
+                self.name = name
+                self.color = color
+                self.optionIds = optionIds
+            }
+        }
+        
+        /// Sorted list of options available for this property.
+        public let options: [StatusOption]
+        /// Sorted list of groups available for this property.
+        public let groups: [StatusGroup]
+        
+        public init(
+            options: [StatusOption],
+            groups: [StatusGroup]
+        ) {
+            self.options = options
+            self.groups = groups
+        }
+    }
+    
+}
+
 extension DatabasePropertyType.SelectOption: Codable {
     enum CodingKeys: String, CodingKey {
         case name
@@ -169,6 +227,17 @@ extension DatabasePropertyType.RollupPropertyConfiguration: Codable {
     }
 }
 
+extension DatabasePropertyType.StatusPropertConfirguration: Codable {}
+extension DatabasePropertyType.StatusPropertConfirguration.StatusOption: Codable {}
+extension DatabasePropertyType.StatusPropertConfirguration.StatusGroup: Codable {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case color
+        case optionIds = "option_ids"
+    }
+}
+
 extension DatabasePropertyType: Codable {
     enum CodingKeys: String, CodingKey {
         case type
@@ -192,6 +261,7 @@ extension DatabasePropertyType: Codable {
         case createdBy = "created_by"
         case lastEditedTime = "last_edited_time"
         case lastEditedBy = "last_edited_by"
+        case status
     }
 
     private struct _SelectOptionValueHelper: Codable {
@@ -268,6 +338,12 @@ extension DatabasePropertyType: Codable {
             self = .lastEditedTime
         case CodingKeys.lastEditedBy.rawValue:
             self = .lastEditedBy
+        case CodingKeys.status.rawValue:
+            let value = try container.decode(
+                DatabasePropertyType.StatusPropertConfirguration.self,
+                forKey: .status
+            )
+            self = .status(value)
         default:
             self = .unknown
         }
@@ -316,6 +392,8 @@ extension DatabasePropertyType: Codable {
             try container.encode(emptyObject, forKey: .lastEditedTime)
         case .lastEditedBy:
             try container.encode(emptyObject, forKey: .lastEditedBy)
+        case .status(let config):
+            try container.encode(config, forKey: .status)
         case .unknown:
             break
         }
