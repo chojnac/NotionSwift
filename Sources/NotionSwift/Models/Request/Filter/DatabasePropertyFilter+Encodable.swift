@@ -100,6 +100,7 @@ extension DatabasePropertyFilter.DateCondition: Encodable {
         case pastWeek = "past_week"
         case pastMonth = "past_month"
         case pastYear = "past_year"
+        case thisWeek = "this_week"
         case nextWeek = "next_week"
         case nextMonth = "next_month"
         case nextYear = "next_year"
@@ -130,6 +131,8 @@ extension DatabasePropertyFilter.DateCondition: Encodable {
             try container.encode(Empty(), forKey: .pastMonth)
         case .pastYear:
             try container.encode(Empty(), forKey: .pastYear)
+        case .thisWeek:
+            try container.encode(Empty(), forKey: .thisWeek)
         case .nextWeek:
             try container.encode(Empty(), forKey: .nextWeek)
         case .nextMonth:

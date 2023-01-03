@@ -60,6 +60,7 @@ extension DatabasePropertyFilter {
         case pastWeek
         case pastMonth
         case pastYear
+        case thisWeek
         case nextWeek
         case nextMonth
         case nextYear
