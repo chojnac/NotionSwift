@@ -18,6 +18,7 @@ public struct Page {
     public let parent: PageParentType
     public let archived: Bool
     public let properties: [PropertyName: PageProperty]
+    public let url: URL
     
     public init(
         id: Identifier,
@@ -29,7 +30,8 @@ public struct Page {
         cover: CoverFile?,
         parent: PageParentType,
         archived: Bool,
-        properties: [PropertyName: PageProperty]
+        properties: [PropertyName: PageProperty],
+        url: URL
     ) {
         self.id = id
         self.createdTime = createdTime
@@ -41,6 +43,7 @@ public struct Page {
         self.parent = parent
         self.archived = archived
         self.properties = properties
+        self.url = url
     }
 }
 
@@ -56,6 +59,7 @@ extension Page: Decodable {
         case archived
         case parent
         case properties
+        case url
     }
 }
 
