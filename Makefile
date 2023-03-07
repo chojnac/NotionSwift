@@ -1,5 +1,5 @@
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-IOS_SIMULATOR = "iOS Simulator,name=iPhone 12 Pro,OS=14.4"
+IOS_SIMULATOR = "iOS Simulator,name=iPhone 14 Pro,OS=16.2"
 DERIVED_DATA_DIR=$(ROOT_DIR)/.build/DerivedData
 
 .PHONY: pre_checks_macos default
