@@ -185,7 +185,7 @@ extension DatabasePropertyFilter.FilesCondition: Encodable {
 
 extension DatabasePropertyFilter.NumberCondition: Encodable {
     enum CodingKeys: String, CodingKey {
-        case number
+        case equals
         case doesNotEqual = "does_not_equal"
         case greaterThan = "greater_than"
         case lessThan = "less_than"
@@ -199,7 +199,7 @@ extension DatabasePropertyFilter.NumberCondition: Encodable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
         case .equals(let number):
-            try container.encode(number, forKey: .number)
+            try container.encode(number, forKey: .equals)
         case .doesNotEqual(let number):
             try container.encode(number, forKey: .doesNotEqual)
         case .greaterThan(let number):

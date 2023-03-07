@@ -85,12 +85,12 @@ extension DatabasePropertyFilter {
 
 extension DatabasePropertyFilter {
     public enum NumberCondition {
-        case equals(Int)
-        case doesNotEqual(Int)
-        case greaterThan(Int)
-        case lessThan(Int)
-        case greaterThanOrEqualTo(Int)
-        case lessThanOrEqualTo(Int)
+        case equals(Double)
+        case doesNotEqual(Double)
+        case greaterThan(Double)
+        case lessThan(Double)
+        case greaterThanOrEqualTo(Double)
+        case lessThanOrEqualTo(Double)
         case isEmpty
         case isNotEmpty
     }
