@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'NotionSwift'
-  s.version          = '0.7.3'
+  s.version          = '0.8.0'
   s.summary          = 'Unofficial Notion SDK for iOS & macOS.'
   s.homepage         = 'https://github.com/chojnac/NotionSwift'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
