@@ -30,7 +30,7 @@ public enum PagePropertyType {
     case multiSelect([MultiSelectPropertyValue])
     case date(DateRange?)
     case formula(FormulaPropertyValue)
-    case relation([Page.Identifier])
+    case relation([Page.Identifier], hasMore: Bool = false)
     case rollup(RollupPropertyValue)
     case title([RichText])
     case people([User])
@@ -169,6 +169,7 @@ extension PagePropertyType: Codable {
         case status
         
         case type
+        case hasMore = "has_more"
     }
     
     private struct PageRelation: Codable {
@@ -221,7 +222,8 @@ extension PagePropertyType: Codable {
                 [PageRelation].self,
                 forKey: .relation
             )
-            self = .relation(value.map(\.id))
+            let hasMore = try container.decode(Bool.self, forKey: .hasMore)
+            self = .relation(value.map(\.id), hasMore: hasMore)
         case CodingKeys.rollup.stringValue:
             let value = try container.decode(
                 PagePropertyType.RollupPropertyValue.self,
@@ -324,7 +326,7 @@ extension PagePropertyType: Codable {
             try container.encode(value, forKey: .date)
         case .formula(let value):
             try container.encode(value, forKey: .formula)
-        case .relation(let value):
+        case .relation(let value, _):
             try container.encode(value.map(PageRelation.init(id:)), forKey: .relation)
         case .rollup(let value):
             try container.encode(value, forKey: .rollup)
