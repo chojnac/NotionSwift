@@ -125,6 +125,34 @@ notion.databaseUpdate(databaseId: id, request: request) {
 }
 ```
 
+### Create a database entry
+
+Notion database entries are pages, whose properties conform to the parent database's schema.
+
+```swift
+let databaseId = Database.Identifier("{DATABASE UUIDv4}")
+
+let request = PageCreateRequest(
+    parent: .database(databaseId),
+    properties: [
+        "title": .init(
+            type: .title([
+                .init(string: "Lorem ipsum \(Date())")
+            ])
+        )
+        "Field 10": .init(
+            type: .richText([
+                .init(string: "dolor sit amet")
+            ])
+        )
+    ]
+)
+
+notion.pageCreate(request: request) {
+    print($0)
+}
+```
+
 ### Retrieve a page
 
 Retrieve page properties. 
