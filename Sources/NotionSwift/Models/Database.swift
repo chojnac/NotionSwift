@@ -18,6 +18,7 @@ public struct Database {
     public let lastEditedBy: PartialUser
     public let properties: [PropertyName: DatabaseProperty]
     public let parent: DatabaseParent
+    public let isInline: Bool
 
     public init(
         id: Database.Identifier,
@@ -30,7 +31,8 @@ public struct Database {
         createdBy: PartialUser,
         lastEditedBy: PartialUser,
         properties: [Database.PropertyName: DatabaseProperty],
-        parent: DatabaseParent
+        parent: DatabaseParent,
+        isInline: Bool
     ) {
         self.id = id
         self.url = url
@@ -43,6 +45,7 @@ public struct Database {
         self.lastEditedBy = lastEditedBy
         self.properties = properties
         self.parent = parent
+        self.isInline = isInline
     }
 }
 
@@ -59,6 +62,7 @@ extension Database: Decodable {
         case lastEditedBy = "last_edited_by"
         case properties
         case parent
+        case isInline = "is_inline"
     }
 }
 
