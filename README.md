@@ -49,7 +49,7 @@ To tweak things like network timeouts you can provide a custom `URLSessionConfig
 
 let sessionConfig = URLSessionConfiguration.default
 sessionConfig.timeoutIntervalForRequest = 15
-let client = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: "{NOTION_TOKEN}"), sessionConfiguration: sessionConfig)
+let notion = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: "{NOTION_TOKEN}"), sessionConfiguration: sessionConfig)
 
 ```
 
