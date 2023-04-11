@@ -13,7 +13,15 @@ public final class NotionClient: NotionClientType {
 
     public init(
         accessKeyProvider: AccessKeyProvider,
-        networkClient: NetworkClient = DefaultNetworkClient()
+        sessionConfiguration: URLSessionConfiguration = .default
+    ) {
+        self.accessKeyProvider = accessKeyProvider
+        self.networkClient = DefaultNetworkClient(sessionConfiguration: sessionConfiguration)
+    }
+
+    public init(
+        accessKeyProvider: AccessKeyProvider,
+        networkClient: NetworkClient
     ) {
         self.accessKeyProvider = accessKeyProvider
         self.networkClient = networkClient

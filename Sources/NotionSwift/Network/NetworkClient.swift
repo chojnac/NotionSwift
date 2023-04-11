@@ -56,14 +56,17 @@ public protocol NetworkClient: AnyObject {
 
 public class DefaultNetworkClient: NetworkClient {
     private let encoder: JSONEncoder
-    private let decoder: JSONDecoder    
+    private let decoder: JSONDecoder
+    private let session: URLSession
 
-    public init() {
+    public init(sessionConfiguration: URLSessionConfiguration) {
         encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .formatted(DateFormatter.iso8601Full)
 
         decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
+
+        session = .init(configuration: sessionConfiguration)
     }
 
     public func get<R: Decodable>(
@@ -185,7 +188,7 @@ public class DefaultNetworkClient: NetworkClient {
         completed: @escaping (Result<T, NotionClientError>) -> Void
     ) {
         Environment.log.debug("Request: \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")")
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = session.dataTask(with: request) { data, response, error in
             var completeResult: Result<T, NotionClientError>?
 
             if let error = NetworkClientHelpers.extractError(data: data, response: response, error: error) {
