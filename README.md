@@ -41,6 +41,20 @@ let notion = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: 
 
 ```
 
+### Tweak networking layer
+
+To tweak things like network timeouts you can provide a custom `URLSessionConfiguration` to `NotionClient`  like below.
+
+```swift
+
+let sessionConfig = URLSessionConfiguration.default
+sessionConfig.timeoutIntervalForRequest = 15
+let client = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: "{NOTION_TOKEN}"), sessionConfiguration: sessionConfig)
+
+```
+
+If that's not enough for your needs, you can implement the `NetworkClient` protocol and provide your implementation to `NotionClient`.
+
 ### List all databases
 
 The `https://api.notion.com/v1/databases` is deprecated. To recommended way to list all databases is to use `https://api.notion.com/v1/search` endpoint. 
