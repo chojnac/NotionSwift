@@ -33,13 +33,27 @@ instruction how to obtain `NOTION_TOKEN` please check [Notion Offical Documentat
 
 **Important:** Integrations are granted access to resources (pages and databases) which users have shared with the integration. Resources that are not shared with the integration are not visible by API endpoints. 
 
-### Creating a Notion client.
+### Creating a Notion client
 
 ```swift
 
 let notion = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: "{NOTION_TOKEN}"))
 
 ```
+
+### Tweak network configuration
+
+To tweak things like network timeouts you can provide a custom `URLSessionConfiguration` to `NotionClient`  like below.
+
+```swift
+
+let sessionConfig = URLSessionConfiguration.default
+sessionConfig.timeoutIntervalForRequest = 15
+let notion = NotionClient(accessKeyProvider: StringAccessKeyProvider(accessKey: "{NOTION_TOKEN}"), sessionConfiguration: sessionConfig)
+
+```
+
+If that's not enough for your needs, you can implement the `NetworkClient` protocol and provide your implementation to `NotionClient`.
 
 ### List all databases
 
