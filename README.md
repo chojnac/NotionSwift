@@ -311,7 +311,7 @@ let text: [RichText] = [
     "Current time: ",
     .init(string: Date().description, annotations: .bold)
 ]
-let block = UpdateBlock(value: .paragraph(text: text))
+let block = UpdateBlock(type: .paragraph(text: text))
 notion.blockUpdate(blockId: blockId, value: block) {
     print("Updated: ", $0)
 }

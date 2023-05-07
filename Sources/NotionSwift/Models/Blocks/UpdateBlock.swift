@@ -5,14 +5,22 @@
 import Foundation
 
 public struct UpdateBlock {
-    public let value: BlockType?
+    @available(*, deprecated, renamed: "type")
+    public var value: BlockType {
+        type
+    }
+    public let type: BlockType
     public let archived: Bool?
-    public let color: BlockColor
 
-    public init(value: BlockType?, archived: Bool? = nil, color: BlockColor = .default) {
-        self.value = value
+    @available(*, deprecated, message: "Please use init(type:archived:) instead")
+    public init(value: BlockType, archived: Bool? = nil) {
+        self.type = value
         self.archived = archived
-        self.color = color
+    }
+    
+    public init(type: BlockType, archived: Bool? = nil) {
+        self.type = type
+        self.archived = archived
     }
 }
 
@@ -21,11 +29,8 @@ public struct UpdateBlock {
 extension UpdateBlock: Encodable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: Block.CodingKeys.self)
-        if let value = value {
-            try value.encode(to: encoder)
-        }
+        try type.encode(to: encoder)
         try container.encodeIfPresent(archived, forKey: .archived)
-        try container.encode(color, forKey: .color)
     }
 }
 
