@@ -62,7 +62,7 @@ In theory, search allows filtering results by object type. However, currently, t
 To narrow search results,  use code snippet belove. 
 
 ```swift
-// fetch avaiable databases
+// fetch available databases
 notion.search(request: .init(filter: .database)) { result in
     let databases = result.map { objects in
         objects.results.compactMap({ object -> Database? in
@@ -153,7 +153,7 @@ let request = PageCreateRequest(
             type: .title([
                 .init(string: "Lorem ipsum \(Date())")
             ])
-        )
+        ),
         "Field 10": .init(
             type: .richText([
                 .init(string: "dolor sit amet")
