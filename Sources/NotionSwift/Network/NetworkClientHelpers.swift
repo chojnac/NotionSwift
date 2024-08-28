@@ -3,6 +3,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public enum NetworkClientHelpers {
     public static func extractError(data: Data?, response: URLResponse?, error: Error?) -> NotionClientError? {
