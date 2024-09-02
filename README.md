@@ -227,7 +227,7 @@ notion.pageCreate(request: request) {
 let pageId = Page.Identifier("{PAGE UUIDv4}")
 
 // update title property
-let request = PageProperiesUpdateRequest(
+let request = PageUpdateRequest(
     properties: [
         .name("title"): .init(
             type: .title([
@@ -237,7 +237,20 @@ let request = PageProperiesUpdateRequest(
     ]
 )
 
-notion.pageUpdateProperties(pageId: pageId, request: request) {
+notion.pageUpdate(pageId: pageId, request: request) {
+    print($0)
+}
+```
+
+### Delete page 
+
+```swift
+let pageId = Page.Identifier("{PAGE UUIDv4}")
+
+// Archive page (trash a page)
+let request = PageUpdateRequest(archived: true)
+
+notion.pageUpdate(pageId: pageId, request: request) {
     print($0)
 }
 ```
