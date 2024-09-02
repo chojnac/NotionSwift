@@ -29,6 +29,7 @@ extension DatabasePropertyFilter {
         case files(FilesCondition)
         case relation(SimpleGenericCondition<UUIDv4>)
         case formula(FormulaCondition)
+        case status(StatusCondition)
     }
 }
 
@@ -104,6 +105,15 @@ extension DatabasePropertyFilter {
         case doesNotContain(String)
         case startsWith(String)
         case endsWith(String)
+        case isEmpty
+        case isNotEmpty
+    }
+}
+
+extension DatabasePropertyFilter {
+    public enum StatusCondition {
+        case equals(String)
+        case doesNotEqual(String)
         case isEmpty
         case isNotEmpty
     }
