@@ -18,14 +18,14 @@ test:
 	swift test
 
 test-swift:
-	swift test --enable-test-discovery
+	swift test -c release
 
 test-ios: pre_checks_macos
 	set -o pipefail && \
 	xcodebuild test \
 		-derivedDataPath $(DERIVED_DATA_DIR) \
 		-scheme NotionSwift \
-		-destination platform=$(IOS_SIMULATOR) | xcpretty
+		-destination platform=$(IOS_SIMULATOR)
 
 test-macos: pre_checks_macos
 	set -o pipefail && \
@@ -39,8 +39,8 @@ test-linux:
 		--rm \
 		-v "$(PWD):$(PWD)" \
 		-w "$(PWD)" \
-		swift:5.3 \
-		bash -c 'make test-swift'
+		swift:5.9 \
+		bash -c 'swift test -c release'
 
 test-all: test-macos test-ios
 
