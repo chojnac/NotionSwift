@@ -1,0 +1,24 @@
+name: "ci-linux"
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - "Sources/**"
+      - "Tests/**"
+  pull_request:
+    branches: 
+      - '*'
+jobs:
+  build:
+    name: Linux Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+      - name: Build
+        run: swift build -c release
+      - name: Run tests
+        run: swift test -c release
