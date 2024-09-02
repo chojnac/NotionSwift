@@ -3,6 +3,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public enum Network {
     public typealias HTTPHeaders = [String: String]
