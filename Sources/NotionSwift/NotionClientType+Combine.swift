@@ -96,12 +96,12 @@ extension NotionClientType {
         }
     }
 
-    public func pageUpdateProperties(
+    public func pageUpdate(
         pageId: Page.Identifier,
-        request: PageProperiesUpdateRequest
+        request: PageUpdateRequest
     ) -> AnyPublisher<Page, NotionClientError> {
         convertToPublisher { promise in
-            self.pageUpdateProperties(
+            self.pageUpdate(
                 pageId: pageId,
                 request: request,
                 completed: promise

@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct PageProperiesUpdateRequest {
+public struct PageUpdateRequest {
     public enum Key: Hashable, Equatable  {
         case name(Page.PropertyName)
         case id(PageProperty.Identifier)
@@ -29,7 +29,7 @@ public struct PageProperiesUpdateRequest {
 
 }
 
-extension PageProperiesUpdateRequest: Encodable {
+extension PageUpdateRequest: Encodable {
     enum CodingKeys: String, CodingKey {
         case properties
         case archived
@@ -61,7 +61,7 @@ extension PageProperiesUpdateRequest: Encodable {
     }
 }
 
-extension PageProperiesUpdateRequest.Key: Encodable {
+extension PageUpdateRequest.Key: Encodable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {

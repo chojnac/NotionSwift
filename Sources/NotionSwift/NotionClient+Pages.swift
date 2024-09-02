@@ -31,9 +31,9 @@ import Foundation
         )
     }
 
-    public func pageUpdateProperties(
+    public func pageUpdate(
         pageId: Page.Identifier,
-        request: PageProperiesUpdateRequest,
+        request: PageUpdateRequest,
         completed: @escaping (Result<Page, NotionClientError>) -> Void
     ) {
         networkClient.patch(

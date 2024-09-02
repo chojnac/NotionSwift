@@ -67,9 +67,9 @@ public protocol NotionClientType: AnyObject {
         completed: @escaping (Result<Page, NotionClientError>) -> Void
     )
 
-    func pageUpdateProperties(
+    func pageUpdate(
         pageId: Page.Identifier,
-        request: PageProperiesUpdateRequest,
+        request: PageUpdateRequest,
         completed: @escaping (Result<Page, NotionClientError>) -> Void
     )
 
