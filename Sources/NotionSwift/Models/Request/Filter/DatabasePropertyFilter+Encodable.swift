@@ -24,6 +24,7 @@ extension DatabasePropertyFilter: Encodable {
         case relation
         case formula
         case property
+        case status
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -68,6 +69,8 @@ extension DatabasePropertyFilter: Encodable {
             try container.encode(contition, forKey: .relation)
         case .formula(let contition):
             try container.encode(contition, forKey: .formula)
+        case .status(let condition):
+            try container.encode(condition, forKey: .status)
         }
     }
 }
@@ -275,3 +278,27 @@ extension DatabasePropertyFilter.TextCondition: Encodable {
         }
     }
 }
+
+extension DatabasePropertyFilter.StatusCondition: Encodable {
+    enum CodingKeys: String, CodingKey {
+        case equals
+        case doesNotEqual = "does_not_equal"
+        case isEmpty = "is_empty"
+        case isNotEmpty = "is_not_empty"
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .equals(let value):
+            try container.encode(value, forKey: .equals)
+        case .doesNotEqual(let value):
+            try container.encode(value, forKey: .doesNotEqual)
+        case .isEmpty:
+            try container.encode(true, forKey: .isEmpty)
+        case .isNotEmpty:
+            try container.encode(true, forKey: .isNotEmpty)
+        }
+    }
+}
+
