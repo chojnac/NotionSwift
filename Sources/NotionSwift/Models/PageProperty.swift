@@ -130,7 +130,7 @@ extension PagePropertyType {
     
     public struct UniqueIDPropertyValue {
         public let number: Int
-        public let prefix: String
+        public let prefix: String?
         
         init(number: Int, prefix: String) {
             self.number = number
