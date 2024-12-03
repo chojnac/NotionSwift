@@ -44,6 +44,7 @@ public enum PagePropertyType {
     case lastEditedTime(Date)
     case lastEditedBy(User)
     case status(StatusPropertyValue?)
+    case uniqueId(UniqueIDPropertyValue?)
     case unknown(type: String)
 }
 
@@ -126,6 +127,17 @@ extension PagePropertyType {
             self.color = color
         }
     }
+    
+    public struct UniqueIDPropertyValue {
+        public let number: Int
+        public let prefix: String
+        
+        init(number: Int, prefix: String) {
+            self.number = number
+            self.prefix = prefix
+        }
+    }
+
 }
 
 extension PageProperty: Decodable {
@@ -166,6 +178,7 @@ extension PagePropertyType: Codable {
         case createdBy = "created_by"
         case lastEditedTime = "last_edited_time"
         case lastEditedBy = "last_edited_by"
+        case uniqueId = "unique_id"
         case status
         
         case type
@@ -306,6 +319,12 @@ extension PagePropertyType: Codable {
                 forKey: .status
             )
             self = .status(value)
+        case CodingKeys.uniqueId.stringValue:
+            let value = try container.decodeIfPresent(
+                UniqueIDPropertyValue.self,
+                forKey: .uniqueId
+            )
+            self = .uniqueId(value)
         default:
             self = .unknown(type: type)
         }
@@ -354,7 +373,7 @@ extension PagePropertyType: Codable {
             try container.encode(value, forKey: .lastEditedBy)
         case .status(let value):
             try container.encode(value, forKey: .status)
-        case .unknown:
+        case .unknown,.uniqueId:
             break
         }
     }
@@ -512,3 +531,4 @@ extension PagePropertyType.RollupPropertyValue: Codable {
 }
 
 extension PagePropertyType.StatusPropertyValue: Codable {}
+extension PagePropertyType.UniqueIDPropertyValue: Decodable {}
