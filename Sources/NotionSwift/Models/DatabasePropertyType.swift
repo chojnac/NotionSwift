@@ -49,7 +49,7 @@ extension DatabasePropertyType {
     public struct SelectOption {
         public typealias Identifier = EntityIdentifier<SelectOption, UUIDv4>
         public let name: String
-        public let id: Identifier
+        public let id: Identifier?
         public let color: String
 
         public init(
